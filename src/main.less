@@ -1,25 +1,156 @@
-html {
-  font-size: 1vw;
+/* Global Styles for Personal Website - VSCode Design Style */
+
+/* CSS Reset & Variables */
+:root {
+  /* VSCode Dark Theme Palette (Default) */
+  --color-background: #1e1e1e; /* Editor Background */
+  --color-surface: #252526;    /* Sidebar/Panel Background */
+  --color-surface-hover: #2a2d2e; /* List Hover */
+  --color-border: #333333;     /* Borders */
+
+  --color-text-primary: #cccccc; /* Main Text */
+  --color-text-secondary: #969696; /* Comments/Subtext */
+  --color-text-tertiary: #6a9955; /* Strings/Quotes (Green) */
+
+  --color-accent-primary: #007acc; /* VSCode Blue (Status Bar/Activity Bar) */
+  --color-accent-secondary: #ce9178; /* Orange (Tags/Keywords) */
+  --color-accent-tertiary: #4ec9b0; /* Teal (Types/Classes) */
+  --color-accent-quaternary: #dcdcaa; /* Yellow (Functions) */
+
+  --color-keyword: #569cd6; /* Keywords (Blue) */
+  --color-control-flow: #c586c0; /* Control Flow (Pink/Purple) */
+
+  --color-code-bg: #1e1e1e;
+  --color-quote-bg: #252526;
+  --color-window-header: #252526;
+
+  --font-family-base: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+  --font-family-code: 'Consolas', 'Monaco', 'Courier New', monospace;
+
+  --transition-fast: all 0.15s ease-out;
+  --transition-normal: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
+:root[data-theme='light'] {
+  /* VS Code Default Light Theme */
+  --color-background: #ffffff; /* Editor Background */
+  --color-surface: #f3f3f3;    /* Sidebar/Panel Background */
+  --color-surface-hover: #e8e8e8; /* List Hover */
+  --color-border: #e4e4e4;     /* Borders */
 
-html, body {
-  width: 100%;
-  height: 100%;
+  --color-text-primary: #333333; /* Main Text */
+  --color-text-secondary: #6a737d; /* Comments/Subtext */
+  --color-text-tertiary: #008000; /* Comments/Strings (Green) */
+
+  --color-accent-primary: #007acc; /* VSCode Blue */
+  --color-accent-secondary: #a31515; /* Strings (Red) */
+  --color-accent-tertiary: #267f99; /* Type/Class (Teal) */
+  --color-accent-quaternary: #795e26; /* Function (Yellowish-Brown) */
+
+  --color-keyword: #0000ff; /* Keywords (Blue) */
+  --color-control-flow: #af00db; /* Control flow (Purple) */
+
+  --color-code-bg: #ffffff;
+  --color-quote-bg: #f3f3f3;
+  --color-window-header: #dddddd;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+  --color-header-bg: rgba(255, 255, 255, 0.9);
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+}
+
+:root {
+  /* ... (Previous vars) ... */
+  --color-header-bg: rgba(30, 30, 30, 0.85); /* Default Dark Header */
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-#app {
-  max-width: 1440px;
-  width: 100%;
-  background-color: #F8FAFF;
-  align-items: center;
+::selection {
+  background-color: rgba(38, 79, 120, 0.5); /* VSCode selection color */
+  color: inherit;
+}
+
+/* Scrollbar customization - VSCode style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #424242;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4f4f4f;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--color-background);
+}
+
+/* Utilities */
+.text-code {
+  font-family: var(--font-family-code);
+}
+
+.text-accent {
+  color: var(--color-accent-primary);
+}
+
+.text-key {
+  color: var(--color-accent-secondary);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-accent-primary);
+  transition: var(--transition-fast);
+
+  &:hover {
+    color: lighten(#007acc, 10%);
+    text-decoration: underline;
+  }
+}
+
+/* Page Transition Classes */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }

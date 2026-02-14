@@ -1,4 +1,5 @@
 import {createApp} from 'vue'
+import { createHead } from '@vueuse/head'
 
 import "./main.less"
 
@@ -8,8 +9,11 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import App from './App.vue'
 import router from './router'
+import i18n from './locales/i18n'
 
 const app = createApp(App)
+const head = createHead()
+app.use(head)
 
 // 使用Element Plus UI 库
 app.use(ElementPlus)
@@ -19,6 +23,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.use(router)
+app.use(i18n)
 
 // 用来处理路由跳转后页面滚动到顶部
 router.afterEach((to, from, next) => {

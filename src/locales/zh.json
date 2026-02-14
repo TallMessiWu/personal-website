@@ -1,0 +1,208 @@
+{
+    "nav": {
+        "home": "首页",
+        "daily": "日常",
+        "portfolio": "作品集",
+        "about": "关于"
+    },
+    "footer": {
+        "rights": "© 2026 TallMessiwu. 保留所有权利。"
+    },
+    "theme": {
+        "dark": "切换到暗色模式",
+        "light": "切换到亮色模式"
+    },
+    "language": {
+        "switch": "切换语言"
+    },
+    "app": {
+        "title": "我的小站"
+    },
+    "daily": {
+        "title": "日常",
+        "highlight": "记录",
+        "subtitle": "生活与代码的片段。"
+    },
+    "portfolio": {
+        "title": "作品集",
+        "filter": {
+            "all": "全部",
+            "video": "视频",
+            "photo": "摄影",
+            "code": "代码"
+        },
+        "viewBtn": "查看详情"
+    },
+    "about": {
+        "profile": {
+            "name": "吴俊霖",
+            "title": "数据科学家 & 软件工程师",
+            "location": "纽约, 美国",
+            "bio": "热衷于用代码构建有趣的事物。对 AI、Web 开发和数据科学充满热情。目前专注于大语言模型及其在软件工程中的应用。"
+        },
+        "highlights": {
+            "education": [
+                {
+                    "school": "哥伦比亚大学",
+                    "degree": "数据科学硕士",
+                    "year": "2024 - 至今"
+                },
+                {
+                    "school": "加州大学圣地亚哥分校 (UCSD)",
+                    "degree": "数据科学学士",
+                    "minor": "辅修经济学",
+                    "year": "2020 - 2023"
+                },
+                {
+                    "school": "德里菲尔德学校",
+                    "degree": "高中毕业",
+                    "year": "2016 - 2020"
+                }
+            ],
+            "work": [
+                {
+                    "role": "技术总监",
+                    "company": "UCSD CSSA",
+                    "desc": "带领 10 人技术团队构建并维护官方网站和微信小程序，服务超过 5000 名学生。"
+                },
+                {
+                    "role": "软件工程师实习生",
+                    "company": "科技巨头 Corp [演示]",
+                    "desc": "使用 Go 和 gRPC 开发微服务。优化数据库查询，将延迟降低了 40%。"
+                },
+                {
+                    "role": "研究助理",
+                    "company": "数据实验室 [演示]",
+                    "desc": "进行自动驾驶计算机视觉算法的研究。在 CVPR 发表了一篇论文。"
+                }
+            ],
+            "projects": [
+                {
+                    "name": "气候变化分析",
+                    "desc": "使用 Python 和 D3.js 分析 100 年的气候数据，可视化全球变暖趋势。",
+                    "link": "https://github.com/TallMessiWu/climate_change_data_analysis"
+                },
+                {
+                    "name": "DOTA 2 阵容助手",
+                    "desc": "基于机器学习的工具，根据敌方阵容建议 DOTA 2 比赛的最佳英雄选择。",
+                    "link": "https://github.com/TallMessiWu/dota2-drafting-frontend"
+                },
+                {
+                    "name": "个人网站",
+                    "desc": "一个使用 Vue 3、TypeScript 和 Element Plus 构建的现代响应式作品集网站。",
+                    "link": "https://github.com/TallMessiWu"
+                },
+                {
+                    "name": "智能家居中枢 [演示]",
+                    "desc": "用于通过语音命令和自动化例程控制智能家居设备的 IoT 仪表板。",
+                    "link": "#"
+                }
+            ],
+            "skills": [
+                "Python",
+                "Vue.js",
+                "TypeScript",
+                "Java",
+                "SQL",
+                "PyTorch",
+                "Flask",
+                "Docker",
+                "AWS",
+                "gRPC",
+                "Redis",
+                "MongoDB",
+                "Git",
+                "Linux"
+            ]
+        },
+        "timeline": [
+            {
+                "start": "2024年9月",
+                "end": "至今",
+                "duration": "1年",
+                "title": "哥伦比亚大学硕士",
+                "description": "前往纽约哥伦比亚大学攻读数据科学理学硕士学位。"
+            },
+            {
+                "start": "2025年1月",
+                "end": "2025年6月",
+                "duration": "6个月",
+                "title": "AI 竞赛培训 [测试]",
+                "description": "参加 Kaggle 竞赛并获得银牌，专注于大语言模型微调方向。"
+            },
+            {
+                "start": "2020年9月",
+                "end": "2023年6月",
+                "duration": "3年",
+                "title": "从 UCSD 毕业",
+                "description": "以优异成绩获得学士学位。被评为优秀毕业生。"
+            },
+            {
+                "start": "2021年3月",
+                "end": "2022年12月",
+                "duration": "1年9个月",
+                "title": "开源项目贡献 [测试]",
+                "description": "为多个知名开源项目贡献代码，包括数据可视化和机器学习工具。"
+            },
+            {
+                "start": "2022年6月",
+                "end": "2022年9月",
+                "duration": "3个月",
+                "title": "第一份实习",
+                "description": "在圣地亚哥的一家科技初创公司担任软件工程师实习生。"
+            },
+            {
+                "start": "2022年6月",
+                "end": "2022年8月",
+                "duration": "2个月",
+                "title": "暑期研究项目 [测试]",
+                "description": "在UCSD数据科学实验室参与计算机视觉研究项目。"
+            },
+            {
+                "start": "2016年9月",
+                "end": "2020年6月",
+                "duration": "4年",
+                "title": "美国高中",
+                "description": "来到美国接受高中教育。"
+            }
+        ],
+        "hobbies": [
+            {
+                "name": "编程",
+                "icon": "Monitor"
+            },
+            {
+                "name": "吉他",
+                "icon": "Headset"
+            },
+            {
+                "name": "钢琴",
+                "icon": "Microphone"
+            },
+            {
+                "name": "足球",
+                "icon": "Basketball"
+            },
+            {
+                "name": "DOTA 2",
+                "icon": "Mouse"
+            },
+            {
+                "name": "国际象棋",
+                "icon": "Trophy"
+            },
+            {
+                "name": "摄影",
+                "icon": "Camera"
+            },
+            {
+                "name": "旅行",
+                "icon": "Platform"
+            }
+        ],
+        "title": "关于我",
+        "role": "开发者 | 摄影师 | 音乐人",
+        "bio_old": "热爱技术与生活。代码是逻辑，镜头是视角，音乐是节奏。",
+        "journey": "我的旅程"
+    }
+}

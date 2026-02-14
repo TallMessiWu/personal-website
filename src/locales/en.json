@@ -1,0 +1,208 @@
+{
+    "nav": {
+        "home": "Home",
+        "daily": "Daily",
+        "portfolio": "Portfolio",
+        "about": "About"
+    },
+    "footer": {
+        "rights": "© 2026 TallMessiwu. All Rights Reserved."
+    },
+    "theme": {
+        "dark": "Switch to Dark Mode",
+        "light": "Switch to Light Mode"
+    },
+    "language": {
+        "switch": "Switch Language"
+    },
+    "app": {
+        "title": "MySpace"
+    },
+    "daily": {
+        "title": "Daily",
+        "highlight": "Logs",
+        "subtitle": "Snippets of life and code."
+    },
+    "portfolio": {
+        "title": "Portfolio",
+        "filter": {
+            "all": "All",
+            "video": "Video",
+            "photo": "Photo",
+            "code": "Code"
+        },
+        "viewBtn": "View Details"
+    },
+    "about": {
+        "profile": {
+            "name": "Junlin Wu",
+            "title": "Data Scientist & Software Engineer",
+            "location": "New York, NY",
+            "bio": "I love building cool things with code. Passionate about AI, Web Development, and Data Science. Currently focusing on Large Language Models and their applications in software engineering."
+        },
+        "highlights": {
+            "education": [
+                {
+                    "school": "Columbia University",
+                    "degree": "M.S. in Data Science",
+                    "year": "2024 - Present"
+                },
+                {
+                    "school": "UC San Diego",
+                    "degree": "B.S. in Data Science",
+                    "minor": "Minor in Economics",
+                    "year": "2020 - 2023"
+                },
+                {
+                    "school": "The Derryfield School",
+                    "degree": "High School Diploma",
+                    "year": "2016 - 2020"
+                }
+            ],
+            "work": [
+                {
+                    "role": "Technical Director",
+                    "company": "UCSD CSSA",
+                    "desc": "Led a team of 10 developers to build and maintain the official website and WeChat mini-program, serving over 5000 students."
+                },
+                {
+                    "role": "Software Engineer Intern",
+                    "company": "Tech Giant Corp [Demo]",
+                    "desc": "Developed microservices using Go and gRPC. Optimized database queries reducing latency by 40%."
+                },
+                {
+                    "role": "Research Assistant",
+                    "company": "Data Lab [Demo]",
+                    "desc": "Conducted research on computer vision algorithms for autonomous driving. Published a paper at CVPR."
+                }
+            ],
+            "projects": [
+                {
+                    "name": "Climate Analysis",
+                    "desc": "Analyzed 100 years of climate data to visualize global warming trends using Python and D3.js.",
+                    "link": "https://github.com/TallMessiWu/climate_change_data_analysis"
+                },
+                {
+                    "name": "DOTA 2 Drafter",
+                    "desc": "A machine learning powered tool to suggest optimal heroes for DOTA 2 matches based on enemy composition.",
+                    "link": "https://github.com/TallMessiWu/dota2-drafting-frontend"
+                },
+                {
+                    "name": "Personal Website",
+                    "desc": "A modern, responsive portfolio website built with Vue 3, TypeScript, and Element Plus.",
+                    "link": "https://github.com/TallMessiWu"
+                },
+                {
+                    "name": "Smart Home Hub [Demo]",
+                    "desc": "IoT dashboard for controlling smart home devices with voice commands and automated routines.",
+                    "link": "#"
+                }
+            ],
+            "skills": [
+                "Python",
+                "Vue.js",
+                "TypeScript",
+                "Java",
+                "SQL",
+                "PyTorch",
+                "Flask",
+                "Docker",
+                "AWS",
+                "gRPC",
+                "Redis",
+                "MongoDB",
+                "Git",
+                "Linux"
+            ]
+        },
+        "timeline": [
+            {
+                "start": "Sep 2024",
+                "end": "Present",
+                "duration": "1 Year",
+                "title": "Master's at Columbia",
+                "description": "Moved to New York to pursue M.S. in Data Science at Columbia University."
+            },
+            {
+                "start": "Jan 2025",
+                "end": "Jun 2025",
+                "duration": "6 Months",
+                "title": "AI Competition Training [Test]",
+                "description": "Participated in Kaggle competitions and won a silver medal, focusing on LLM fine-tuning."
+            },
+            {
+                "start": "Sep 2020",
+                "end": "Jun 2023",
+                "duration": "3 Years",
+                "title": "Graduated from UCSD",
+                "description": "Completed Bachelor's degree with honors. Awarded Outstanding Student."
+            },
+            {
+                "start": "Mar 2021",
+                "end": "Dec 2022",
+                "duration": "1 Year 9 Months",
+                "title": "Open Source Contributions [Test]",
+                "description": "Contributed code to several popular open source projects in data visualization and ML tools."
+            },
+            {
+                "start": "Jun 2022",
+                "end": "Sep 2022",
+                "duration": "3 Months",
+                "title": "First Internship",
+                "description": "Worked as a Software Engineer Intern at a tech startup in San Diego."
+            },
+            {
+                "start": "Jun 2022",
+                "end": "Aug 2022",
+                "duration": "2 Months",
+                "title": "Summer Research [Test]",
+                "description": "Participated in computer vision research at UCSD Data Science Lab."
+            },
+            {
+                "start": "Sep 2016",
+                "end": "Jun 2020",
+                "duration": "4 Years",
+                "title": "High School in US",
+                "description": "Came to the United States for high school education."
+            }
+        ],
+        "hobbies": [
+            {
+                "name": "Coding",
+                "icon": "Monitor"
+            },
+            {
+                "name": "Guitar",
+                "icon": "Headset"
+            },
+            {
+                "name": "Piano",
+                "icon": "Microphone"
+            },
+            {
+                "name": "Football",
+                "icon": "Basketball"
+            },
+            {
+                "name": "DOTA 2",
+                "icon": "Mouse"
+            },
+            {
+                "name": "Chess",
+                "icon": "Trophy"
+            },
+            {
+                "name": "Photography",
+                "icon": "Camera"
+            },
+            {
+                "name": "Traveling",
+                "icon": "Platform"
+            }
+        ],
+        "title": "About Me",
+        "role": "Developer | Photographer | Musician",
+        "bio_old": "Passionate about technology and life.",
+        "journey": "My Journey"
+    }
+}
