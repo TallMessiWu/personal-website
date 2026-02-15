@@ -21,7 +21,8 @@
     "daily": {
         "title": "日常",
         "highlight": "记录",
-        "subtitle": "生活与代码的片段。"
+        "subtitle": "生活与代码的片段。",
+        "pinned": "置顶"
     },
     "portfolio": {
         "title": "作品集",
@@ -115,6 +116,14 @@
                 "Linux"
             ]
         },
+        "sections": {
+            "education": "教育经历",
+            "experience": "工作经历",
+            "projects": "项目展示",
+            "skills": "技能树",
+            "timeline": "时间轴",
+            "hobbies": "爱好"
+        },
         "timeline": [
             {
                 "start": "2024年9月",
@@ -150,13 +159,6 @@
                 "duration": "3个月",
                 "title": "第一份实习",
                 "description": "在圣地亚哥的一家科技初创公司担任软件工程师实习生。"
-            },
-            {
-                "start": "2022年6月",
-                "end": "2022年8月",
-                "duration": "2个月",
-                "title": "暑期研究项目 [测试]",
-                "description": "在UCSD数据科学实验室参与计算机视觉研究项目。"
             },
             {
                 "start": "2016年9月",

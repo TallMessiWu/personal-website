@@ -101,14 +101,14 @@ const filteredItems = computed(() => {
   gap: 10px;
   background-color: var(--color-surface);
   padding: 5px;
-  border-radius: 6px;
+  border-radius: 50px;
   border: 1px solid var(--color-border);
 
   .filter-item {
     cursor: pointer;
     font-size: 1rem;
     padding: 8px 20px;
-    border-radius: 4px;
+    border-radius: 50px;
     transition: all 0.2s;
     color: var(--color-text-secondary);
     font-family: var(--font-family-base);
@@ -135,7 +135,7 @@ const filteredItems = computed(() => {
   .image-wrapper {
     position: relative;
     overflow: hidden;
-    border-radius: 6px;
+    border-radius: 12px;
     border: 1px solid var(--color-border);
     background-color: var(--color-surface);
     height: 250px;
@@ -195,7 +195,7 @@ const filteredItems = computed(() => {
   padding: 8px 20px;
   border: 1px solid var(--color-accent-primary);
   color: var(--color-accent-primary);
-  border-radius: 4px; /* Slightly grounded */
+  border-radius: 12px; /* Slightly grounded */
   font-size: 0.9rem;
   transition: all 0.3s;
   background-color: rgba(0, 0, 0, 0.5);

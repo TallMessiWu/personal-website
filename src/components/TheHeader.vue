@@ -2,7 +2,7 @@
   <div class="header-container">
     <div class="header-content">
       <!-- Logo -->
-      <div class="logo-container" @click="router.push('/')">
+      <div class="logo-container" @click="router.push('/home')">
         <img class="logo" src="@/assets/logo.png" alt="logo"/>
         <span class="logo-text text-code">&lt;{{ t('app.title') }} /&gt;</span>
       </div>

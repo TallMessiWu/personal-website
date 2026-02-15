@@ -28,7 +28,7 @@
         <div class="highlight-card education-card">
           <div class="card-header">
             <el-icon><School /></el-icon>
-            <h3>Education</h3>
+             <h3>{{ t('about.sections.education') }}</h3>
           </div>
           <div class="card-content">
              <div v-for="(edu, index) in educationList" :key="index" class="list-item">
@@ -43,7 +43,7 @@
         <div class="highlight-card work-card">
           <div class="card-header">
             <el-icon><Briefcase /></el-icon>
-            <h3>Experience</h3>
+             <h3>{{ t('about.sections.experience') }}</h3>
           </div>
           <div class="card-content">
              <div v-for="(job, index) in workList" :key="index" class="list-item">
@@ -58,7 +58,7 @@
         <div class="highlight-card projects-card">
           <div class="card-header">
             <el-icon><Folder /></el-icon>
-            <h3>Projects</h3>
+             <h3>{{ t('about.sections.projects') }}</h3>
           </div>
           <div class="card-content">
              <a v-for="(proj, index) in projectList" :key="index" :href="proj.link" target="_blank" class="list-item project-link">
@@ -75,7 +75,7 @@
         <div class="highlight-card skills-card">
           <div class="card-header">
             <el-icon><Cpu /></el-icon>
-            <h3>Skills</h3>
+             <h3>{{ t('about.sections.skills') }}</h3>
           </div>
           <div class="card-content tags-content">
              <span v-for="skill in skillsList" :key="skill" class="skill-pill">{{ skill }}</span>
@@ -86,7 +86,7 @@
 
     <!-- 2. Timeline Section -->
     <section class="section-container timeline-section">
-      <h2 class="section-title">Timeline</h2>
+       <h2 class="section-title">{{ t('about.sections.timeline') }}</h2>
 
       <div class="timeline-container">
         <!-- Left: Fixed Year Axis -->
@@ -133,8 +133,8 @@
     </section>
 
     <!-- 3. Hobbies Section -->
-    <section class="section-container hobbies-section">
-      <h2 class="section-title">Hobbies</h2>
+     <section class="section-container hobbies-section">
+      <h2 class="section-title">{{ t('about.sections.hobbies') }}</h2>
       <div class="hobbies-grid">
         <div v-for="(hobby, index) in hobbiesList" :key="index" class="hobby-item">
             <div class="hobby-icon-wrapper">
@@ -819,15 +819,19 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
   .hobby-icon-wrapper {
     width: 70px;
     height: 70px;
-    border-radius: 20px;
+    border-radius: 50%;
     background: var(--color-surface);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
     color: var(--color-text-secondary);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid var(--color-border);
+
+    :deep(svg) {
+      width: 32px;
+      height: 32px;
+    }
 
     &:hover {
       transform: scale(1.1) rotate(5deg);

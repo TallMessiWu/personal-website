@@ -21,7 +21,8 @@
     "daily": {
         "title": "Daily",
         "highlight": "Logs",
-        "subtitle": "Snippets of life and code."
+        "subtitle": "Snippets of life and code.",
+        "pinned": "Pinned"
     },
     "portfolio": {
         "title": "Portfolio",
@@ -115,6 +116,14 @@
                 "Linux"
             ]
         },
+        "sections": {
+            "education": "Education",
+            "experience": "Experience",
+            "projects": "Projects",
+            "skills": "Skills",
+            "timeline": "Timeline",
+            "hobbies": "Hobbies"
+        },
         "timeline": [
             {
                 "start": "Sep 2024",
@@ -150,13 +159,6 @@
                 "duration": "3 Months",
                 "title": "First Internship",
                 "description": "Worked as a Software Engineer Intern at a tech startup in San Diego."
-            },
-            {
-                "start": "Jun 2022",
-                "end": "Aug 2022",
-                "duration": "2 Months",
-                "title": "Summer Research [Test]",
-                "description": "Participated in computer vision research at UCSD Data Science Lab."
             },
             {
                 "start": "Sep 2016",
