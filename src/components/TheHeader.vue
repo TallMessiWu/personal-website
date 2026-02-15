@@ -37,7 +37,16 @@ import { Refresh } from '@element-plus/icons-vue';
 
 const router = useRouter();
 const { t, locale } = useI18n();
-const isDark = ref(false); // Default to Light
+// Initialize theme from localStorage or system preference
+const getInitialTheme = () => {
+  const savedTheme = localStorage.getItem('user-theme');
+  if (savedTheme) {
+    return savedTheme === 'dark';
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+};
+
+const isDark = ref(getInitialTheme());
 
 // Custom Lightbulb Icon Component
 const CustomBulb = {
@@ -83,13 +92,6 @@ watch(locale, () => {
 }, { immediate: true });
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('user-theme');
-  if (savedTheme) {
-    isDark.value = savedTheme === 'dark';
-  } else {
-    // 跟随系统主题
-    isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
   updateTheme();
 });
 </script>
