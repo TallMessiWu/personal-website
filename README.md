@@ -1,3 +1,5 @@
+![中文](https://img.shields.io/badge/语言-中文-red) | [![English](https://img.shields.io/badge/Lang-English-blue)](./README.en.md)
+
 # 🏠 我的小站 | MySpace
 
 > 一个基于 **Vue 3 + TypeScript + Element Plus** 构建的现代化个人网站，融合 VS Code 风格的设计语言，支持中英文切换和深色/浅色主题。
