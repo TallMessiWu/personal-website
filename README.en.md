@@ -1,4 +1,4 @@
-[![中文](https://img.shields.io/badge/语言-中文-red)](./README.md) | ![English](https://img.shields.io/badge/Lang-English-blue)
+[![中文](https://img.shields.io/badge/语言-中文-red)](./README.md) ![English](https://img.shields.io/badge/Lang-English-blue)
 
 # 🏠 MySpace | Personal Website
 
