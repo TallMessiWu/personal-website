@@ -5,6 +5,34 @@
         "portfolio": "Portfolio",
         "about": "About"
     },
+    "home": {
+        "hero": {
+            "title_prefix": "Creative",
+            "developer": "Developer",
+            "content_creator_prefix": "Content",
+            "content_creator_highlight": "Creator",
+            "subtitle": "Exploring the boundary between code and art.",
+            "view_work": "View Work",
+            "contact_me": "Contact Me"
+        },
+        "console": {
+            "hello": "Hello, World!"
+        },
+        "code": {
+            "role": "Developer",
+            "status": "Coding..."
+        },
+        "quotes": [
+            {
+                "text": "Hardships often prepare ordinary people for an extraordinary destiny.",
+                "author": "@CS_Lewis"
+            },
+            {
+                "text": "This is absolute fire!",
+                "author": "@Me"
+            }
+        ]
+    },
     "footer": {
         "rights": "© 2026 TallMessiwu. All Rights Reserved."
     },

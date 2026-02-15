@@ -1,13 +1,12 @@
 <template>
   <div class="about-page">
-    <!-- 1. Info & Highlights Section -->
-    <section class="section-container info-highlights">
-      <!-- Profile Hero -->
-      <div class="profile-hero">
+    <!-- 1. Profile Hero Section (Full Width) -->
+    <div class="profile-hero-wrapper">
+      <div class="profile-hero-content">
         <div class="avatar-wrapper">
           <img src="https://github.com/TallMessiWu.png" alt="Avatar" class="avatar" />
         </div>
-        <div class="profile-content">
+        <div class="profile-info">
            <h1 class="name">{{ t('about.profile.name') }}</h1>
            <p class="title">{{ t('about.profile.title') }}</p>
            <p class="bio">{{ t('about.profile.bio') }}</p>
@@ -21,129 +20,135 @@
            </div>
         </div>
       </div>
+    </div>
 
-      <!-- Highlights Grid -->
-      <div class="highlights-grid">
-        <!-- Education Card -->
-        <div class="highlight-card education-card">
-          <div class="card-header">
-            <el-icon><School /></el-icon>
-             <h3>{{ t('about.sections.education') }}</h3>
-          </div>
-          <div class="card-content">
-             <div v-for="(edu, index) in educationList" :key="index" class="list-item">
-               <div class="item-main">{{ edu.school }}</div>
-               <div class="item-sub">{{ edu.degree }}</div>
-               <div class="item-meta">{{ edu.year }}</div>
-             </div>
-          </div>
-        </div>
-
-        <!-- Work Experience Card -->
-        <div class="highlight-card work-card">
-          <div class="card-header">
-            <el-icon><Briefcase /></el-icon>
-             <h3>{{ t('about.sections.experience') }}</h3>
-          </div>
-          <div class="card-content">
-             <div v-for="(job, index) in workList" :key="index" class="list-item">
-               <div class="item-main">{{ job.company }}</div>
-               <div class="item-sub">{{ job.role }}</div>
-               <div class="item-desc">{{ job.desc }}</div>
-             </div>
-          </div>
-        </div>
-
-        <!-- Projects Card -->
-        <div class="highlight-card projects-card">
-          <div class="card-header">
-            <el-icon><Folder /></el-icon>
-             <h3>{{ t('about.sections.projects') }}</h3>
-          </div>
-          <div class="card-content">
-             <a v-for="(proj, index) in projectList" :key="index" :href="proj.link" target="_blank" class="list-item project-link">
-               <div class="item-main">
-                 {{ proj.name }}
-                 <el-icon class="link-icon"><TopRight /></el-icon>
+    <!-- Main Content Container (Centered) -->
+    <div class="content-container">
+      <!-- Info & Highlights Section -->
+      <section class="section-container info-highlights">
+        <!-- Highlights Grid -->
+        <div class="highlights-grid">
+          <!-- Education Card -->
+          <div class="highlight-card education-card">
+            <div class="card-header">
+              <el-icon><School /></el-icon>
+               <h3>{{ t('about.sections.education') }}</h3>
+            </div>
+            <div class="card-content">
+               <div v-for="(edu, index) in educationList" :key="index" class="list-item">
+                 <div class="item-main">{{ edu.school }}</div>
+                 <div class="item-sub">{{ edu.degree }}</div>
+                 <div class="item-meta">{{ edu.year }}</div>
                </div>
-               <div class="item-desc">{{ proj.desc }}</div>
-             </a>
-          </div>
-        </div>
-
-        <!-- Skills Card -->
-        <div class="highlight-card skills-card">
-          <div class="card-header">
-            <el-icon><Cpu /></el-icon>
-             <h3>{{ t('about.sections.skills') }}</h3>
-          </div>
-          <div class="card-content tags-content">
-             <span v-for="skill in skillsList" :key="skill" class="skill-pill">{{ skill }}</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. Timeline Section -->
-    <section class="section-container timeline-section">
-       <h2 class="section-title">{{ t('about.sections.timeline') }}</h2>
-
-      <div class="timeline-container">
-        <!-- Left: Fixed Year Axis -->
-        <div class="timeline-axis">
-            <div class="axis-line"></div>
-            <div
-                v-for="tick in yearTicks"
-                :key="tick.year"
-                class="axis-year"
-                :style="{ top: tick.top + 'px' }"
-            >
-                {{ tick.year }}
             </div>
+          </div>
 
-            <!-- Event Month Markers -->
-            <div
-                v-for="(marker, idx) in eventMarkers"
-                :key="'marker-'+idx"
-                class="axis-month"
-                :style="{ top: marker.top + 'px' }"
-            >
-                {{ marker.label }}
+          <!-- Work Experience Card -->
+          <div class="highlight-card work-card">
+            <div class="card-header">
+              <el-icon><Briefcase /></el-icon>
+               <h3>{{ t('about.sections.experience') }}</h3>
             </div>
-        </div>
+            <div class="card-content">
+               <div v-for="(job, index) in workList" :key="index" class="list-item">
+                 <div class="item-main">{{ job.company }}</div>
+                 <div class="item-sub">{{ job.role }}</div>
+                 <div class="item-desc">{{ job.desc }}</div>
+               </div>
+            </div>
+          </div>
 
-        <!-- Right: Events Area -->
-        <div class="timeline-events" :style="{ height: containerHeight + 'px' }">
-            <div
-              v-for="(event, index) in processedEvents"
-              :key="index"
-              class="geo-event-block"
-              :style="getGeoEventStyle(event, index)"
-            >
-               <div class="geo-content" :style="{ '--desc-lines': event.descLines }">
-                 <div class="geo-time" :class="{ 'is-hidden': !event.showTime }">
-                    <span class="time-range">{{ formatEventDate(event.startDate) }} - {{ formatEventDate(event.endDate) }}</span>
+          <!-- Projects Card -->
+          <div class="highlight-card projects-card">
+            <div class="card-header">
+              <el-icon><Folder /></el-icon>
+               <h3>{{ t('about.sections.projects') }}</h3>
+            </div>
+            <div class="card-content">
+               <a v-for="(proj, index) in projectList" :key="index" :href="proj.link" target="_blank" class="list-item project-link">
+                 <div class="item-main">
+                   {{ proj.name }}
+                   <el-icon class="link-icon"><TopRight /></el-icon>
                  </div>
-                 <h4 class="geo-title">{{ event.raw.title }}</h4>
-                 <p class="geo-desc" :class="{ 'is-hidden': !event.showDesc }">{{ event.raw.description }}</p>
-               </div>
+                 <div class="item-desc">{{ proj.desc }}</div>
+               </a>
             </div>
-        </div>
-      </div>
-    </section>
+          </div>
 
-    <!-- 3. Hobbies Section -->
-     <section class="section-container hobbies-section">
-      <h2 class="section-title">{{ t('about.sections.hobbies') }}</h2>
-      <div class="hobbies-grid">
-        <div v-for="(hobby, index) in hobbiesList" :key="index" class="hobby-item">
-            <div class="hobby-icon-wrapper">
-                <component :is="getIcon(hobby.icon)" />
+          <!-- Skills Card -->
+          <div class="highlight-card skills-card">
+            <div class="card-header">
+              <el-icon><Cpu /></el-icon>
+               <h3>{{ t('about.sections.skills') }}</h3>
             </div>
-            <span class="hobby-name">{{ hobby.name }}</span>
+            <div class="card-content tags-content">
+               <span v-for="skill in skillsList" :key="skill" class="skill-pill">{{ skill }}</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- 2. Timeline Section -->
+      <section class="section-container timeline-section">
+         <h2 class="section-title">{{ t('about.sections.timeline') }}</h2>
+
+        <div class="timeline-container">
+          <!-- Left: Fixed Year Axis -->
+          <div class="timeline-axis">
+              <div class="axis-line"></div>
+              <div
+                  v-for="tick in yearTicks"
+                  :key="tick.year"
+                  class="axis-year"
+                  :style="{ top: tick.top + 'px' }"
+              >
+                  {{ tick.year }}
+              </div>
+
+              <!-- Event Month Markers -->
+              <div
+                  v-for="(marker, idx) in eventMarkers"
+                  :key="'marker-'+idx"
+                  class="axis-month"
+                  :style="{ top: marker.top + 'px' }"
+              >
+                  {{ marker.label }}
+              </div>
+          </div>
+
+          <!-- Right: Events Area -->
+          <div class="timeline-events" :style="{ height: containerHeight + 'px' }">
+              <div
+                v-for="(event, index) in processedEvents"
+                :key="index"
+                class="geo-event-block"
+                :style="getGeoEventStyle(event, index)"
+              >
+                 <div class="geo-content" :style="{ '--desc-lines': event.descLines }">
+                   <div class="geo-time" :class="{ 'is-hidden': !event.showTime }">
+                      <span class="time-range">{{ formatEventDate(event.startDate) }} - {{ formatEventDate(event.endDate) }}</span>
+                   </div>
+                   <h4 class="geo-title">{{ event.raw.title }}</h4>
+                   <p class="geo-desc" :class="{ 'is-hidden': !event.showDesc }">{{ event.raw.description }}</p>
+                 </div>
+              </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Hobbies Section -->
+       <section class="section-container hobbies-section">
+        <h2 class="section-title">{{ t('about.sections.hobbies') }}</h2>
+        <div class="hobbies-grid">
+          <div v-for="(hobby, index) in hobbiesList" :key="index" class="hobby-item">
+              <div class="hobby-icon-wrapper">
+                  <component :is="getIcon(hobby.icon)" />
+              </div>
+              <span class="hobby-name">{{ hobby.name }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -418,9 +423,14 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
 
 <style scoped lang="less">
 .about-page {
+  /* Removed global max-width/padding to allow full-width hero */
+  width: 100%;
+}
+
+.content-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 0 20px 60px;
 }
 
 .section-container {
@@ -447,43 +457,99 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
   }
 }
 
-/* 1. Info & Highlights */
-.profile-hero {
-  text-align: center;
+/* 1. Profile Hero (Full Width Background) */
+.profile-hero-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 80px 20px 60px; /* Adjust padding as needed */
   margin-bottom: 60px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
-    border: 3px solid var(--color-surface);
+  /* Premium Background Image */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('@/assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15; /* Transparency for subtle effect */
+    z-index: 0;
+    filter: blur(2px) grayscale(30%); /* Optional: Add blur/grayscale for premium feel */
   }
 
-  .name {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 10px;
-    background: linear-gradient(120deg, var(--color-text-primary), var(--color-accent-primary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .title {
-    font-size: 1.1rem;
-    color: var(--color-text-primary);
-    margin-bottom: 15px;
+  /* Gradient Overlay for better text contrast (optional but recommended) */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, transparent, var(--color-background));
+    z-index: 1;
     opacity: 0.8;
   }
+}
 
-  .bio {
-    max-width: 600px;
-    margin: 0 auto 25px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+.profile-hero-content {
+  position: relative;
+  z-index: 2; /* Ensure content is above background */
+  text-align: center;
+  max-width: 800px;
+
+  .avatar-wrapper {
+      margin-bottom: 25px;
+  }
+
+  .avatar {
+    width: 140px; /* Slightly larger avatar */
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 15px 35px -10px rgba(0,0,0,0.4);
+    border: 4px solid var(--color-surface);
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+  }
+
+  .profile-info {
+    .name {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(120deg, var(--color-text-primary), var(--color-accent-primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .title {
+      font-size: 1.2rem;
+      color: var(--color-text-primary);
+      margin-bottom: 15px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .bio {
+      max-width: 600px;
+      margin: 0 auto 25px;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
   }
 
   .social-links {
@@ -492,8 +558,8 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
     gap: 15px;
 
     .social-btn {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: var(--color-surface);
       border: 1px solid var(--color-border);
@@ -501,15 +567,16 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         border-color: var(--color-accent-secondary);
       }
 
-      img { width: 20px; height: 20px; opacity: 0.8; }
-      .el-icon { color: var(--color-text-primary); opacity: 0.8; }
+      img { width: 22px; height: 22px; opacity: 0.9; }
+      .el-icon { color: var(--color-text-primary); opacity: 0.9; }
     }
   }
 }

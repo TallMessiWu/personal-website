@@ -5,17 +5,17 @@
       <div class="hero-content">
         <div class="hero-text">
           <div class="code-line">
-            <span class="keyword">console</span>.<span class="method">log</span>(<span class="string">"Hello, World!"</span>);
+            <span class="keyword">console</span>.<span class="method">log</span>(<span class="string">"{{ t('home.console.hello') }}"</span>);
           </div>
           <h1 class="hero-title">
-            Creative <span class="highlight">Developer</span> & <br>
-            Content <span class="highlight">Creator</span>
+            {{ t('home.hero.title_prefix') }} <span class="highlight">{{ t('home.hero.developer') }}</span> & <br>
+            {{ t('home.hero.content_creator_prefix') }} <span class="highlight">{{ t('home.hero.content_creator_highlight') }}</span>
           </h1>
-          <p class="hero-subtitle">Exploring the boundary between code and art.</p>
+          <p class="hero-subtitle">{{ t('home.hero.subtitle') }}</p>
 
           <div class="cta-group">
-            <button class="btn btn-primary" @click="$router.push('/portfolio')">View Work</button>
-            <button class="btn btn-secondary" @click="$router.push('/about')">Contact Me</button>
+            <button class="btn btn-primary" @click="$router.push('/portfolio')">{{ t('home.hero.view_work') }}</button>
+            <button class="btn btn-secondary" @click="$router.push('/about')">{{ t('home.hero.contact_me') }}</button>
           </div>
         </div>
 
@@ -29,13 +29,13 @@
              <div class="window-body">
                <pre><code><span class="keyword">const</span> <span class="variable">profile</span> <span class="operator">=</span> {
   <span class="property">name</span>: <span class="string">'TallMessiwu'</span>,
-  <span class="property">role</span>: <span class="string">'Developer'</span>,
+  <span class="property">role</span>: <span class="string">'{{ t("home.code.role") }}'</span>,
   <span class="property">skills</span>: [
     <span class="string">'Vue.js'</span>,
     <span class="string">'TypeScript'</span>,
     <span class="string">'Design'</span>
   ],
-  <span class="property">status</span>: <span class="string">'Coding...'</span>
+  <span class="property">status</span>: <span class="string">'{{ t("home.code.status") }}'</span>
 };</code></pre>
              </div>
           </div>
@@ -45,23 +45,13 @@
 
     <!-- Quotes Section (Refactored as "Comments") -->
     <section class="quotes-section">
-      <div class="quote-card">
+      <div class="quote-card" v-for="(quote, index) in tm('home.quotes')" :key="index">
         <div class="quote-content">
           <span class="comment-prefix">// </span>
-          <span class="quote-text">"Hardships often prepare ordinary people for an extraordinary destiny."</span>
+          <span class="quote-text">"{{ quote.text }}"</span>
         </div>
         <div class="quote-author">
-           <span class="author-tag">@CS_Lewis</span>
-        </div>
-      </div>
-
-      <div class="quote-card">
-        <div class="quote-content">
-          <span class="comment-prefix">// </span>
-          <span class="quote-text">"This is absolute fire!"</span>
-        </div>
-        <div class="quote-author">
-           <span class="author-tag">@Me</span>
+           <span class="author-tag">{{ quote.author }}</span>
         </div>
       </div>
     </section>
@@ -73,7 +63,7 @@ import { computed } from 'vue';
 import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t, tm } = useI18n();
 
 useHead({
   title: computed(() => `${t('nav.home')} | ${t('app.title')}`),
@@ -198,9 +188,11 @@ useHead({
       border: 1px solid var(--color-text-secondary);
       color: var(--color-text-primary);
 
+
       &:hover {
         border-color: var(--color-text-primary);
-        background-color: rgba(255,255,255,0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
       }
     }
   }
@@ -270,10 +262,12 @@ useHead({
   width: 100%;
   max-width: 500px;
   transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-5px);
-    background-color: #2a2d2e;
+    background-color: var(--color-surface-hover);
   }
 
   .quote-content {
@@ -297,6 +291,7 @@ useHead({
   .quote-author {
     display: flex;
     justify-content: flex-end;
+    margin-top: auto;
 
     .author-tag {
       background-color: rgba(255,255,255,0.1);
