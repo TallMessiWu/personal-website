@@ -1,6 +1,6 @@
 <template>
-  <div class="daily-card" :class="{ 'is-expanded': expanded }" ref="cardRef">
-    <div class="media-container" v-if="post.image || post.video || (post.images && post.images.length)">
+  <div class="daily-card" :class="{ 'is-expanded': expanded, 'no-media': !hasMedia }" ref="cardRef">
+    <div class="media-container" v-if="(post.images && post.images.length > 0) || post.video">
       <!-- 1. Video Expanded Mode: Bilibili Iframe or Auto-play simulation -->
       <div v-if="post.video && expanded" class="video-player-container">
         <iframe v-if="isBilibili && bilibiliSrc"
@@ -20,7 +20,36 @@
 
       <!-- 2. Multi-Image Expanded Mode: Slider -->
       <div v-else-if="post.images && post.images.length > 1 && expanded" class="image-slider">
-        <img :src="post.images[currentImageIndex]" alt="post image" class="slider-image" />
+        <!-- Image/Video Renderer -->
+        <div class="slider-item" @click.stop="handleLivePhotoClick">
+          <template v-if="isCurrentLivePhoto">
+             <!-- Live Photo Container -->
+             <div class="live-photo-container">
+               <!-- Cover Image -->
+               <img v-show="!isPlayingLive" :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
+
+               <!-- Video -->
+               <video v-show="isPlayingLive"
+                      ref="liveVideoRef"
+                      :src="currentLivePhoto.video"
+                      class="slider-image live-video"
+                      muted
+                      playsinline
+                      @ended="onLiveVideoEnded"
+               ></video>
+
+               <!-- Live Icon overlay -->
+               <div class="live-icon-badge">
+                 <div class="live-icon-symbol">◎</div>
+                 <span>LIVE</span>
+               </div>
+             </div>
+          </template>
+          <template v-else>
+             <!-- Standard Image -->
+             <img :src="currentImageSrc" alt="post image" class="slider-image" />
+          </template>
+        </div>
 
         <div class="slider-counter">
           {{ currentImageIndex + 1 }} / {{ post.images.length }}
@@ -34,45 +63,64 @@
         </div>
       </div>
 
-      <!-- 3. Default / Collapsed Mode -->
-      <div v-else class="media-preview">
-        <!-- Show image (custom cover or main image) -->
-        <img v-if="post.image"
-             :src="post.image"
-             alt="post cover"
-             loading="lazy"
-             referrerpolicy="no-referrer" />
+      <!-- 3. Default / Collapsed Mode OR Single Image Expanded -->
+      <div v-else class="media-preview" @click.stop="handleLivePhotoClick">
+        <!-- Case 1: Single Live Photo -->
+        <template v-if="isSingleLivePhoto">
+           <div class="live-photo-container">
+             <img v-show="!isPlayingLive" :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
+             <video v-show="isPlayingLive"
+                    ref="liveVideoRef"
+                    :src="singleLivePhotoData.video"
+                    muted
+                    playsinline
+                    @ended="onLiveVideoEnded"
+             ></video>
+             <div class="live-icon-badge">
+               <div class="live-icon-symbol">◎</div>
+               <span>LIVE</span>
+             </div>
+           </div>
+        </template>
 
-        <!-- Fallback for video without custom cover -->
-        <div v-else-if="post.video" class="video-placeholder">
-          <span>Preview Video</span>
-        </div>
+        <!-- Case 2: Standard Image or Video Indicator -->
+        <template v-else>
+          <!-- Show first image if available -->
+          <img v-if="post.images && post.images.length > 0"
+               :src="post.images[0].image"
+               alt="post cover"
+               loading="lazy"
+               referrerpolicy="no-referrer" />
 
-        <!-- Video Indicator (Overlay) -->
-        <div v-if="post.video" class="video-indicator">
-          <el-icon><CaretRight /></el-icon>
-        </div>
+          <!-- Fallback for video without custom cover -->
+          <div v-else-if="post.video" class="video-placeholder">
+            <span>Preview Video</span>
+          </div>
+
+          <!-- Video Indicator (Bilibili/Main Video) -->
+          <div v-if="post.video" class="video-indicator">
+            <el-icon><CaretRight /></el-icon>
+          </div>
+        </template>
 
         <!-- Pinned Indicator -->
         <div v-if="post.pinned" class="pinned-indicator">
            {{ $t('daily.pinned') }}
         </div>
-
-        <!-- Multiple Images Indicator (Optional for collapsed state, can add later if requested) -->
       </div>
     </div>
 
     <div class="content-container">
       <h3 class="title">{{ post.title }}</h3>
 
-      <div v-if="expanded" class="full-content">
-        <p class="text-content">{{ post.content || post.excerpt }}</p>
+      <div v-if="expanded && post.content" class="full-content">
+        <p class="text-content">{{ post.content }}</p>
       </div>
-      <!-- Show excerpt ONLY if it's a text-only post (no image/video) and collapsed, AND it has content -->
-      <p v-if="(!post.image && !post.video && !post.images) && (post.content || post.excerpt)" class="excerpt">{{ post.content || post.excerpt }}</p>
+      <!-- Show content ONLY if it's a text-only post (no image/video) and collapsed -->
+      <p v-if="(!post.images?.length && !post.video) && post.content" class="excerpt">{{ post.content }}</p>
 
       <div class="meta">
-        <span class="date">{{ post.date }}</span>
+        <span class="date">{{ formattedDate }}</span>
         <div class="actions">
            <el-icon><Star /></el-icon>
         </div>
@@ -83,25 +131,128 @@
 
 <script setup lang="ts">
 import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Location } from '@element-plus/icons-vue'
-import { ref } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
+
+import { dailyData, type Post } from '@/data/dailyData';
 
 const props = defineProps<{
-  post: {
-    id: number;
-    title: string;
-    excerpt: string;
-    content?: string;
-    image?: string;
-    images?: string[];
-    video?: string;
-    date: string;
-    pinned?: boolean;
-  },
+  post: Post,
   expanded?: boolean
 }>()
 
+// Check if post has any media
+const hasMedia = computed(() => {
+  return (props.post.images && props.post.images.length > 0) || !!props.post.video;
+});
+
 // Slider Logic
 const currentImageIndex = ref(0);
+const liveVideoRef = ref<HTMLVideoElement | null>(null);
+const isPlayingLive = ref(false);
+let livePhotoTimer: ReturnType<typeof setTimeout> | null = null;
+
+// Helper to get current image source
+const currentImageSrc = computed(() => {
+  if (!props.post.images || !props.post.images.length) return '';
+  return props.post.images[currentImageIndex.value]?.image || '';
+});
+
+// Helper to check if current item is Live Photo
+const isCurrentLivePhoto = computed(() => {
+  if (!props.post.images || !props.post.images.length) return false;
+  return !!props.post.images[currentImageIndex.value]?.video;
+});
+
+// Helper to get current Live Photo object
+const currentLivePhoto = computed(() => {
+  if (!props.post.images || !props.post.images.length) return { cover: '', video: '' };
+  const item = props.post.images[currentImageIndex.value];
+  return item ? { cover: item.image, video: item.video || '' } : { cover: '', video: '' };
+});
+
+// Helper for single Live Photo (non-slider mode)
+const isSingleLivePhoto = computed(() => {
+  if (props.post.images && props.post.images.length === 1) {
+    return !!props.post.images[0].video;
+  }
+  return false;
+});
+
+const singleLivePhotoData = computed(() => {
+  if (isSingleLivePhoto.value && props.post.images) {
+    return { cover: props.post.images[0].image, video: props.post.images[0].video || '' };
+  }
+  return { cover: '', video: '' };
+});
+
+const playLivePhoto = () => {
+  if (!(isCurrentLivePhoto.value || isSingleLivePhoto.value)) return;
+
+  if (livePhotoTimer) clearTimeout(livePhotoTimer);
+
+  // 1s delay before playing
+  livePhotoTimer = setTimeout(() => {
+    isPlayingLive.value = true;
+    nextTick(() => {
+      if (liveVideoRef.value) {
+        liveVideoRef.value.play().catch(e => console.log('Autoplay blocked', e));
+      }
+    });
+  }, 1000);
+};
+
+const stopLivePhoto = () => {
+  if (livePhotoTimer) clearTimeout(livePhotoTimer);
+  if (liveVideoRef.value) {
+    liveVideoRef.value.pause();
+    liveVideoRef.value.currentTime = 0;
+  }
+  isPlayingLive.value = false;
+};
+
+const handleLivePhotoClick = () => {
+  if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
+    if (isPlayingLive.value) {
+      // If already playing, maybe restart? Or do nothing? Requirement says "replay"
+      if (liveVideoRef.value) {
+        liveVideoRef.value.currentTime = 0;
+        liveVideoRef.value.play();
+      }
+    } else {
+      // Force play immediately without delay on click
+      isPlayingLive.value = true;
+      nextTick(() => {
+         liveVideoRef.value?.play();
+      });
+    }
+  }
+};
+
+const onLiveVideoEnded = () => {
+  isPlayingLive.value = false;
+  if (liveVideoRef.value) {
+    liveVideoRef.value.currentTime = 0; // Reset to start
+  }
+};
+
+// Watch for slide changes to reset and maybe auto-play logic
+watch(currentImageIndex, () => {
+  stopLivePhoto(); // Stop previous
+  if (isCurrentLivePhoto.value && props.expanded) {
+    playLivePhoto(); // Start new if Live
+  }
+});
+
+// Watch for expanded state to start auto-play if first slide is Live
+watch(() => props.expanded, (newVal) => {
+  if (newVal) {
+    if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
+      playLivePhoto();
+    }
+  } else {
+    stopLivePhoto();
+  }
+}, { immediate: true });
 
 const nextImage = () => {
   if (props.post.images && currentImageIndex.value < props.post.images.length - 1) {
@@ -116,8 +267,6 @@ const prevImage = () => {
 };
 
 // Bilibili Logic
-import { computed } from 'vue';
-
 const bilibiliSrc = computed(() => {
   if (!props.post.video) return '';
 
@@ -132,6 +281,16 @@ const bilibiliSrc = computed(() => {
 
 const isBilibili = computed(() => {
   return props.post.video && (props.post.video.includes('bilibili.com') || props.post.video.includes('BV'));
+});
+
+// Date Formatting Logic
+const formattedDate = computed(() => {
+  if (props.expanded) {
+    return props.post.date; // Returns full "2025-07-03 17:30" (24h)
+  }
+  // Returns only "2025-07-03" (YYYY-MM-DD)
+  // Assuming date format in data is "YYYY-MM-DD HH:mm"
+  return props.post.date.split(' ')[0];
 });
 </script>
 
@@ -263,7 +422,7 @@ const isBilibili = computed(() => {
     .slider-counter {
       position: absolute;
       top: 15px;
-      left: 15px;
+      right: 15px; /* Moved to right */
       background-color: rgba(0, 0, 0, 0.6);
       color: #fff;
       padding: 4px 10px;
@@ -349,6 +508,10 @@ const isBilibili = computed(() => {
 
 .content-container {
   padding: 16px;
+
+  .no-media & {
+    padding-top: 18px;
+  }
 }
 
 .title {
@@ -426,5 +589,51 @@ const isBilibili = computed(() => {
   font-weight: bold;
 
 
+  .pinned-indicator {
+    display: none; /* Hide when expanded or adjust position if needed */
+  }
+}
+
+.live-photo-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .live-cover,
+  .live-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.live-icon-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  pointer-events: none; /* Let click pass through to container */
+
+  .live-icon-symbol {
+    font-size: 1rem;
+    line-height: 1;
+    color: #333;
+    /* Optional: pulsing effect for the concentric circles icon */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 </style>

@@ -21,11 +21,13 @@
     <!-- Details Modal Overlay -->
     <transition name="modal-fade">
       <div v-if="activePost" class="modal-overlay" :class="{ 'is-closing': isClosing }" @click.self="closePost">
-        <div class="modal-content" :style="modalStyle">
-          <button class="close-btn" @click="closePost">
+        <div class="modal-wrapper" :style="modalStyle">
+           <button class="close-btn" @click="closePost">
             <el-icon><Close /></el-icon>
           </button>
-           <daily-card :post="activePost" :expanded="true" />
+          <div class="modal-content">
+             <daily-card :post="activePost" :expanded="true" />
+          </div>
         </div>
       </div>
     </transition>
@@ -100,10 +102,11 @@ const columns = computed(() => {
     const width = 300; // Assumed card width
 
     // Media Card
-    if (post.image || post.video || (post.images && post.images.length)) {
+    if (post.images && post.images.length > 0) {
       // Try to parse dimensions from mock URL for better precision
       // Format: .../600x400/...
-      const imgUrl = post.image || (post.images ? post.images[0] : '');
+      const imgUrl = post.images[0].image;
+
       const match = imgUrl ? imgUrl.match(/(\d+)x(\d+)/) : null;
       if (match) {
         const w = parseInt(match[1]);
@@ -115,8 +118,8 @@ const columns = computed(() => {
       }
     }
     // Text-Only Card (limit to 2 lines ~ 50px)
-    else if (post.content || post.excerpt) {
-      height += 60;
+    else if (post.content) {
+      height += 68; // Increased from 60 to account for 24px top padding
     }
     // Title-Only Card (no extra height)
 
@@ -293,24 +296,32 @@ const closePost = () => {
   }
 }
 
+.modal-wrapper {
+  position: relative;
+  /* Styling that was previously on modal-content for positioning/sizing is now handled via inline style binding on this wrapper */
+}
+
 .modal-content {
   background-color: var(--color-surface);
   border-radius: 12px; /* Match card border radius */
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   border: 1px solid var(--color-border);
   overflow: hidden;
+  width: 100%;
+  height: 100%;
   position: relative;
 }
 
 .close-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 0;
+  left: -60px; /* Move outside to the left */
+  right: auto; /* Reset right */
   background: rgba(255,255,255,0.1);
-  border: none;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 44px; /* Slightly larger */
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -321,10 +332,11 @@ const closePost = () => {
   &:hover {
     background: rgba(255,255,255,0.2);
     transform: rotate(90deg);
+    border-color: rgba(255,255,255,0.3);
   }
 
   :deep(.el-icon) {
-    font-size: 20px;
+    font-size: 24px;
     color: #fff;
   }
 }
@@ -340,7 +352,7 @@ const closePost = () => {
   opacity: 0;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) { /* Adjust breakpoint for mobile/tablet */
   .daily-page {
     padding: 20px 16px;
   }
@@ -356,10 +368,9 @@ const closePost = () => {
     flex-direction: column; /* Ensure 1 column stacking naturally even if JS fails, but JS handles it */
   }
 
-  .modal-content {
+  .modal-wrapper {
     width: 100% !important; /* Override JS width */
     height: 100% !important; /* Full screen on mobile */
-    border-radius: 0;
     max-width: none;
     max-height: none;
     top: 0 !important;
@@ -367,10 +378,17 @@ const closePost = () => {
     transform: none !important;
   }
 
+  .modal-content {
+    border-radius: 0;
+    border: none;
+  }
+
   .close-btn {
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.3); /* Stronger contrast */
+    /* On mobile, keep it inside or top-right float over content */
+    top: 15px;
+    left: 15px; /* Top left inside */
+    background: rgba(0,0,0,0.5); /* Stronger contrast */
+    border: none;
   }
 }
 </style>
