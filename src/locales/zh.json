@@ -3,7 +3,8 @@
         "home": "首页",
         "daily": "日常",
         "portfolio": "作品集",
-        "about": "关于"
+        "about": "关于",
+        "menu": "菜单"
     },
     "home": {
         "hero": {

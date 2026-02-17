@@ -74,8 +74,10 @@ const updateColumnCount = () => {
   const width = window.innerWidth;
   if (width > 1000) {
     columnCount.value = 3;
+  } else if (width > 600) {
+    columnCount.value = 2;
   } else {
-    columnCount.value = 2; // Mobile and Tablet both use 2 columns per request
+    columnCount.value = 1; // Mobile: 1 Column for better readability
   }
 };
 
@@ -336,6 +338,40 @@ const closePost = () => {
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
+}
+
+@media (max-width: 600px) {
+  .daily-page {
+    padding: 20px 16px;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+
+    .page-title { font-size: 2rem; }
+    .subtitle { font-size: 1rem; }
+  }
+
+  .masonry-container {
+    flex-direction: column; /* Ensure 1 column stacking naturally even if JS fails, but JS handles it */
+  }
+
+  .modal-content {
+    width: 100% !important; /* Override JS width */
+    height: 100% !important; /* Full screen on mobile */
+    border-radius: 0;
+    max-width: none;
+    max-height: none;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.3); /* Stronger contrast */
+  }
 }
 </style>
 

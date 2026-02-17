@@ -302,4 +302,41 @@ useHead({
     }
   }
 }
+
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .hero-content {
+    flex-direction: column-reverse;
+    gap: 40px;
+  }
+
+  .hero-text {
+    text-align: center;
+
+    .hero-title {
+      font-size: 2rem;
+    }
+  }
+
+  .hero-visual {
+    .code-window {
+      max-width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+      .window-body {
+        padding: 16px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .quotes-section {
+    padding: 30px 0;
+  }
+}
 </style>

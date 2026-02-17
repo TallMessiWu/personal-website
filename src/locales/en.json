@@ -3,7 +3,8 @@
         "home": "Home",
         "daily": "Daily",
         "portfolio": "Portfolio",
-        "about": "About"
+        "about": "About",
+        "menu": "Menu"
     },
     "home": {
         "hero": {

@@ -83,4 +83,13 @@ onUnmounted(() => {
   opacity: 0;
   transform: translateY(12px);
 }
+
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+  }
+}
 </style>

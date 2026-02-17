@@ -94,7 +94,7 @@
 
         <div class="timeline-container">
           <!-- Left: Fixed Year Axis -->
-          <div class="timeline-axis">
+          <div class="timeline-axis" :style="{ height: containerHeight + 'px' }">
               <div class="axis-line"></div>
               <div
                   v-for="tick in yearTicks"
@@ -123,6 +123,7 @@
                 :key="index"
                 class="geo-event-block"
                 :style="getGeoEventStyle(event, index)"
+                @click="openEvent(event, $event)"
               >
                  <div class="geo-content" :style="{ '--desc-lines': event.descLines }">
                    <div class="geo-time" :class="{ 'is-hidden': !event.showTime }">
@@ -149,6 +150,22 @@
         </div>
       </section>
     </div>
+    <!-- Mobile Event Modal Overlay -->
+    <Teleport to="body">
+       <transition name="fade">
+          <div v-if="activeEvent" class="timeline-backdrop" @click="closeEvent"></div>
+       </transition>
+
+       <div v-if="activeEvent" class="geo-event-modal" :style="modalStyle" @click="closeEvent">
+           <div class="geo-content modal-content">
+              <div class="geo-time">
+                  <span class="time-range">{{ formatEventDate(activeEvent.startDate) }} - {{ formatEventDate(activeEvent.endDate) }}</span>
+              </div>
+              <h4 class="geo-title modal-title">{{ activeEvent.raw.title }}</h4>
+              <p class="geo-desc modal-desc">{{ activeEvent.raw.description }}</p>
+           </div>
+       </div>
+    </Teleport>
   </div>
 </template>
 
@@ -184,8 +201,8 @@ const hobbiesList = computed(() => tm('about.hobbies') || []);
 
 // --- Geometric Timeline Logic ---
 
-const PIXELS_PER_MONTH = 20; // Increase scale for better visibility
-const MIN_EVENT_HEIGHT = 80;
+const PIXELS_PER_MONTH = 30; // Increase scale for better visibility
+const MIN_EVENT_HEIGHT = 120;
 const GAP = 15;
 
 interface GeoEvent {
@@ -280,21 +297,33 @@ const yearTicks = computed(() => {
 
 const eventMarkers = computed(() => {
     const markers: { top: number, label: string }[] = [];
+    const { max } = timeRange.value;
 
+    // 使用 getTopFromDate 计算每个月份在时间轴上的真实比例位置
     processedEvents.value.forEach(e => {
         markers.push({
-            top: e.top,
+            top: getTopFromDate(e.endDate, max),
             label: (e.endDate.getMonth() + 1).toString().padStart(2, '0')
         });
         markers.push({
-            top: e.bottom,
+            top: getTopFromDate(e.startDate, max),
             label: (e.startDate.getMonth() + 1).toString().padStart(2, '0')
         });
     });
 
+    // 先获取所有年份标记的位置，用于碰撞检测
+    const yearPositions = yearTicks.value.map(t => t.top);
+    const MIN_DISTANCE_FROM_YEAR = 25; // 月份标记与年份标记的最小距离（px）
+    const MIN_DISTANCE_BETWEEN = 15; // 月份标记之间的最小距离（px）
+
     const unique: { top: number, label: string }[] = [];
     markers.sort((a,b) => a.top - b.top).forEach(m => {
-        if (unique.length === 0 || Math.abs(unique[unique.length-1].top - m.top) > 10) {
+        // 检查是否与年份标记过近
+        const tooCloseToYear = yearPositions.some(yp => Math.abs(yp - m.top) < MIN_DISTANCE_FROM_YEAR);
+        if (tooCloseToYear) return;
+
+        // 检查是否与已有月份标记过近
+        if (unique.length === 0 || Math.abs(unique[unique.length-1].top - m.top) > MIN_DISTANCE_BETWEEN) {
             unique.push(m);
         }
     });
@@ -419,6 +448,99 @@ const iconMap: Record<string, any> = {
     Monitor, Headset, Microphone, Basketball, Mouse, Trophy
 };
 const getIcon = (name: string) => iconMap[name] || Monitor;
+
+// --- Mobile Event Modal Logic (Bubble Animation) ---
+import { ref as vueRef, nextTick as vueNextTick, onUnmounted as vueOnUnmounted } from 'vue';
+
+const activeEvent = vueRef<GeoEvent | null>(null);
+const modalStyle = vueRef<any>({});
+const isClosing = vueRef(false);
+const originRect = vueRef<DOMRect | null>(null);
+
+const openEvent = (event: GeoEvent, e: MouseEvent) => {
+    // Only activate on mobile (check width or strictly user agent, but width is safer)
+    if (window.innerWidth > 768) return;
+
+    if (isClosing.value) return;
+
+    const target = e.currentTarget as HTMLElement;
+    originRect.value = target.getBoundingClientRect();
+
+    modalStyle.value = {
+        position: 'fixed',
+        top: `${originRect.value.top}px`,
+        left: `${originRect.value.left}px`,
+        width: `${originRect.value.width}px`,
+        height: `${originRect.value.height}px`,
+        zIndex: 2005,
+        transition: 'none',
+        borderRadius: '16px',
+        background: target.style.background,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+        transformOrigin: 'center center',
+        willChange: 'top, left, width, height, transform'
+    };
+
+    activeEvent.value = event;
+
+    vueNextTick(() => {
+        // Force reflow
+        void document.body.offsetHeight;
+
+        // Calculate target geometry in Pixels for smoother transition
+        const targetWidth = window.innerWidth * 0.85;
+        const targetHeight = Math.min(window.innerHeight * 0.6, 500); // Max 60% height or 500px
+        const targetTop = (window.innerHeight - targetHeight) / 2;
+        const targetLeft = (window.innerWidth - targetWidth) / 2;
+
+        modalStyle.value = {
+            position: 'fixed',
+            top: `${targetTop}px`,
+            left: `${targetLeft}px`,
+            width: `${targetWidth}px`,
+            height: `${targetHeight}px`,
+            transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)', // Smooth Quartic Ease
+            zIndex: 2005,
+            borderRadius: '20px',
+            background: modalStyle.value.background,
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+            padding: '24px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            willChange: 'top, left, width, height'
+        };
+    });
+};
+
+const closeEvent = () => {
+    if (isClosing.value || !originRect.value) {
+        activeEvent.value = null; // Fallback
+        return;
+    }
+    isClosing.value = true;
+
+    modalStyle.value = {
+        position: 'fixed',
+        top: `${originRect.value.top}px`,
+        left: `${originRect.value.left}px`,
+        width: `${originRect.value.width}px`,
+        height: `${originRect.value.height}px`,
+        zIndex: 2005,
+        transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+        borderRadius: '16px',
+        background: modalStyle.value.background,
+        overflow: 'hidden',
+        padding: '14px 16px' // RESET padding to match original
+    };
+
+    setTimeout(() => {
+        activeEvent.value = null;
+        isClosing.value = false;
+        originRect.value = null;
+    }, 300);
+};
 </script>
 
 <style scoped lang="less">
@@ -518,8 +640,10 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
     border: 4px solid var(--color-surface);
     transition: transform 0.3s ease;
 
-    &:hover {
-        transform: scale(1.05);
+    @media (hover: hover) {
+      &:hover {
+          transform: scale(1.05);
+      }
     }
   }
 
@@ -569,10 +693,16 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
-      &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        border-color: var(--color-accent-secondary);
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          border-color: var(--color-accent-secondary);
+        }
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
 
       img { width: 22px; height: 22px; opacity: 0.9; }
@@ -598,9 +728,15 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
   border: 1px solid var(--color-border);
   transition: transform 0.3s ease;
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 
   .card-header {
@@ -661,9 +797,16 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
      border-radius: 8px;
      transition: background 0.2s;
 
-     &:hover {
+     @media (hover: hover) {
+       &:hover {
+         background: var(--color-background);
+         .link-icon { opacity: 1; transform: translate(2px, -2px); }
+       }
+     }
+
+     &:active {
+       opacity: 0.7;
        background: var(--color-background);
-       .link-icon { opacity: 1; transform: translate(2px, -2px); }
      }
 
      .link-icon {
@@ -729,6 +872,10 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
     color: var(--color-text-primary);
     font-family: var(--font-family-code);
     opacity: 0.8;
+    z-index: 2; // 确保年份在月份之上
+    background: var(--color-background); // 给年份加背景色防止与月份视觉重叠
+    padding: 2px 4px;
+    border-radius: 3px;
 
     &::after {
         content: '';
@@ -778,47 +925,53 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
     overflow: hidden;
     cursor: pointer;
 
-    &:hover {
-        z-index: 100;
-        transform: scale(1.05);
-        filter: drop-shadow(0 12px 20px rgba(0,0,0,0.2));
-        overflow: visible;
-        background: transparent !important;
-
-        .geo-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            min-width: 100%;
-            width: max-content;
-            max-width: 280px;
-            min-height: 100%;
-            height: auto;
-            padding: 14px 16px;
-            background: var(--event-bg);
-            border-radius: inherit;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        .geo-title {
-            white-space: normal;
+    @media (hover: hover) {
+        &:hover {
+            z-index: 100;
+            transform: scale(1.05);
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,0.2));
             overflow: visible;
-            text-overflow: unset;
-        }
+            background: transparent !important;
 
-        .geo-desc {
-            display: block;
-            white-space: normal;
-            -webkit-line-clamp: unset;
-            line-clamp: unset;
-            overflow: visible;
-            &.is-hidden { display: block; }
-        }
+            .geo-content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                min-width: 100%;
+                width: max-content;
+                max-width: 280px;
+                min-height: 100%;
+                height: auto;
+                padding: 14px 16px;
+                background: var(--event-bg);
+                border-radius: inherit;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            }
 
-        .geo-time {
-            display: block;
-            &.is-hidden { display: block; }
+            .geo-title {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: unset;
+            }
+
+            .geo-desc {
+                display: block;
+                white-space: normal;
+                -webkit-line-clamp: unset;
+                line-clamp: unset;
+                overflow: visible;
+                &.is-hidden { display: block; }
+            }
+
+            .geo-time {
+                display: block;
+                &.is-hidden { display: block; }
+            }
         }
+    }
+
+    &:active {
+        transform: scale(0.98);
     }
 
     .geo-content {
@@ -900,11 +1053,17 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
       height: 32px;
     }
 
-    &:hover {
-      transform: scale(1.1) rotate(5deg);
-      border-color: var(--color-accent-tertiary);
-      color: var(--color-accent-tertiary);
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    @media (hover: hover) {
+      &:hover {
+        transform: scale(1.1) rotate(5deg);
+        border-color: var(--color-accent-tertiary);
+        color: var(--color-accent-tertiary);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+      }
+    }
+
+    &:active {
+       transform: scale(0.95);
     }
   }
 
@@ -912,6 +1071,112 @@ const getIcon = (name: string) => iconMap[name] || Monitor;
     font-size: 0.9rem;
     color: var(--color-text-secondary);
     font-weight: 500;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .profile-hero-wrapper {
+    padding: 60px 20px 40px;
+
+    .profile-info {
+      .name { font-size: 2rem; }
+      .title { font-size: 1rem; }
+      .bio { font-size: 0.95rem; }
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  .highlights-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .timeline-container {
+    padding: 0;
+    overflow-x: auto;
+    /* Enhance scroll experience */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-border);
+      border-radius: 4px;
+    }
+  }
+
+  /* Adjust timeline height calculation visualization if needed or just let it scroll */
+
+  .hobbies-grid {
+    gap: 20px;
+
+    .hobby-item {
+       gap: 10px;
+       .hobby-icon-wrapper {
+         width: 60px;
+         height: 60px;
+       }
+    }
+  }
+}
+
+/* Mobile Timeline Modal Styles */
+.timeline-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  transition: opacity 0.3s ease;
+}
+
+.geo-event-modal {
+  /* Position/Size handled by JS inline styles */
+  color: #fff;
+  overflow: hidden;
+
+  .modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .modal-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: normal;
+    opacity: 0.95;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow-y: auto;
+  }
+
+  .time-range {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+    display: block;
+    font-family: var(--font-family-code);
   }
 }
 </style>
