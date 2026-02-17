@@ -4,7 +4,7 @@
     <div class="profile-hero-wrapper">
       <div class="profile-hero-content">
         <div class="avatar-wrapper">
-          <img src="https://github.com/TallMessiWu.png" alt="Avatar" class="avatar" />
+          <img src="@/assets/avatar.png" alt="Avatar" class="avatar" />
         </div>
         <div class="profile-info">
            <h1 class="name">{{ t('about.profile.name') }}</h1>
@@ -143,7 +143,7 @@
         <div class="hobbies-grid">
           <div v-for="(hobby, index) in hobbiesList" :key="index" class="hobby-item">
               <div class="hobby-icon-wrapper">
-                  <component :is="getIcon(hobby.icon)" />
+                  <img :src="getHobbyIcon(hobby.icon)" :alt="hobby.name" class="hobby-icon" />
               </div>
               <span class="hobby-name">{{ hobby.name }}</span>
           </div>
@@ -286,7 +286,7 @@ const yearTicks = computed(() => {
     const endYear = min.getFullYear() - 1;
 
     for (let y = startYear; y >= endYear; y--) {
-        const d = new Date(y + 1, 0, 1);
+        const d = new Date(y, 0, 1);
         ticks.push({
             year: y,
             top: getTopFromDate(d, max)
@@ -444,10 +444,9 @@ const getGeoEventStyle = (event: GeoEvent, index: number) => {
 };
 
 // Icons
-const iconMap: Record<string, any> = {
-    Monitor, Headset, Microphone, Basketball, Mouse, Trophy
+const getHobbyIcon = (name: string) => {
+    return new URL(`../assets/hobbies/${name}.svg`, import.meta.url).href;
 };
-const getIcon = (name: string) => iconMap[name] || Monitor;
 
 // --- Mobile Event Modal Logic (Bubble Animation) ---
 import { ref as vueRef, nextTick as vueNextTick, onUnmounted as vueOnUnmounted } from 'vue';
@@ -920,7 +919,8 @@ const closeEvent = () => {
     // Top/Height/Left/Width set via inline style
 
     color: #fff;
-    transition: transform 0.3s ease, filter 0.3s ease, z-index 0s;
+    transform-origin: center center;
+    transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), z-index 0s;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
     overflow: hidden;
     cursor: pointer;
@@ -934,17 +934,12 @@ const closeEvent = () => {
             background: transparent !important;
 
             .geo-content {
-                position: absolute;
-                top: 0;
-                left: 0;
                 min-width: 100%;
                 width: max-content;
                 max-width: 280px;
                 min-height: 100%;
                 height: auto;
                 padding: 14px 16px;
-                background: var(--event-bg);
-                border-radius: inherit;
                 box-shadow: 0 8px 24px rgba(0,0,0,0.2);
             }
 
@@ -975,13 +970,25 @@ const closeEvent = () => {
     }
 
     .geo-content {
-        padding: 8px 10px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
         height: 100%;
+        padding: 8px 10px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 2px;
         overflow: hidden;
+        background: var(--event-bg);
+        border-radius: inherit;
+        transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                    height 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                    min-height 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                    padding 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                    box-shadow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     .geo-time {
@@ -1048,17 +1055,23 @@ const closeEvent = () => {
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid var(--color-border);
 
-    :deep(svg) {
+    .hobby-icon {
       width: 32px;
       height: 32px;
+      object-fit: contain;
+      filter: grayscale(0.1) brightness(0.9);
+      transition: filter 0.3s ease;
     }
 
     @media (hover: hover) {
       &:hover {
         transform: scale(1.1) rotate(5deg);
         border-color: var(--color-accent-tertiary);
-        color: var(--color-accent-tertiary);
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+
+        .hobby-icon {
+          filter: grayscale(0) brightness(1);
+        }
       }
     }
 

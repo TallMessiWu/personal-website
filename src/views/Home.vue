@@ -316,6 +316,7 @@ useHead({
   }
 
   .hero-text {
+    width: 100%;
     text-align: center;
 
     .hero-title {
@@ -324,6 +325,8 @@ useHead({
   }
 
   .hero-visual {
+    width: 100%;
+
     .code-window {
       max-width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);

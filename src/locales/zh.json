@@ -200,35 +200,35 @@
         "hobbies": [
             {
                 "name": "编程",
-                "icon": "Monitor"
+                "icon": "coding"
             },
             {
                 "name": "吉他",
-                "icon": "Headset"
+                "icon": "guitar"
             },
             {
-                "name": "钢琴",
-                "icon": "Microphone"
+                "name": "键盘",
+                "icon": "keyboard"
             },
             {
                 "name": "足球",
-                "icon": "Basketball"
+                "icon": "football"
             },
             {
                 "name": "DOTA 2",
-                "icon": "Mouse"
+                "icon": "dota"
             },
             {
                 "name": "国际象棋",
-                "icon": "Trophy"
+                "icon": "chess"
             },
             {
                 "name": "摄影",
-                "icon": "Camera"
+                "icon": "cinematography"
             },
             {
                 "name": "旅行",
-                "icon": "Platform"
+                "icon": "travel"
             }
         ],
         "title": "关于我",

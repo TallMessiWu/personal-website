@@ -200,35 +200,35 @@
         "hobbies": [
             {
                 "name": "Coding",
-                "icon": "Monitor"
+                "icon": "coding"
             },
             {
                 "name": "Guitar",
-                "icon": "Headset"
+                "icon": "guitar"
             },
             {
-                "name": "Piano",
-                "icon": "Microphone"
+                "name": "Keyboard",
+                "icon": "keyboard"
             },
             {
                 "name": "Football",
-                "icon": "Basketball"
+                "icon": "football"
             },
             {
                 "name": "DOTA 2",
-                "icon": "Mouse"
+                "icon": "dota"
             },
             {
                 "name": "Chess",
-                "icon": "Trophy"
+                "icon": "chess"
             },
             {
-                "name": "Photography",
-                "icon": "Camera"
+                "name": "Cinematography",
+                "icon": "cinematography"
             },
             {
                 "name": "Traveling",
-                "icon": "Platform"
+                "icon": "travel"
             }
         ],
         "title": "About Me",

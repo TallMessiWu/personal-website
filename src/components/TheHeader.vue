@@ -21,8 +21,10 @@
 
         <!-- Language Switcher (Toggle) -->
         <div class="lang-toggle" @click="toggleLanguage" :title="t('language.switch')">
-          <span class="lang-text">{{ locale === 'zh' ? 'En' : '中文' }}</span>
-          <el-icon class="loop-icon"><Refresh /></el-icon>
+          <div class="lang-stack" :class="{ 'is-en': locale === 'en' }">
+            <span class="lang-label lang-zh">中</span>
+            <span class="lang-label lang-en">En</span>
+          </div>
         </div>
       </nav>
 
@@ -65,7 +67,10 @@
                 </div>
                 <div class="action-item" @click="toggleLanguage">
                    <span>{{ locale === 'zh' ? 'Switch to English' : '切换到中文' }}</span>
-                   <el-icon><Refresh /></el-icon>
+                   <div class="lang-stack mobile" :class="{ 'is-en': locale === 'en' }">
+                     <span class="lang-label lang-zh">中</span>
+                     <span class="lang-label lang-en">En</span>
+                   </div>
                 </div>
               </div>
            </div>
@@ -298,26 +303,63 @@ onMounted(() => {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px; /* Small gap between text and icon */
-  color: var(--color-text-secondary);
-  transition: color 0.2s;
-  padding: 4px 8px;
-  border-radius: 4px;
+  justify-content: center;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    color: var(--color-text-primary);
     background-color: var(--color-surface-hover);
   }
+}
 
-  .lang-text {
-    font-size: 0.95rem;
-    font-weight: 500;
+.lang-stack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  height: 22px;
+  width: 36px;
+
+  .lang-label {
+    font-weight: 700;
     user-select: none;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 1;
   }
 
-  .loop-icon {
-    font-size: 0.8rem; /* Correct "small loop icon" */
-    margin-top: 2px; /* Slight alignment adjustment */
+  /* Default: zh active (left, blue), en inactive (right, gray) */
+  .lang-zh {
+    left: 1px;
+    color: var(--color-accent-primary);
+    font-size: 0.85rem;
+  }
+
+  .lang-en {
+    left: 20px;
+    color: var(--color-text-muted, #888);
+    font-size: 0.72rem;
+    opacity: 0.45;
+  }
+
+  /* English active: en left blue, zh right gray */
+  &.is-en {
+    .lang-zh {
+      left: 22px;
+      color: var(--color-text-muted, #888);
+      font-size: 0.72rem;
+      opacity: 0.45;
+    }
+
+    .lang-en {
+      left: 1px;
+      color: var(--color-accent-primary);
+      font-size: 0.85rem;
+      opacity: 1;
+    }
   }
 }
 
