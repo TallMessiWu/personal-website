@@ -21,7 +21,7 @@
       <!-- 2. Multi-Image Expanded Mode: Slider -->
       <div v-else-if="post.images && post.images.length > 1 && expanded" class="image-slider">
         <!-- Image/Video Renderer -->
-        <div class="slider-item" @click.stop="handleLivePhotoClick">
+        <div class="slider-item" @click="handleMediaClick">
           <template v-if="isCurrentLivePhoto">
              <!-- Live Photo Container -->
              <div class="live-photo-container">
@@ -64,7 +64,7 @@
       </div>
 
       <!-- 3. Default / Collapsed Mode OR Single Image Expanded -->
-      <div v-else class="media-preview" @click.stop="handleLivePhotoClick">
+      <div v-else class="media-preview" @click="handleMediaClick">
         <!-- Case 1: Single Live Photo -->
         <template v-if="isSingleLivePhoto">
            <div class="live-photo-container">
@@ -121,9 +121,6 @@
 
       <div class="meta">
         <span class="date">{{ formattedDate }}</span>
-        <div class="actions">
-           <el-icon><Star /></el-icon>
-        </div>
       </div>
     </div>
   </div>
@@ -208,6 +205,15 @@ const stopLivePhoto = () => {
     liveVideoRef.value.currentTime = 0;
   }
   isPlayingLive.value = false;
+};
+
+const handleMediaClick = (e: MouseEvent) => {
+  if (props.expanded) {
+    // Only handle Live Photo and stop propagation when expanded (in modal)
+    e.stopPropagation();
+    handleLivePhotoClick();
+  }
+  // When not expanded, let it bubble up to Daily.vue's openPost
 };
 
 const handleLivePhotoClick = () => {
@@ -555,14 +561,6 @@ const formattedDate = computed(() => {
   margin-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 12px;
-
-  .actions {
-    cursor: pointer;
-    transition: color 0.2s;
-    &:hover {
-      color: var(--color-accent-quaternary);
-    }
-  }
 }
 
 @keyframes pulse {
