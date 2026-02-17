@@ -11,8 +11,11 @@
            <p class="title">{{ t('about.profile.title') }}</p>
            <p class="bio">{{ t('about.profile.bio') }}</p>
            <div class="social-links">
+             <a href="https://gitee.com/tallmessiwu" target="_blank" class="social-btn">
+               <img src="@/assets/social_media_icons/gitee.svg" alt="Gitee" />
+             </a>
              <a href="https://github.com/TallMessiWu" target="_blank" class="social-btn">
-               <img src="https://cdn.simpleicons.org/github/var(--color-text-primary)" alt="GitHub" />
+               <img src="@/assets/social_media_icons/github.svg" alt="GitHub" />
              </a>
              <a href="mailto:Junlin-Wu@foxmail.com" class="social-btn">
                <el-icon :size="20"><Message /></el-icon>
