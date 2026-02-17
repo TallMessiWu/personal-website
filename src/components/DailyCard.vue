@@ -1,10 +1,21 @@
 <template>
   <div class="daily-card" :class="{ 'is-expanded': expanded }" ref="cardRef">
     <div class="media-container" v-if="post.image || post.video || (post.images && post.images.length)">
-      <!-- 1. Video Expanded Mode: Auto-play simulation -->
-      <div v-if="post.video && expanded" class="video-player-sim">
-        <el-icon class="playing-icon"><VideoPlay /></el-icon>
-        <span>Playing Video...</span>
+      <!-- 1. Video Expanded Mode: Bilibili Iframe or Auto-play simulation -->
+      <div v-if="post.video && expanded" class="video-player-container">
+        <iframe v-if="isBilibili && bilibiliSrc"
+                :src="bilibiliSrc"
+                scrolling="no"
+                border="0"
+                frameborder="no"
+                framespacing="0"
+                allowfullscreen="true"
+                class="bilibili-iframe">
+        </iframe>
+        <div v-else class="video-player-sim">
+          <el-icon class="playing-icon"><VideoPlay /></el-icon>
+          <span>Playing Video...</span>
+        </div>
       </div>
 
       <!-- 2. Multi-Image Expanded Mode: Slider -->
@@ -26,7 +37,11 @@
       <!-- 3. Default / Collapsed Mode -->
       <div v-else class="media-preview">
         <!-- Show image (custom cover or main image) -->
-        <img v-if="post.image" :src="post.image" alt="post cover" loading="lazy" />
+        <img v-if="post.image"
+             :src="post.image"
+             alt="post cover"
+             loading="lazy"
+             referrerpolicy="no-referrer" />
 
         <!-- Fallback for video without custom cover -->
         <div v-else-if="post.video" class="video-placeholder">
@@ -99,6 +114,25 @@ const prevImage = () => {
     currentImageIndex.value--;
   }
 };
+
+// Bilibili Logic
+import { computed } from 'vue';
+
+const bilibiliSrc = computed(() => {
+  if (!props.post.video) return '';
+
+  // Extract BVID from URL (e.g., https://www.bilibili.com/video/BV1v63xz3EwX/...)
+  const match = props.post.video.match(/BV[a-zA-Z0-9]+/);
+  if (match) {
+    const bvid = match[0];
+    return `//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0`;
+  }
+  return '';
+});
+
+const isBilibili = computed(() => {
+  return props.post.video && (props.post.video.includes('bilibili.com') || props.post.video.includes('BV'));
+});
 </script>
 
 <style scoped lang="less">
@@ -177,22 +211,36 @@ const prevImage = () => {
   min-height: 200px; /* Ensure height for video placeholder */
   background-color: var(--color-surface);
 
-  /* Video Player Sim */
-  .video-player-sim {
+  /* Video Player Container */
+  .video-player-container {
     width: 100%;
     height: 100%;
     min-height: 300px;
     background-color: #000;
-    color: #fff;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    .playing-icon {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      animation: pulse 2s infinite;
+    .bilibili-iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 400px; /* Give it some height */
+    }
+
+    .video-player-sim {
+      width: 100%;
+      height: 100%;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .playing-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        animation: pulse 2s infinite;
+      }
     }
   }
 

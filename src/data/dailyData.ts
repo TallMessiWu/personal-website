@@ -103,5 +103,15 @@ export const dailyData: Post[] = [
     image: 'https://placehold.co/600x400/1e1e1e/333.png?text=2023+Summary&font=roboto',
     date: '2023-12-31',
     pinned: true
+  },
+  {
+    id: 11,
+    title: 'B站视频分享',
+    excerpt: '分享一个有趣的B站视频。',
+    content: '这是我看过的一个非常有意思的视频，推荐给大家！',
+    video: 'https://www.bilibili.com/video/BV1v63xz3EwX/?spm_id_from=333.1387.0.0&vd_source=ece2e89ce7a7116890ea60f8bfe56da4',
+    // Cover image fetched from Bilibili API (Proxied to bypass 403)
+    image: 'https://images.weserv.nl/?url=i1.hdslb.com/bfs/archive/2b451fc1ea064694f2ab3003b3e25bf6ee7c977b.jpg',
+    date: '2024-02-18'
   }
 ];
