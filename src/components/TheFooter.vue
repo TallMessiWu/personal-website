@@ -73,8 +73,8 @@ const { t } = useI18n()
     }
 
     .instagram-icon {
-      width: 37px;
-      height: 37px;
+      width: 35px;
+      height: 35px;
     }
   }
 }
