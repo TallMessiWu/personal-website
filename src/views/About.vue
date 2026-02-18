@@ -146,7 +146,7 @@
         <div class="hobbies-grid">
           <div v-for="(hobby, index) in hobbiesList" :key="index" class="hobby-item">
               <div class="hobby-icon-wrapper">
-                  <img :src="getHobbyIcon(hobby.icon)" :alt="hobby.name" class="hobby-icon" />
+                  <img :src="getHobbyIcon(hobby.icon)" :alt="hobby.name" class="hobby-icon" :class="{ 'invert-dark': ['chess', 'football'].includes(hobby.icon) }" />
               </div>
               <span class="hobby-name">{{ hobby.name }}</span>
           </div>
@@ -177,8 +177,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHead } from '@vueuse/head';
 import {
-  Message, School, Briefcase, Folder, Cpu, TopRight,
-  Monitor, Headset, Microphone, Basketball, Mouse, Trophy
+  Message, School, Briefcase, Folder, Cpu, TopRight
 } from '@element-plus/icons-vue';
 
 const { t, tm } = useI18n();
@@ -699,7 +698,7 @@ const closeEvent = () => {
         &:hover {
           transform: translateY(-3px);
           box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-          border-color: var(--color-accent-secondary);
+          border-color: rgba(255, 255, 255, 0.8);
         }
       }
 
@@ -1080,7 +1079,7 @@ const closeEvent = () => {
     @media (hover: hover) {
       &:hover {
         transform: scale(1.1) rotate(5deg);
-        border-color: var(--color-accent-tertiary);
+        border-color: rgba(255, 255, 255, 0.8);
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
 
         .hobby-icon {
@@ -1216,6 +1215,16 @@ const closeEvent = () => {
 
 [data-theme='light'] .profile-hero-content .social-links .github-style {
   background: none !important;
+  filter: none !important;
+}
+
+/* Dark mode: Invert colors for specific hobby icons */
+.hobbies-section .hobby-icon.invert-dark {
+  filter: invert(1) grayscale(1) !important;
+}
+
+/* Light mode: Reset filter */
+[data-theme='light'] .hobbies-section .hobby-icon.invert-dark {
   filter: none !important;
 }
 </style>
