@@ -839,8 +839,21 @@ const closeEvent = () => {
     padding: 6px 14px;
     background: var(--color-background);
     border-radius: 20px;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     font-weight: 500;
+    border: 1px solid transparent; /* Prevent layout shift */
+    cursor: default;
+    transition: all 0.3s ease;
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--color-accent-tertiary);
+        border-color: var(--color-accent-tertiary);
+        background: var(--color-surface);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(78, 201, 176, 0.2); /* Soft teal shadow */
+      }
+    }
   }
 }
 
