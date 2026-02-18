@@ -19,7 +19,6 @@
     -   `data/`: 静态数据文件
     -   `locales/`: i18n 国际化语言包
     -   `router/`: Vue Router 路由配置
-    -   `utils/`: 工具函数
     -   `views/`: 页面视图组件
     -   `App.vue`: 根组件
     -   `main.ts`: 入口文件
