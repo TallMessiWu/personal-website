@@ -26,7 +26,7 @@
              <!-- Live Photo Container -->
              <div class="live-photo-container">
                <!-- Cover Image -->
-               <img v-show="!isPlayingLive" :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
+               <img :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
 
                <!-- Video -->
                <video v-show="isPlayingLive"
@@ -68,7 +68,7 @@
         <!-- Case 1: Single Live Photo -->
         <template v-if="isSingleLivePhoto">
            <div class="live-photo-container">
-             <img v-show="!isPlayingLive" :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
+             <img :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
              <video v-show="isPlayingLive"
                     ref="liveVideoRef"
                     :src="singleLivePhotoData.video"
@@ -597,8 +597,17 @@ const formattedDate = computed(() => {
   width: 100%;
   height: 100%;
 
-  .live-cover,
+  .live-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
   .live-video {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
