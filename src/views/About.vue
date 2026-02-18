@@ -12,10 +12,10 @@
            <p class="bio">{{ t('about.profile.bio') }}</p>
            <div class="social-links">
              <a href="https://gitee.com/tallmessiwu" target="_blank" class="social-btn">
-               <img src="@/assets/social_media_icons/gitee.svg" alt="Gitee" />
+               <img src="@/assets/social_media_icons/gitee.svg" alt="Gitee" class="gitee-style" />
              </a>
              <a href="https://github.com/TallMessiWu" target="_blank" class="social-btn">
-               <img src="@/assets/social_media_icons/github.svg" alt="GitHub" />
+               <img src="@/assets/social_media_icons/github.svg" alt="GitHub" class="github-style" />
              </a>
              <a href="mailto:Junlin-Wu@foxmail.com" class="social-btn">
                <el-icon :size="20"><Message /></el-icon>
@@ -709,6 +709,17 @@ const closeEvent = () => {
 
       img { width: 22px; height: 22px; opacity: 0.9; }
       .el-icon { color: var(--color-text-primary); opacity: 0.9; }
+
+      .gitee-style {
+        background: radial-gradient(circle closest-side, #ffffff 85%, transparent 85%);
+        border-radius: 50%;
+      }
+
+      .github-style {
+        background: radial-gradient(circle closest-side, #ffffff 88%, transparent 85%);
+        border-radius: 50%;
+        filter: invert(1);
+      }
     }
   }
 }
@@ -1194,5 +1205,17 @@ const closeEvent = () => {
     display: block;
     font-family: var(--font-family-code);
   }
+}
+</style>
+
+<style lang="less">
+/* 全局样式覆盖，确保优先级 - 浅色模式下移除 About 页面图标的特殊背景 */
+[data-theme='light'] .profile-hero-content .social-links .gitee-style {
+  background: none !important;
+}
+
+[data-theme='light'] .profile-hero-content .social-links .github-style {
+  background: none !important;
+  filter: none !important;
 }
 </style>
