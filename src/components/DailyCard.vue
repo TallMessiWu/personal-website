@@ -1,5 +1,13 @@
 <template>
   <div class="daily-card" :class="{ 'is-expanded': expanded, 'no-media': !hasMedia }" ref="cardRef">
+    <!-- Move Live Icon to root for absolute top-left positioning relative to card -->
+    <div v-if="isCurrentLivePhoto || isSingleLivePhoto"
+         class="live-icon-badge"
+         :class="{ 'has-pinned': post.pinned && !expanded }">
+      <div class="live-icon-symbol">◎</div>
+      <span>LIVE</span>
+    </div>
+
     <div class="media-container" v-if="(post.images && post.images.length > 0) || post.video">
       <!-- 1. Video Expanded Mode: Bilibili Iframe or Auto-play simulation -->
       <div v-if="post.video && expanded" class="video-player-container">
@@ -37,12 +45,6 @@
                       playsinline
                       @ended="onLiveVideoEnded"
                ></video>
-
-               <!-- Live Icon overlay -->
-               <div class="live-icon-badge">
-                 <div class="live-icon-symbol">◎</div>
-                 <span>LIVE</span>
-               </div>
              </div>
           </template>
           <template v-else>
@@ -76,10 +78,6 @@
                     playsinline
                     @ended="onLiveVideoEnded"
              ></video>
-             <div class="live-icon-badge">
-               <div class="live-icon-symbol">◎</div>
-               <span>LIVE</span>
-             </div>
            </div>
         </template>
 
@@ -187,7 +185,7 @@ const playLivePhoto = () => {
 
   if (livePhotoTimer) clearTimeout(livePhotoTimer);
 
-  // 1s delay before playing
+  // 0.5s delay before playing
   livePhotoTimer = setTimeout(() => {
     isPlayingLive.value = true;
     nextTick(() => {
@@ -195,7 +193,7 @@ const playLivePhoto = () => {
         liveVideoRef.value.play().catch(e => console.log('Autoplay blocked', e));
       }
     });
-  }, 1000);
+  }, 500);
 };
 
 const stopLivePhoto = () => {
@@ -617,20 +615,25 @@ const formattedDate = computed(() => {
 
 .live-icon-badge {
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 20px;
+  left: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   color: #333;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
   font-size: 0.75rem;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 4px;
-  z-index: 10;
+  z-index: 20; /* Ensure it's above everything including slider nav */
   backdrop-filter: blur(4px);
-  pointer-events: none; /* Let click pass through to container */
+  pointer-events: none;
+  transition: all 0.3s ease;
+
+  &.has-pinned {
+    top: 45px; /* Stand below the pinned indicator when in card view */
+  }
 
   .live-icon-symbol {
     font-size: 1rem;
