@@ -1,0 +1,115 @@
+[![中文](https://img.shields.io/badge/语言-中文-red)](./GUIDE.zh.md) ![English](https://img.shields.io/badge/Lang-English-blue)
+
+# Daily Data Guide
+
+This document explains how to configure the content in `src/data/dailyData.ts`.
+
+## Data Structure
+
+`dailyData` is an array of `Post` objects. Each object contains the following fields:
+
+### Core Properties
+
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `number` | Yes | Unique identifier, should be incremented. |
+| `title` | `string` | Yes | Post title. |
+| `content` | `string` | No | Post body text, supports `\n` for new lines. |
+| `date` | `string` | Yes | Release date, format: `YYYY-MM-DD HH:mm`. |
+| `pinned` | `boolean` | No | If true, the post will be shown at the top of the list. |
+
+### Media Properties
+
+#### `images` (Array)
+The `images` field is an array of `ImageItem` objects:
+
+- `image`: **Original Image (High-Res)**. Used in the fullscreen viewer.
+- `thumbnail`: **Thumbnail (Low-Res)**. Used for the masonry grid and modal preview. *Highly recommended for faster loading.*
+- `video`: **Live Photo Video URL**. If provided, the image will act as a Live Photo and auto-play in the details view.
+
+#### `video` (External Video)
+- `video`: Used for external video links like Bilibili. Currently supports auto-detection and embedding of Bilibili BVIDs.
+
+---
+
+## Example Configurations
+
+### 1. Title Only
+```typescript
+{
+  id: 1,
+  title: 'Mood today: Sunny',
+  date: '2024-02-19 09:00'
+}
+```
+
+### 2. Text Only
+```typescript
+{
+  id: 2,
+  title: 'Reading Notes',
+  content: 'Read "Hackers & Painters" today. Great insights.\nInnovation is timeless.',
+  date: '2024-02-19 10:30'
+}
+```
+
+### 3. Single Image
+```typescript
+{
+  id: 3,
+  title: 'Afternoon Coffee',
+  images: [
+    {
+      image: '/assets/daily/coffee-hd.jpg',
+      thumbnail: '/assets/daily/coffee-thumb.jpg'
+    }
+  ],
+  date: '2024-02-19 14:00'
+}
+```
+
+### 4. Multiple Images
+```typescript
+{
+  id: 4,
+  title: 'Street Photography',
+  images: [
+    { image: '/assets/daily/street-1.jpg', thumbnail: '/assets/daily/street-1-t.jpg' },
+    { image: '/assets/daily/street-2.jpg', thumbnail: '/assets/daily/street-2-t.jpg' },
+    { image: '/assets/daily/street-3.jpg', thumbnail: '/assets/daily/street-3-t.jpg' }
+  ],
+  date: '2024-02-19 16:30'
+}
+```
+
+### 5. Multiple Images with Live Photo
+```typescript
+{
+  id: 5,
+  title: 'Sunset by Erhai Lake',
+  images: [
+    {
+      image: '/assets/daily/sunset-static.jpg',
+      thumbnail: '/assets/daily/sunset-static-t.jpg'
+    },
+    {
+      image: '/assets/daily/sunset-live.jpg',
+      thumbnail: '/assets/daily/sunset-live-t.jpg',
+      video: '/assets/daily/sunset-live.mov' // Live Photo Video
+    }
+  ],
+  date: '2024-02-19 18:20'
+}
+```
+
+### 6. Bilibili Video
+```typescript
+{
+  id: 6,
+  title: 'Awesome Video Recommendation',
+  content: 'This video is very well explained.',
+  video: 'https://www.bilibili.com/video/BV1v63xz3EwX/',
+  images: [{ image: '/assets/daily/video-cover.jpg' }], // Recommended to provide a cover image manually
+  date: '2024-02-19 20:00'
+}
+```
