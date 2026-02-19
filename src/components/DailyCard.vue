@@ -1,9 +1,9 @@
 <template>
   <div class="daily-card" :class="{ 'is-expanded': expanded, 'no-media': !hasMedia }" ref="cardRef">
     <!-- Move Live Icon to root for absolute top-left positioning relative to card -->
-    <div v-if="isCurrentLivePhoto || isSingleLivePhoto"
-         class="live-icon-badge"
-         :class="{ 'has-pinned': post.pinned && !expanded }">
+    <!-- Only show when expanded as requested -->
+    <div v-if="(isCurrentLivePhoto || isSingleLivePhoto) && expanded"
+         class="live-icon-badge">
       <div class="live-icon-symbol">◎</div>
       <span>LIVE</span>
     </div>
@@ -630,10 +630,6 @@ const formattedDate = computed(() => {
   backdrop-filter: blur(4px);
   pointer-events: none;
   transition: all 0.3s ease;
-
-  &.has-pinned {
-    top: 45px; /* Stand below the pinned indicator when in card view */
-  }
 
   .live-icon-symbol {
     font-size: 1rem;
