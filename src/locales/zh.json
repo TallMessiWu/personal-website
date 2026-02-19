@@ -51,7 +51,9 @@
         "title": "日常",
         "highlight": "记录",
         "subtitle": "生活与代码的片段。",
-        "pinned": "置顶"
+        "pinned": "置顶",
+        "replay": "重播",
+        "live": "实况"
     },
     "portfolio": {
         "title": "作品集",

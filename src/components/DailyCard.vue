@@ -3,9 +3,21 @@
     <!-- Move Live Icon to root for absolute top-left positioning relative to card -->
     <!-- Only show when expanded as requested -->
     <div v-if="(isCurrentLivePhoto || isSingleLivePhoto) && expanded && !isPlayingLive"
-         class="live-icon-badge">
-      <div class="live-icon-symbol">◎</div>
-      <span>LIVE</span>
+         class="live-icon-wrapper">
+      <div class="live-icon-badge"
+           :class="{ 'is-expanded': liveIconExpanded }"
+           @click.stop="toggleLiveIcon">
+        <div class="live-icon-symbol">◎</div>
+        <span>{{ $t('daily.live') }}</span>
+        <el-icon class="live-arrow" :class="{ 'is-rotated': liveIconExpanded }"><ArrowDown /></el-icon>
+      </div>
+
+      <transition name="fade-slide">
+        <div v-if="liveIconExpanded" class="live-menu" @click.stop="replayLivePhoto">
+           <el-icon><RefreshRight /></el-icon>
+           <span>{{ $t('daily.replay') }}</span>
+        </div>
+      </transition>
     </div>
 
     <!-- Custom Full screen Image/Live Viewer -->
@@ -44,9 +56,20 @@
                           playsinline
                           @ended="viewerIsPlaying = false"
                    ></video>
-                   <div v-if="isViewerLivePhoto && !viewerIsPlaying" class="live-icon-badge in-viewer">
-                      <div class="live-icon-symbol">◎</div>
-                      <span>LIVE</span>
+                   <div v-if="isViewerLivePhoto && !viewerIsPlaying" class="live-icon-wrapper in-viewer">
+                      <div class="live-icon-badge"
+                           :class="{ 'is-expanded': viewerLiveIconExpanded }"
+                           @click.stop="toggleViewerLiveIcon">
+                        <div class="live-icon-symbol">◎</div>
+                        <span>{{ $t('daily.live') }}</span>
+                        <el-icon class="live-arrow" :class="{ 'is-rotated': viewerLiveIconExpanded }"><ArrowDown /></el-icon>
+                      </div>
+                      <transition name="fade-slide">
+                        <div v-if="viewerLiveIconExpanded" class="live-menu" @click.stop="replayViewerLivePhoto">
+                           <el-icon><RefreshRight /></el-icon>
+                           <span>{{ $t('daily.replay') }}</span>
+                        </div>
+                      </transition>
                    </div>
                  </div>
                </template>
@@ -176,7 +199,7 @@
 </template>
 
 <script setup lang="ts">
-import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close } from '@element-plus/icons-vue'
+import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close, ArrowDown, RefreshRight } from '@element-plus/icons-vue'
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 
 import { dailyData, type Post } from '@/data/dailyData';
@@ -192,6 +215,8 @@ const viewerIndex = ref(0);
 const viewerIsPlaying = ref(false);
 const viewerVideoRef = ref<HTMLVideoElement | null>(null);
 let viewerLiveTimer: ReturnType<typeof setTimeout> | null = null;
+const viewerLiveIconExpanded = ref(false);
+const liveIconExpanded = ref(false);
 
 // Check if post has any media
 const hasMedia = computed(() => {
@@ -267,6 +292,16 @@ const stopLivePhoto = () => {
     liveVideoRef.value.currentTime = 0;
   }
   isPlayingLive.value = false;
+  liveIconExpanded.value = false; // Close menu when stopped or finished
+};
+
+const toggleLiveIcon = () => {
+  liveIconExpanded.value = !liveIconExpanded.value;
+};
+
+const replayLivePhoto = () => {
+  playLivePhoto();
+  liveIconExpanded.value = false;
 };
 
 const handleMediaClick = (e: MouseEvent) => {
@@ -291,6 +326,7 @@ const closeViewer = () => {
   // Sync back the index so the card shows the last seen image in viewer
   currentImageIndex.value = viewerIndex.value;
   viewerShow.value = false;
+  viewerLiveIconExpanded.value = false;
   stopViewerLive();
 };
 
@@ -315,11 +351,22 @@ const stopViewerLive = () => {
     viewerVideoRef.value.currentTime = 0;
   }
   viewerIsPlaying.value = false;
+  viewerLiveIconExpanded.value = false;
+};
+
+const toggleViewerLiveIcon = () => {
+  viewerLiveIconExpanded.value = !viewerLiveIconExpanded.value;
+};
+
+const replayViewerLivePhoto = () => {
+  playViewerLive();
+  viewerLiveIconExpanded.value = false;
 };
 
 const nextViewerImage = () => {
   if (props.post.images && viewerIndex.value < props.post.images.length - 1) {
     viewerIndex.value++;
+    viewerLiveIconExpanded.value = false;
     playViewerLive();
   }
 };
@@ -327,6 +374,7 @@ const nextViewerImage = () => {
 const prevViewerImage = () => {
   if (viewerIndex.value > 0) {
     viewerIndex.value--;
+    viewerLiveIconExpanded.value = false;
     playViewerLive();
   }
 };
@@ -585,10 +633,10 @@ const formattedDate = computed(() => {
       position: absolute;
       top: 15px;
       right: 15px; /* Moved to right */
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(255,255,255,0.1);
       color: #fff;
       padding: 4px 10px;
-      border-radius: 12px;
+      border-radius: 20px; /* Capsule shape */
       font-size: 0.8rem;
       backdrop-filter: blur(4px);
       z-index: 10;
@@ -778,41 +826,122 @@ const formattedDate = computed(() => {
   }
 }
 
-.live-icon-badge {
+.live-icon-wrapper {
   position: absolute;
   top: 20px;
   left: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  pointer-events: auto; /* Enable clicks */
+
+  &.in-viewer {
+    position: absolute; /* Re-declare absolute to be safe, though wrapper is absolute */
+    top: 50px;
+    left: 105px;
+    z-index: 3150; /* Higher than viewer controls if needed, overlay is 3000, controls 3100 */
+  }
+
+  /* Mobile adjustment to avoid overlap with Close Button (top-left) in Expanded Card mode */
+  /* Close button in Daily.vue is left: 15px, width: 44px (~60px edge). */
+  /* We check if card is expanded first */
+  .daily-card.is-expanded & {
+    @media (max-width: 800px) {
+      left: 70px;
+      top: 25px;
+    }
+  }
+}
+
+.live-icon-badge {
   background-color: rgba(255, 255, 255, 0.8);
   color: #333;
-  padding: 3px 10px;
+  padding: 5px 6px; /* Adjusted from 6px 14px */
   border-radius: 20px;
-  font-size: 0.75rem;
+  font-size: 0.8rem; /* Adjusted from 0.85rem */
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 4px;
-  z-index: 20; /* Ensure it's above everything including slider nav */
   backdrop-filter: blur(4px);
-  pointer-events: none;
+  cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: scale(1.02);
+  }
+
+  /* When expanded, maybe change style? */
+  &.is-expanded {
+    background-color: #fff;
+  }
 
   .live-icon-symbol {
-    font-size: 1rem;
+    font-size: 1.05rem; /* Adjusted from 1.1rem */
     line-height: 1;
     color: #333;
-    /* Optional: pulsing effect for the concentric circles icon */
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  &.in-viewer {
-    top: 50px; /* Balanced vertically with close button */
-    left: 105px; /* Positioned to the right of close button */
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 6px 12px;
+  .live-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+
+    &.is-rotated {
+      transform: rotate(180deg);
+    }
   }
+
+  /* .in-viewer styles moved to .live-icon-wrapper */
+}
+
+.live-menu {
+  margin-top: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 20px; /* Capsule shape */
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: slideDown 0.2s ease-out;
+
+  &:hover {
+    background-color: #fff;
+    transform: translateY(1px);
+    color: var(--color-accent-primary, #000);
+  }
+
+  .el-icon {
+    font-size: 1rem;
+  }
+}
+
+/* Transitions */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.2s ease;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Custom Viewer Styles */
@@ -931,7 +1060,7 @@ const formattedDate = computed(() => {
   color: #fff;
   font-size: 0.9rem; /* Smaller font */
   font-weight: 500;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255,255,255,0.1);
   padding: 2px 10px; /* Smaller padding */
   border-radius: 20px;
   backdrop-filter: blur(4px);

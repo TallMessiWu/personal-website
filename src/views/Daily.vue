@@ -364,8 +364,8 @@ const closePost = () => {
 
 .close-btn {
   position: absolute;
-  top: 0;
-  left: -60px; /* Move outside to the left */
+  top: 12px; /* Moved further down */
+  left: -80px; /* Move outside to the left */
   right: auto; /* Reset right */
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.1);
@@ -437,7 +437,6 @@ const closePost = () => {
     /* On mobile, keep it inside or top-right float over content */
     top: 15px;
     left: 15px; /* Top left inside */
-    background: rgba(0,0,0,0.5); /* Stronger contrast */
     border: none;
   }
 }

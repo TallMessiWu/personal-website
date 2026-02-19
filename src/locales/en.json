@@ -51,7 +51,9 @@
         "title": "Daily",
         "highlight": "Logs",
         "subtitle": "Snippets of life and code.",
-        "pinned": "Pinned"
+        "pinned": "Pinned",
+        "replay": "Replay",
+        "live": "LIVE"
     },
     "portfolio": {
         "title": "Portfolio",
