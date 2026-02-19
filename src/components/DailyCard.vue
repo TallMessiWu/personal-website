@@ -839,20 +839,24 @@ const formattedDate = computed(() => {
 }
 
 .viewer-media-wrapper {
-  max-width: 90vw;
-  max-height: 90vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 
   .viewer-image, .viewer-video {
-    max-width: 100%;
-    max-height: 90vh;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: 100vh;
     object-fit: contain;
     display: block;
   }
 
   .viewer-live-container {
+    width: 100%;
+    height: 100%;
     position: relative;
     display: flex;
     justify-content: center;
@@ -871,7 +875,7 @@ const formattedDate = computed(() => {
 .viewer-close-btn {
   position: absolute;
   top: 40px;
-  right: 40px;
+  left: 40px; /* Moved to left */
   width: 50px;
   height: 50px;
   background: rgba(255, 255, 255, 0.1);
@@ -921,13 +925,14 @@ const formattedDate = computed(() => {
 .viewer-counter {
   position: absolute;
   top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 40px; /* Moved to right */
+  left: auto;
+  transform: none;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 0.9rem; /* Smaller font */
   font-weight: 500;
   background: rgba(0, 0, 0, 0.4);
-  padding: 4px 16px;
+  padding: 2px 10px; /* Smaller padding */
   border-radius: 20px;
   backdrop-filter: blur(4px);
   z-index: 3100;

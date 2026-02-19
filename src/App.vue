@@ -96,6 +96,11 @@ onUnmounted(() => {
 
 <style>
 /* Global style to force hide back-to-top when any modal/expanded card is open */
+body.modal-open {
+  overflow: hidden !important;
+  opacity: 0.95; /* Optional: slightly dim or other subtle effect if desired, but focus is scroll */
+}
+
 body.modal-open .back-to-top-btn {
   opacity: 0 !important;
   pointer-events: none !important;
