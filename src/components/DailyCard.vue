@@ -207,30 +207,14 @@ const stopLivePhoto = () => {
 
 const handleMediaClick = (e: MouseEvent) => {
   if (props.expanded) {
-    // Only handle Live Photo and stop propagation when expanded (in modal)
+    // Stop propagation when expanded to prevent closing modal or other side effects
     e.stopPropagation();
-    handleLivePhotoClick();
+    // Click-to-play removed as per requirement. Auto-play handled by watchers.
   }
   // When not expanded, let it bubble up to Daily.vue's openPost
 };
 
-const handleLivePhotoClick = () => {
-  if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
-    if (isPlayingLive.value) {
-      // If already playing, maybe restart? Or do nothing? Requirement says "replay"
-      if (liveVideoRef.value) {
-        liveVideoRef.value.currentTime = 0;
-        liveVideoRef.value.play();
-      }
-    } else {
-      // Force play immediately without delay on click
-      isPlayingLive.value = true;
-      nextTick(() => {
-         liveVideoRef.value?.play();
-      });
-    }
-  }
-};
+
 
 const onLiveVideoEnded = () => {
   isPlayingLive.value = false;
