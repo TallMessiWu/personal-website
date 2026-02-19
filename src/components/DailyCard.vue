@@ -159,7 +159,7 @@
         <template v-else>
           <!-- Show first image if available -->
           <img v-if="post.images && post.images.length > 0"
-               :src="post.images[0].image"
+               :src="coverImageSrc"
                alt="post cover"
                loading="lazy"
                referrerpolicy="no-referrer" />
@@ -226,7 +226,7 @@ const hasMedia = computed(() => {
 // Preview List for el-image
 const previewList = computed(() => {
   if (!props.post.images) return [];
-  return props.post.images.map(img => img.image);
+  return props.post.images.map(img => img.thumbnail || img.image);
 });
 
 // Slider Logic
@@ -238,7 +238,8 @@ let livePhotoTimer: ReturnType<typeof setTimeout> | null = null;
 // Helper to get current image source
 const currentImageSrc = computed(() => {
   if (!props.post.images || !props.post.images.length) return '';
-  return props.post.images[currentImageIndex.value]?.image || '';
+  const item = props.post.images[currentImageIndex.value];
+  return item?.thumbnail || item?.image || '';
 });
 
 // Helper to check if current item is Live Photo
@@ -251,7 +252,7 @@ const isCurrentLivePhoto = computed(() => {
 const currentLivePhoto = computed(() => {
   if (!props.post.images || !props.post.images.length) return { cover: '', video: '' };
   const item = props.post.images[currentImageIndex.value];
-  return item ? { cover: item.image, video: item.video || '' } : { cover: '', video: '' };
+  return item ? { cover: item.thumbnail || item.image, video: item.video || '' } : { cover: '', video: '' };
 });
 
 // Helper for single Live Photo (non-slider mode)
@@ -264,9 +265,16 @@ const isSingleLivePhoto = computed(() => {
 
 const singleLivePhotoData = computed(() => {
   if (isSingleLivePhoto.value && props.post.images) {
-    return { cover: props.post.images[0].image, video: props.post.images[0].video || '' };
+    const item = props.post.images[0];
+    return { cover: item.thumbnail || item.image, video: item.video || '' };
   }
   return { cover: '', video: '' };
+});
+
+const coverImageSrc = computed(() => {
+  if (!props.post.images || !props.post.images.length) return '';
+  const item = props.post.images[0];
+  return item?.thumbnail || item?.image || '';
 });
 
 const playLivePhoto = () => {

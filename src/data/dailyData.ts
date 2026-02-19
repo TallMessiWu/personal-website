@@ -1,4 +1,4 @@
-export type ImageItem = { image: string; video?: string };
+export type ImageItem = { image: string; thumbnail?: string; video?: string };
 
 export interface Post {
   id: number;
