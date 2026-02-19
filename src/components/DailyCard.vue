@@ -2,7 +2,7 @@
   <div class="daily-card" :class="{ 'is-expanded': expanded, 'no-media': !hasMedia }" ref="cardRef">
     <!-- Move Live Icon to root for absolute top-left positioning relative to card -->
     <!-- Only show when expanded as requested -->
-    <div v-if="(isCurrentLivePhoto || isSingleLivePhoto) && expanded"
+    <div v-if="(isCurrentLivePhoto || isSingleLivePhoto) && expanded && !isPlayingLive"
          class="live-icon-badge">
       <div class="live-icon-symbol">◎</div>
       <span>LIVE</span>
@@ -44,7 +44,7 @@
                           playsinline
                           @ended="viewerIsPlaying = false"
                    ></video>
-                   <div v-if="isViewerLivePhoto" class="live-icon-badge in-viewer">
+                   <div v-if="isViewerLivePhoto && !viewerIsPlaying" class="live-icon-badge in-viewer">
                       <div class="live-icon-symbol">◎</div>
                       <span>LIVE</span>
                    </div>
@@ -808,8 +808,8 @@ const formattedDate = computed(() => {
   }
 
   &.in-viewer {
-    top: 30px;
-    left: 30px;
+    top: 50px; /* Balanced vertically with close button */
+    left: 105px; /* Positioned to the right of close button */
     background-color: rgba(255, 255, 255, 0.9);
     padding: 6px 12px;
   }
