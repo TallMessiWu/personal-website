@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/personal-website/' : '/',
+  base: './',
   plugins: [
     vue(),
     vueDevTools(),
