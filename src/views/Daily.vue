@@ -20,8 +20,8 @@
 
     <!-- Load More Trigger (Sentinel) -->
     <div ref="loadTrigger" class="load-trigger">
-      <div v-if="hasMore" class="loading-spinner">
-        <span>Loading...</span>
+      <div v-if="isLoading || hasMore" class="loading-spinner">
+        <span>{{ isLoading ? t('common.loading') : 'Loading...' }}</span>
       </div>
       <div v-else class="end-message">
         <span>·</span>
@@ -63,9 +63,10 @@ useHead({
   ]
 })
 
-import { dailyData, type Post } from '@/data/dailyData';
+import { fetchPostsFromCloud, type Post } from '@/data/dailyData';
 
-const posts = ref<Post[]>(dailyData);
+const posts = ref<Post[]>([]);
+const isLoading = ref(true);
 
 // Lazy Loading State
 const page = ref(1);
@@ -115,13 +116,23 @@ const updateColumnCount = () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
 
+  // Fetch data from CloudBase
+  try {
+    const cloudPosts = await fetchPostsFromCloud();
+    posts.value = cloudPosts;
+  } catch (error) {
+    console.error('Failed to load daily posts:', error);
+  } finally {
+    isLoading.value = false;
+  }
+
   // Setup Intersection Observer for Infinite Scroll
   observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && hasMore.value) {
+    if (entries[0].isIntersecting && hasMore.value && !isLoading.value) {
       loadMore();
     }
   }, {
