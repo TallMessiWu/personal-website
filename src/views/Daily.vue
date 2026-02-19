@@ -18,6 +18,16 @@
       </div>
     </div>
 
+    <!-- Load More Trigger (Sentinel) -->
+    <div ref="loadTrigger" class="load-trigger">
+      <div v-if="hasMore" class="loading-spinner">
+        <span>Loading...</span>
+      </div>
+      <div v-else class="end-message">
+        <span>·</span>
+      </div>
+    </div>
+
     <!-- Details Modal Overlay -->
     <transition name="modal-fade">
       <div v-if="activePost" class="modal-overlay" :class="{ 'is-closing': isClosing }" @click.self="closePost">
@@ -57,6 +67,12 @@ import { dailyData, type Post } from '@/data/dailyData';
 
 const posts = ref<Post[]>(dailyData);
 
+// Lazy Loading State
+const page = ref(1);
+const pageSize = 12; // Load 12 posts per batch
+const loadTrigger = ref<HTMLElement | null>(null);
+let observer: IntersectionObserver | null = null;
+
 // Sort posts: Pinned first, then by Date descending
 const sortedPosts = computed(() => {
   return [...posts.value].sort((a, b) => {
@@ -68,6 +84,22 @@ const sortedPosts = computed(() => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 });
+
+// Visible posts for lazy loading
+const visiblePosts = computed(() => {
+  return sortedPosts.value.slice(0, page.value * pageSize);
+});
+
+// Check if there are more posts to load
+const hasMore = computed(() => {
+  return visiblePosts.value.length < sortedPosts.value.length;
+});
+
+const loadMore = () => {
+  if (hasMore.value) {
+    page.value++;
+  }
+};
 
 // Masonry Logic (JS-based to ensure left-to-right filling order)
 const columnCount = ref(3);
@@ -86,10 +118,27 @@ const updateColumnCount = () => {
 onMounted(() => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
+
+  // Setup Intersection Observer for Infinite Scroll
+  observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && hasMore.value) {
+      loadMore();
+    }
+  }, {
+    rootMargin: '200px', // Trigger loading before reaching the very bottom
+    threshold: 0.1
+  });
+
+  if (loadTrigger.value) {
+    observer.observe(loadTrigger.value);
+  }
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateColumnCount);
+  if (observer) {
+    observer.disconnect();
+  }
 });
 
 // Distribute posts into columns using height-balancing algorithm
@@ -126,7 +175,8 @@ const columns = computed(() => {
     return height;
   };
 
-  sortedPosts.value.forEach((post) => {
+  // Use visiblePosts instead of sortedPosts for infinite scroll
+  visiblePosts.value.forEach((post) => {
     // Find shortest column
     let minHeight = colHeights[0];
     let minIndex = 0;
@@ -389,6 +439,59 @@ const closePost = () => {
     left: 15px; /* Top left inside */
     background: rgba(0,0,0,0.5); /* Stronger contrast */
     border: none;
+  }
+}
+
+.load-trigger {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-text-secondary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.end-message {
+  opacity: 0.5;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 200px;
+  gap: 15px;
+  color: var(--color-text-secondary);
+  font-weight: bold;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-text-secondary);
+    opacity: 0.3;
   }
 }
 </style>
