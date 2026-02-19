@@ -93,3 +93,12 @@ onUnmounted(() => {
   }
 }
 </style>
+
+<style>
+/* Global style to force hide back-to-top when any modal/expanded card is open */
+body.modal-open .back-to-top-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(12px) !important;
+}
+</style>

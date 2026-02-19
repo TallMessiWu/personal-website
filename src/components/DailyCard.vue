@@ -8,6 +8,57 @@
       <span>LIVE</span>
     </div>
 
+    <!-- Custom Full screen Image/Live Viewer -->
+    <teleport to="body">
+      <transition name="viewer-fade">
+        <div v-if="viewerShow" class="custom-viewer-overlay" @click.self="closeViewer">
+          <div class="viewer-content">
+            <!-- Close Button -->
+            <button class="viewer-close-btn" @click="closeViewer">
+              <el-icon><Close /></el-icon>
+            </button>
+
+            <!-- Image Counter -->
+            <div v-if="post.images && post.images.length > 1" class="viewer-counter">
+              {{ viewerIndex + 1 }} / {{ post.images.length }}
+            </div>
+
+            <!-- Navigation -->
+            <button v-if="viewerIndex > 0" class="viewer-nav prev" @click="prevViewerImage">
+              <el-icon><ArrowLeft /></el-icon>
+            </button>
+            <button v-if="post.images && viewerIndex < post.images.length - 1" class="viewer-nav next" @click="nextViewerImage">
+              <el-icon><ArrowRight /></el-icon>
+            </button>
+
+            <!-- Media Container -->
+            <div class="viewer-media-wrapper">
+               <template v-if="isViewerLivePhoto">
+                 <div class="viewer-live-container">
+                   <img :src="viewerMediaSrc" alt="viewer cover" class="viewer-image" />
+                   <video v-show="viewerIsPlaying"
+                          ref="viewerVideoRef"
+                          :src="viewerVideoSrc"
+                          class="viewer-video"
+                          muted
+                          playsinline
+                          @ended="viewerIsPlaying = false"
+                   ></video>
+                   <div v-if="isViewerLivePhoto" class="live-icon-badge in-viewer">
+                      <div class="live-icon-symbol">◎</div>
+                      <span>LIVE</span>
+                   </div>
+                 </div>
+               </template>
+               <template v-else>
+                 <img :src="viewerMediaSrc" alt="viewer image" class="viewer-image" />
+               </template>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </teleport>
+
     <div class="media-container" v-if="(post.images && post.images.length > 0) || post.video">
       <!-- 1. Video Expanded Mode: Bilibili Iframe or Auto-play simulation -->
       <div v-if="post.video && expanded" class="video-player-container">
@@ -33,23 +84,23 @@
           <template v-if="isCurrentLivePhoto">
              <!-- Live Photo Container -->
              <div class="live-photo-container">
-               <!-- Cover Image -->
-               <img :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
+                <!-- Cover Image -->
+                <img :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
 
-               <!-- Video -->
-               <video v-show="isPlayingLive"
-                      ref="liveVideoRef"
-                      :src="currentLivePhoto.video"
-                      class="slider-image live-video"
-                      muted
-                      playsinline
-                      @ended="onLiveVideoEnded"
-               ></video>
+                <!-- Video -->
+                <video v-show="isPlayingLive"
+                       ref="liveVideoRef"
+                       :src="currentLivePhoto.video"
+                       class="slider-image live-video"
+                       muted
+                       playsinline
+                       @ended="onLiveVideoEnded"
+                ></video>
              </div>
           </template>
           <template v-else>
-             <!-- Standard Image -->
-             <img :src="currentImageSrc" alt="post image" class="slider-image" />
+              <!-- Standard Image -->
+              <img :src="currentImageSrc" alt="post image" class="slider-image" />
           </template>
         </div>
 
@@ -70,14 +121,14 @@
         <!-- Case 1: Single Live Photo -->
         <template v-if="isSingleLivePhoto">
            <div class="live-photo-container">
-             <img :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
-             <video v-show="isPlayingLive"
-                    ref="liveVideoRef"
-                    :src="singleLivePhotoData.video"
-                    muted
-                    playsinline
-                    @ended="onLiveVideoEnded"
-             ></video>
+              <img :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
+              <video v-show="isPlayingLive"
+                     ref="liveVideoRef"
+                     :src="singleLivePhotoData.video"
+                     muted
+                     playsinline
+                     @ended="onLiveVideoEnded"
+              ></video>
            </div>
         </template>
 
@@ -125,8 +176,8 @@
 </template>
 
 <script setup lang="ts">
-import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Location } from '@element-plus/icons-vue'
-import { ref, computed, watch, nextTick } from 'vue';
+import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close } from '@element-plus/icons-vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 
 import { dailyData, type Post } from '@/data/dailyData';
 
@@ -135,9 +186,22 @@ const props = defineProps<{
   expanded?: boolean
 }>()
 
+// Viewer State
+const viewerShow = ref(false);
+const viewerIndex = ref(0);
+const viewerIsPlaying = ref(false);
+const viewerVideoRef = ref<HTMLVideoElement | null>(null);
+let viewerLiveTimer: ReturnType<typeof setTimeout> | null = null;
+
 // Check if post has any media
 const hasMedia = computed(() => {
   return (props.post.images && props.post.images.length > 0) || !!props.post.video;
+});
+
+// Preview List for el-image
+const previewList = computed(() => {
+  if (!props.post.images) return [];
+  return props.post.images.map(img => img.image);
 });
 
 // Slider Logic
@@ -207,12 +271,107 @@ const stopLivePhoto = () => {
 
 const handleMediaClick = (e: MouseEvent) => {
   if (props.expanded) {
-    // Stop propagation when expanded to prevent closing modal or other side effects
     e.stopPropagation();
-    // Click-to-play removed as per requirement. Auto-play handled by watchers.
+
+    // 1. If playing on card, stop it
+    if (isPlayingLive.value) {
+      stopLivePhoto();
+    }
+
+    // 2. Open viewer at current index
+    viewerIndex.value = currentImageIndex.value;
+    viewerShow.value = true;
+
+    // 3. Start viewer playback logic
+    playViewerLive();
   }
-  // When not expanded, let it bubble up to Daily.vue's openPost
 };
+
+const closeViewer = () => {
+  // Sync back the index so the card shows the last seen image in viewer
+  currentImageIndex.value = viewerIndex.value;
+  viewerShow.value = false;
+  stopViewerLive();
+};
+
+const playViewerLive = () => {
+  stopViewerLive();
+  if (!isViewerLivePhoto.value) return;
+
+  viewerLiveTimer = setTimeout(() => {
+    viewerIsPlaying.value = true;
+    nextTick(() => {
+      if (viewerVideoRef.value) {
+        viewerVideoRef.value.play().catch(e => console.log('Viewer autoplay blocked', e));
+      }
+    });
+  }, 500);
+};
+
+const stopViewerLive = () => {
+  if (viewerLiveTimer) clearTimeout(viewerLiveTimer);
+  if (viewerVideoRef.value) {
+    viewerVideoRef.value.pause();
+    viewerVideoRef.value.currentTime = 0;
+  }
+  viewerIsPlaying.value = false;
+};
+
+const nextViewerImage = () => {
+  if (props.post.images && viewerIndex.value < props.post.images.length - 1) {
+    viewerIndex.value++;
+    playViewerLive();
+  }
+};
+
+const prevViewerImage = () => {
+  if (viewerIndex.value > 0) {
+    viewerIndex.value--;
+    playViewerLive();
+  }
+};
+
+const viewerMediaSrc = computed(() => {
+  if (!props.post.images || !props.post.images.length) return '';
+  return props.post.images[viewerIndex.value]?.image || '';
+});
+
+const isViewerLivePhoto = computed(() => {
+  if (!props.post.images || !props.post.images.length) return false;
+  return !!props.post.images[viewerIndex.value]?.video;
+});
+
+const viewerVideoSrc = computed(() => {
+  if (!isViewerLivePhoto.value || !props.post.images) return '';
+  return props.post.images[viewerIndex.value]?.video || '';
+});
+
+// Keyboard Support
+const handleKeydown = (e: KeyboardEvent) => {
+  if (!viewerShow.value) return;
+  if (e.key === 'Escape') closeViewer();
+  if (e.key === 'ArrowRight') nextViewerImage();
+  if (e.key === 'ArrowLeft') prevViewerImage();
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+
+  // If mounted in expanded state (e.g. in Modal), set body class and autoplay
+  if (props.expanded) {
+    document.body.classList.add('modal-open');
+    if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
+      playLivePhoto();
+    }
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
+  if (props.expanded) {
+    document.body.classList.remove('modal-open');
+  }
+});
 
 
 
@@ -234,13 +393,15 @@ watch(currentImageIndex, () => {
 // Watch for expanded state to start auto-play if first slide is Live
 watch(() => props.expanded, (newVal) => {
   if (newVal) {
+    document.body.classList.add('modal-open');
     if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
       playLivePhoto();
     }
   } else {
+    document.body.classList.remove('modal-open');
     stopLivePhoto();
   }
-}, { immediate: true });
+});
 
 const nextImage = () => {
   if (props.post.images && currentImageIndex.value < props.post.images.length - 1) {
@@ -407,6 +568,19 @@ const formattedDate = computed(() => {
       object-fit: contain;
     }
 
+    .slider-item {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      /* Ensure cursor is zoom-in when expanded to indicate preview */
+      .is-expanded & {
+        cursor: zoom-in;
+      }
+    }
+
     .slider-counter {
       position: absolute;
       top: 15px;
@@ -460,6 +634,13 @@ const formattedDate = computed(() => {
       max-height: 450px; /* Limit max height for very tall images */
       object-fit: cover; /* Crop if necessary to maintain aspect ratio */
       display: block;
+    }
+
+    /* Target the container in preview mode */
+    & {
+       .is-expanded & {
+          cursor: zoom-in;
+       }
     }
 
     .video-placeholder {
@@ -625,5 +806,140 @@ const formattedDate = computed(() => {
     justify-content: center;
     align-items: center;
   }
+
+  &.in-viewer {
+    top: 30px;
+    left: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 6px 12px;
+  }
+}
+
+/* Custom Viewer Styles */
+.custom-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 3000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewer-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewer-media-wrapper {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .viewer-image, .viewer-video {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .viewer-live-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .viewer-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.viewer-close-btn {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3100;
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+}
+
+.viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3100;
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &.prev { left: 40px; }
+  &.next { right: 40px; }
+}
+
+.viewer-counter {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  z-index: 3100;
+}
+
+.viewer-fade-enter-active,
+.viewer-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.viewer-fade-enter-from,
+.viewer-fade-leave-to {
+  opacity: 0;
 }
 </style>
