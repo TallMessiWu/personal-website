@@ -142,11 +142,12 @@
         <!-- Case 1: Single Live Photo -->
         <template v-if="isSingleLivePhoto">
            <div class="live-photo-container">
-              <img :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" />
+              <img :src="singleLivePhotoData.cover" alt="live photo cover" referrerpolicy="no-referrer" class="live-cover" />
               <video v-show="isPlayingLive"
                      ref="liveVideoRef"
                      :src="singleLivePhotoData.video"
                      playsinline
+                     class="live-video"
                      @ended="onLiveVideoEnded"
               ></video>
            </div>
