@@ -4,6 +4,16 @@
 
 > A modern personal website built with **Vue 3 + TypeScript + Element Plus**, featuring VS Code–inspired design, bilingual support (Chinese/English), and dark/light theme switching.
 
+## 🔗 Project Links
+
+### Frontend
+- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website)
+- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website-181717?logo=github)](https://github.com/TallMessiWu/personal-website)
+
+### Backend
+- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website--backend-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website-backend)
+- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website--backend-181717?logo=github)](https://github.com/TallMessiWu/personal-website-backend)
+
 ## ✨ Features
 
 - 🎨 **VS Code–Inspired Design** — Code window aesthetics, syntax highlighting, and developer-oriented UI throughout

@@ -4,6 +4,16 @@
 
 > 一个基于 **Vue 3 + TypeScript + Element Plus** 构建的现代化个人网站，融合 VS Code 风格的设计语言，支持中英文切换和深色/浅色主题。
 
+## 🔗 项目源码
+
+### 前端项目
+- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website)
+- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website-181717?logo=github)](https://github.com/TallMessiWu/personal-website)
+
+### 后端项目
+- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website--backend-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website-backend)
+- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website--backend-181717?logo=github)](https://github.com/TallMessiWu/personal-website-backend)
+
 ## ✨ 功能特性
 
 - 🎨 **VS Code 风格设计** — 代码窗口、语法高亮等程序员美学元素贯穿全站
