@@ -21,7 +21,7 @@
     <!-- Load More Trigger (Sentinel) -->
     <div ref="loadTrigger" class="load-trigger">
       <div v-if="isLoading || hasMore" class="loading-spinner">
-        <span>{{ isLoading ? t('common.loading') : 'Loading...' }}</span>
+        <span>{{ t('common.loading') }}</span>
       </div>
       <div v-else class="end-message">
         <span>·</span>

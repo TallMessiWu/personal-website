@@ -52,7 +52,6 @@
                           ref="viewerVideoRef"
                           :src="viewerVideoSrc"
                           class="viewer-video"
-                          muted
                           playsinline
                           @ended="viewerIsPlaying = false"
                    ></video>
@@ -115,7 +114,6 @@
                        ref="liveVideoRef"
                        :src="currentLivePhoto.video"
                        class="slider-image live-video"
-                       muted
                        playsinline
                        @ended="onLiveVideoEnded"
                 ></video>
@@ -148,7 +146,6 @@
               <video v-show="isPlayingLive"
                      ref="liveVideoRef"
                      :src="singleLivePhotoData.video"
-                     muted
                      playsinline
                      @ended="onLiveVideoEnded"
               ></video>

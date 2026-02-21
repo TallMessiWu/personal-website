@@ -1,4 +1,4 @@
-import { db, ensureAuth } from '@/utils/tcb';
+import app, { db, ensureAuth } from '@/utils/tcb';
 
 export type ImageItem = { image: string; thumbnail?: string; video?: string };
 
@@ -13,6 +13,14 @@ export interface Post {
 }
 
 /**
+ * 判断是否为腾讯云存储 fileid
+ */
+const isFileId = (path: string | undefined): boolean => {
+  if (!path) return false;
+  return path.startsWith('cloud://');
+};
+
+/**
  * 从云开发数据库拉取所有日常动态数据
  */
 export const fetchPostsFromCloud = async (): Promise<Post[]> => {
@@ -21,14 +29,58 @@ export const fetchPostsFromCloud = async (): Promise<Post[]> => {
     await ensureAuth();
 
     const res = await db.collection('posts')
-      .limit(100) // 默认拉取前100条，后续可配合分页
+      .orderBy('date', 'desc')
+      .limit(100)
       .get();
 
-    if (res.data) {
-      return res.data.map((item: any) => ({
+    if (res.data && res.data.length > 0) {
+      const posts = res.data.map((item: any) => ({
         ...item,
-        id: item._id || item.id // 优先使用云数据库的 _id 作为唯一标识
+        id: item._id || item.id
       }));
+
+      // 提取所有需要解析的 fileId
+      const fileIdSet = new Set<string>();
+      posts.forEach((post: Post) => {
+        if (post.images) {
+          post.images.forEach(img => {
+            if (isFileId(img.image)) fileIdSet.add(img.image);
+            if (isFileId(img.thumbnail)) fileIdSet.add(img.thumbnail!);
+            if (isFileId(img.video)) fileIdSet.add(img.video!);
+          });
+        }
+        if (isFileId(post.video)) fileIdSet.add(post.video!);
+      });
+
+      const fileIds = Array.from(fileIdSet);
+      if (fileIds.length > 0) {
+        // 批量获取临时链接
+        const res = await app.getTempFileURL({
+          fileList: fileIds
+        });
+
+        const fileList = res.fileList || [];
+        const fileMap = new Map<string, string>();
+        fileList.forEach((item: any) => {
+          if (item.tempFileURL) {
+            fileMap.set(item.fileID, item.tempFileURL);
+          }
+        });
+
+        // 替换 fileId 为真实链接
+        posts.forEach((post: Post) => {
+          if (post.images) {
+            post.images.forEach(img => {
+              if (isFileId(img.image)) img.image = fileMap.get(img.image) || img.image;
+              if (isFileId(img.thumbnail)) img.thumbnail = fileMap.get(img.thumbnail!) || img.thumbnail;
+              if (isFileId(img.video)) img.video = fileMap.get(img.video!) || img.video;
+            });
+          }
+          if (isFileId(post.video)) post.video = fileMap.get(post.video!) || post.video;
+        });
+      }
+
+      return posts;
     }
     return [];
   } catch (error) {
