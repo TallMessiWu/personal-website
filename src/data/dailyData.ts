@@ -3,7 +3,7 @@ import app, { db, ensureAuth } from '@/utils/tcb';
 export type ImageItem = { image: string; thumbnail?: string; video?: string };
 
 export interface Post {
-  id: string | number; // 兼容数据库 _id (string) 和 旧版 id (number)
+  _id: string; // 云数据库自动生成的唯一标识符
   title: string;
   content?: string;
   images?: ImageItem[]; // Optional for text-only posts
@@ -34,10 +34,7 @@ export const fetchPostsFromCloud = async (): Promise<Post[]> => {
       .get();
 
     if (res.data && res.data.length > 0) {
-      const posts = res.data.map((item: any) => ({
-        ...item,
-        id: item._id || item.id
-      }));
+      const posts = res.data as Post[];
 
       // 提取所有需要解析的 fileId
       const fileIdSet = new Set<string>();

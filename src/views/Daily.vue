@@ -11,7 +11,7 @@
       <div class="masonry-column" v-for="(column, index) in columns" :key="index">
         <daily-card
           v-for="post in column"
-          :key="post.id"
+          :key="post._id"
           :post="post"
           @click="(e: MouseEvent) => openPost(post, e)"
         />

@@ -12,7 +12,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | :--- | :--- | :--- | :--- |
-| `id` | `number` | 是 | 唯一标识符，递增即可。 |
+| `_id` | `string` | 是 | 唯一标识符。云数据库自动生成，无需手动填写。 |
 | `title` | `string` | 是 | 动态标题。 |
 | `content` | `string` | 否 | 动态正文，支持使用 `\n` 换行。 |
 | `date` | `string` | 是 | 发布日期，格式需为 `YYYY-MM-DD HH:mm`。 |
@@ -37,7 +37,7 @@
 ### 1. 纯标题 (Title Only)
 ```typescript
 {
-  id: 1,
+  _id: 'auto-generated',
   title: '今日心情：晴',
   date: '2024-02-19 09:00'
 }
@@ -46,7 +46,7 @@
 ### 2. 纯文字 (Text Only)
 ```typescript
 {
-  id: 2,
+  _id: 'auto-generated',
   title: '读书笔记',
   content: '今天读了《黑客与画家》，感悟良多。\n世界在变，但创造力永恒。',
   date: '2024-02-19 10:30'
@@ -56,7 +56,7 @@
 ### 3. 单张图片 (Single Image)
 ```typescript
 {
-  id: 3,
+  _id: 'auto-generated',
   title: '午后咖啡',
   images: [
     {
@@ -71,7 +71,7 @@
 ### 4. 多张图片 (Multiple Images)
 ```typescript
 {
-  id: 4,
+  _id: 'auto-generated',
   title: '周末扫街',
   images: [
     { image: '/assets/daily/street-1.jpg', thumbnail: '/assets/daily/street-1-t.jpg' },
@@ -85,7 +85,7 @@
 ### 5. 多张图包含 Live Photo
 ```typescript
 {
-  id: 5,
+  _id: 'auto-generated',
   title: '洱海日落',
   images: [
     {
@@ -105,7 +105,7 @@
 ### 6. Bilibili 视频
 ```typescript
 {
-  id: 6,
+  _id: 'auto-generated',
   title: '推荐一个超赞的视频',
   content: '这个视频讲得非常透彻。',
   video: 'https://www.bilibili.com/video/BV1v63xz3EwX/',
