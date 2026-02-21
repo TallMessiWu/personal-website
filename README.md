@@ -10,9 +10,9 @@
 - [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website)
 - [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website-181717?logo=github)](https://github.com/TallMessiWu/personal-website)
 
-### 后端项目
-- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website--backend-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website-backend)
-- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website--backend-181717?logo=github)](https://github.com/TallMessiWu/personal-website-backend)
+### 后台管理项目 (Admin)
+- [![Gitee](https://img.shields.io/badge/Gitee-tallmessiwu%2Fpersonal--website--admin-C71D23?logo=gitee)](https://gitee.com/tallmessiwu/personal-website-admin)
+- [![GitHub](https://img.shields.io/badge/GitHub-TallMessiWu%2Fpersonal--website--admin-181717?logo=github)](https://github.com/TallMessiWu/personal-website-admin)
 
 ## ✨ 功能特性
 
