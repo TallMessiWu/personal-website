@@ -7,12 +7,13 @@
       <p class="subtitle">{{ t('daily.subtitle') }}</p>
     </div>
 
-    <div class="masonry-container">
+    <div class="masonry-container" ref="masonryRef">
       <div class="masonry-column" v-for="(column, index) in columns" :key="index">
         <daily-card
           v-for="post in column"
           :key="post._id"
           :post="post"
+          :data-post-id="post._id"
           @click="(e: MouseEvent) => openPost(post, e)"
         />
       </div>
@@ -48,7 +49,7 @@
 import { useHead } from '@vueuse/head';
 import DailyCard from '@/components/DailyCard.vue';
 import { Close } from '@element-plus/icons-vue';
-import { ref, onMounted, onUnmounted, nextTick, computed, type CSSProperties } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, computed, watch, type CSSProperties } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -102,8 +103,12 @@ const loadMore = () => {
   }
 };
 
-// Masonry Logic (JS-based to ensure left-to-right filling order)
+// Masonry Logic — 基于真实 DOM 高度的两阶段瀑布流
 const columnCount = ref(3);
+const columns = ref<Post[][]>([]);
+const masonryRef = ref<HTMLElement | null>(null);
+const cardHeights = new Map<string, number>();
+let imgLoadTimer: ReturnType<typeof setTimeout> | null = null;
 
 const updateColumnCount = () => {
   const width = window.innerWidth;
@@ -112,13 +117,79 @@ const updateColumnCount = () => {
   } else if (width > 600) {
     columnCount.value = 2;
   } else {
-    columnCount.value = 1; // Mobile: 1 Column for better readability
+    columnCount.value = 1;
   }
+};
+
+// 估算高度（仅在无真实高度时作为 fallback）
+const getEstimatedHeight = (post: Post): number => {
+  let h = 120;
+  if (post.images && post.images.length > 0) h += 200;
+  else if (post.content) h += 68;
+  return h;
+};
+
+// 按最短列优先将帖子分配到各列
+const distributeCards = () => {
+  const cols: Post[][] = Array.from({ length: columnCount.value }, () => []);
+  const colHeights = new Array(columnCount.value).fill(0);
+
+  visiblePosts.value.forEach((post) => {
+    const height = cardHeights.get(post._id) ?? getEstimatedHeight(post);
+    let minIdx = 0;
+    for (let i = 1; i < columnCount.value; i++) {
+      if (colHeights[i] < colHeights[minIdx]) minIdx = i;
+    }
+    cols[minIdx].push(post);
+    colHeights[minIdx] += height;
+  });
+
+  columns.value = cols;
+};
+
+// 测量所有卡片的真实 DOM 高度
+const measureCardHeights = () => {
+  if (!masonryRef.value) return false;
+  let changed = false;
+  const cards = masonryRef.value.querySelectorAll<HTMLElement>('.daily-card[data-post-id]');
+  cards.forEach((el) => {
+    const id = el.dataset.postId;
+    if (!id) return;
+    const h = el.offsetHeight;
+    if (cardHeights.get(id) !== h) {
+      cardHeights.set(id, h);
+      changed = true;
+    }
+  });
+  return changed;
+};
+
+// 数据或列数变化 → 分配 → 测量 → 重新分配
+watch([visiblePosts, columnCount], () => {
+  distributeCards();
+  nextTick(() => {
+    if (measureCardHeights()) {
+      distributeCards();
+    }
+  });
+});
+
+// 图片加载完成后重新测量（防抖 100ms）
+const onImageLoad = () => {
+  if (imgLoadTimer) clearTimeout(imgLoadTimer);
+  imgLoadTimer = setTimeout(() => {
+    if (measureCardHeights()) {
+      distributeCards();
+    }
+  }, 100);
 };
 
 onMounted(async () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
+
+  // 监听 masonry 容器内图片加载事件（capture 模式捕获子元素 load）
+  masonryRef.value?.addEventListener('load', onImageLoad, true);
 
   // Fetch data from CloudBase
   try {
@@ -136,7 +207,7 @@ onMounted(async () => {
       loadMore();
     }
   }, {
-    rootMargin: '200px', // Trigger loading before reaching the very bottom
+    rootMargin: '200px',
     threshold: 0.1
   });
 
@@ -147,51 +218,11 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateColumnCount);
+  masonryRef.value?.removeEventListener('load', onImageLoad, true);
+  if (imgLoadTimer) clearTimeout(imgLoadTimer);
   if (observer) {
     observer.disconnect();
   }
-});
-
-// Distribute posts into columns using height-balancing algorithm
-const columns = computed(() => {
-  const cols: Post[][] = Array.from({ length: columnCount.value }, () => []);
-  const colHeights = new Array(columnCount.value).fill(0);
-
-  const getPostEstimatedHeight = (post: Post): number => {
-    let height = 120; // Base height (Title + Meta + Padding + Margins)
-
-    // Media Card — 统一估算媒体高度，云存储 URL 中无可靠的尺寸信息
-    if (post.images && post.images.length > 0) {
-      height += 200;
-    }
-    // Text-Only Card (limit to 2 lines ~ 50px)
-    else if (post.content) {
-      height += 68; // Increased from 60 to account for 24px top padding
-    }
-    // Title-Only Card (no extra height)
-
-    return height;
-  };
-
-  // Use visiblePosts instead of sortedPosts for infinite scroll
-  visiblePosts.value.forEach((post) => {
-    // Find shortest column
-    let minHeight = colHeights[0];
-    let minIndex = 0;
-
-    for (let i = 1; i < columnCount.value; i++) {
-      if (colHeights[i] < minHeight) {
-        minHeight = colHeights[i];
-        minIndex = i;
-      }
-    }
-
-    // Add post to shortest column
-    cols[minIndex].push(post);
-    colHeights[minIndex] += getPostEstimatedHeight(post);
-  });
-
-  return cols;
 });
 
 const activePost = ref<Post | null>(null);
