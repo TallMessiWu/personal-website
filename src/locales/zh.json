@@ -60,13 +60,10 @@
     },
     "portfolio": {
         "title": "作品集",
-        "filter": {
-            "all": "全部",
-            "video": "视频",
-            "photo": "摄影",
-            "code": "代码"
-        },
-        "viewBtn": "查看详情"
+        "viewBtn": "查看详情",
+        "posts": "篇",
+        "empty": "暂无合集",
+        "pinned": "置顶"
     },
     "about": {
         "profile": {

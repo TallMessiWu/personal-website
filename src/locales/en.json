@@ -60,13 +60,10 @@
     },
     "portfolio": {
         "title": "Portfolio",
-        "filter": {
-            "all": "All",
-            "video": "Video",
-            "photo": "Photo",
-            "code": "Code"
-        },
-        "viewBtn": "View Details"
+        "viewBtn": "View Details",
+        "posts": "posts",
+        "empty": "No collections yet",
+        "pinned": "Pinned"
     },
     "about": {
         "profile": {

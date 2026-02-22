@@ -2,29 +2,46 @@
   <div class="portfolio-page">
     <div class="page-header">
       <h1 class="page-title">{{ t('portfolio.title') }}</h1>
-      <div class="filter-tabs">
-        <span
-          v-for="cat in categories"
-          :key="cat.value"
-          class="filter-item"
-          :class="{ active: selectedCategory === cat.value }"
-          @click="selectedCategory = cat.value"
-        >
-          {{ cat.label }}
-        </span>
+    </div>
+
+    <!-- 加载中 -->
+    <div v-if="isLoading" class="loading-state">
+      <div class="loading-spinner">
+        <span>{{ t('common.loading') }}</span>
       </div>
     </div>
 
-    <transition-group name="list" tag="div" class="portfolio-grid">
+    <!-- 数据为空 -->
+    <div v-else-if="collections.length === 0" class="empty-state">
+      <span>{{ t('portfolio.empty') }}</span>
+    </div>
+
+    <!-- 合集网格 -->
+    <transition-group v-else name="list" tag="div" class="portfolio-grid">
       <div
-        v-for="item in filteredItems"
-        :key="item.id"
+        v-for="item in collections"
+        :key="item._id"
         class="portfolio-item"
       >
         <div class="image-wrapper">
-          <img :src="item.image" :alt="item.title" loading="lazy" />
+          <img
+            v-if="item.thumbnail"
+            :src="item.thumbnail"
+            :alt="item.name"
+            loading="lazy"
+          />
+          <div v-else class="placeholder-cover">
+            <span>{{ item.name.charAt(0) }}</span>
+          </div>
+          <!-- 置顶标识 -->
+          <div v-if="item.pinned" class="pinned-indicator">
+            {{ t('portfolio.pinned') }}
+          </div>
           <div class="overlay">
-            <h3 class="item-title">{{ item.title }}</h3>
+            <h3 class="item-title">{{ item.name }}</h3>
+            <div class="item-meta">
+              <span class="post-count">{{ item.postCount }} {{ t('portfolio.posts') }}</span>
+            </div>
             <span class="view-btn">{{ t('portfolio.viewBtn') }}</span>
           </div>
         </div>
@@ -34,9 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
+import { fetchCollectionsFromCloud, type CollectionDisplay } from '@/data/portfolioData';
 
 const { t } = useI18n();
 
@@ -50,28 +68,17 @@ useHead({
   ]
 })
 
-const categories = computed(() => [
-  { label: t('portfolio.filter.all'), value: 'All' }, // Changed 'all' to 'All' to match selectedCategory
-  { label: t('portfolio.filter.video'), value: 'video' },
-  { label: t('portfolio.filter.photo'), value: 'photo' },
-  { label: t('portfolio.filter.code'), value: 'code' }
-]);
+const collections = ref<CollectionDisplay[]>([]);
+const isLoading = ref(true);
 
-const selectedCategory = ref('All');
-
-
-const items = ref([
-  { id: 1, title: 'Ancient Town', category: 'photo', image: 'https://placehold.co/600x400/1e1e1e/333.png?text=Ancient+Town&font=roboto' },
-  { id: 2, title: 'Personal Website v1.0', category: 'code', image: 'https://placehold.co/600x400/1e1e1e/333.png?text=Website&font=roboto' },
-  { id: 3, title: 'City Night VLOG', category: 'video', image: 'https://placehold.co/600x400/1e1e1e/333.png?text=Vlog&font=roboto' },
-  { id: 4, title: 'Portrait Photography', category: 'photo', image: 'https://placehold.co/600x800/1e1e1e/333.png?text=Portrait&font=roboto' },
-  { id: 5, title: 'Open Source Lib', category: 'code', image: 'https://placehold.co/600x400/1e1e1e/333.png?text=Library&font=roboto' },
-  { id: 6, title: 'Travel Record', category: 'video', image: 'https://placehold.co/600x400/1e1e1e/333.png?text=Travel&font=roboto' },
-]);
-
-const filteredItems = computed(() => {
-  if (selectedCategory.value === 'All') return items.value;
-  return items.value.filter(item => item.category === selectedCategory.value);
+onMounted(async () => {
+  try {
+    collections.value = await fetchCollectionsFromCloud();
+  } catch (error) {
+    console.error('Failed to load portfolio collections:', error);
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>
 
@@ -88,6 +95,8 @@ const filteredItems = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 30px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 20px;
 }
 
 .page-title {
@@ -96,33 +105,34 @@ const filteredItems = computed(() => {
   font-weight: 700;
 }
 
-.filter-tabs {
+.loading-state,
+.empty-state {
   display: flex;
-  gap: 10px;
-  background-color: var(--color-surface);
-  padding: 5px;
-  border-radius: 50px;
-  border: 1px solid var(--color-border);
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
 
-  .filter-item {
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 8px 20px;
-    border-radius: 50px;
-    transition: all 0.2s;
-    color: var(--color-text-secondary);
-    font-family: var(--font-family-base);
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-    &:hover {
-      color: var(--color-text-primary);
-      background-color: var(--color-surface-hover);
-    }
-
-    &.active {
-      color: #fff;
-      background-color: var(--color-accent-primary);
-    }
+  &::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-text-secondary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .portfolio-grid {
@@ -138,7 +148,7 @@ const filteredItems = computed(() => {
     border-radius: 12px;
     border: 1px solid var(--color-border);
     background-color: var(--color-surface);
-    height: 250px;
+    aspect-ratio: 16 / 10;
     cursor: pointer;
 
     img {
@@ -148,6 +158,19 @@ const filteredItems = computed(() => {
       display: block;
       transition: transform 0.5s ease;
       opacity: 0.8;
+    }
+
+    .placeholder-cover {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary, #6366f1));
+      font-size: 4rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.8);
+      transition: transform 0.5s ease;
     }
 
     .overlay {
@@ -160,14 +183,15 @@ const filteredItems = computed(() => {
       align-items: center;
       opacity: 0;
       transition: opacity 0.3s ease;
-      gap: 15px;
+      gap: 12px;
       backdrop-filter: blur(2px);
     }
 
     &:hover {
       border-color: var(--color-accent-primary);
 
-      img {
+      img,
+      .placeholder-cover {
         transform: scale(1.1);
         opacity: 0.4;
       }
@@ -180,14 +204,43 @@ const filteredItems = computed(() => {
 }
 
 .item-title {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   transform: translateY(20px);
   transition: transform 0.3s ease;
 }
 
-.portfolio-item:hover .item-title {
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  transform: translateY(20px);
+  transition: transform 0.3s ease 0.05s;
+}
+
+.pinned-indicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 24px;
+  background-color: var(--color-accent-primary);
+  border-radius: 12px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.portfolio-item:hover .item-title,
+.portfolio-item:hover .item-meta {
   transform: translateY(0);
 }
 
@@ -195,12 +248,11 @@ const filteredItems = computed(() => {
   padding: 8px 20px;
   border: 1px solid var(--color-accent-primary);
   color: var(--color-accent-primary);
-  border-radius: 12px; /* Slightly grounded */
+  border-radius: 12px;
   font-size: 0.9rem;
-  transition: all 0.3s;
   background-color: rgba(0, 0, 0, 0.5);
   transform: translateY(20px);
-  transition: all 0.3s ease 0.1s; /* Delay */
+  transition: all 0.3s ease 0.1s;
 
   &:hover {
     background-color: var(--color-accent-primary);
