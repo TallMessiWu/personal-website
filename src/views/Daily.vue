@@ -159,23 +159,10 @@ const columns = computed(() => {
 
   const getPostEstimatedHeight = (post: Post): number => {
     let height = 120; // Base height (Title + Meta + Padding + Margins)
-    const width = 300; // Assumed card width
 
-    // Media Card
+    // Media Card — 统一估算媒体高度，云存储 URL 中无可靠的尺寸信息
     if (post.images && post.images.length > 0) {
-      // Try to parse dimensions from mock URL for better precision
-      // Format: .../600x400/...
-      const imgUrl = post.images[0].image;
-
-      const match = imgUrl ? imgUrl.match(/(\d+)x(\d+)/) : null;
-      if (match) {
-        const w = parseInt(match[1]);
-        const h = parseInt(match[2]);
-        // aspect ratio = h / w
-        height += (h / w) * width;
-      } else {
-        height += 300; // Default estimate for media
-      }
+      height += 200;
     }
     // Text-Only Card (limit to 2 lines ~ 50px)
     else if (post.content) {
