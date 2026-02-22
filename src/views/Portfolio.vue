@@ -64,12 +64,13 @@
               </div>
 
               <!-- Posts Masonry -->
-              <div class="masonry-container">
+              <div class="masonry-container" ref="masonryRef">
                 <div class="masonry-column" v-for="(column, index) in columns" :key="index">
                   <daily-card
                     v-for="post in column"
                     :key="post._id"
                     :post="post"
+                    :data-post-id="post._id"
                     @click="(e: MouseEvent) => openPost(post, e)"
                   />
                 </div>
@@ -103,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, type CSSProperties } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick, watch, type CSSProperties } from 'vue';
 import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 import { Close } from '@element-plus/icons-vue';
@@ -134,8 +135,13 @@ const modalStyle = ref<CSSProperties>({});
 const originRect = ref<DOMRect | null>(null);
 const isClosing = ref(false);
 
-// Masonry Logic for Modal
+// Masonry Logic — 基于真实 DOM 高度的两阶段瀑布流
 const columnCount = ref(3);
+const columns = ref<Post[][]>([]);
+const masonryRef = ref<HTMLElement | null>(null);
+const cardHeights = new Map<string, number>();
+let imgLoadTimer: ReturnType<typeof setTimeout> | null = null;
+
 const updateColumnCount = () => {
   const width = window.innerWidth;
   if (width > 1000) {
@@ -149,55 +155,72 @@ const updateColumnCount = () => {
 
 const sortedCollectionPosts = computed(() => {
   return [...collectionPosts.value].sort((a, b) => {
-    // 仅按时间倒序排列（合集内不处理置顶）
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 });
 
-const columns = computed(() => {
+// 估算高度（仅在无真实高度时作为 fallback）
+const getEstimatedHeight = (post: Post): number => {
+  let h = 120;
+  if (post.images && post.images.length > 0) h += 200;
+  else if (post.content) h += 68;
+  return h;
+};
+
+// 按最短列优先将帖子分配到各列
+const distributeCards = () => {
   const cols: Post[][] = Array.from({ length: columnCount.value }, () => []);
   const colHeights = new Array(columnCount.value).fill(0);
 
-  const getPostEstimatedHeight = (post: Post): number => {
-    let height = 120; // 基础高度 (标题 + 元信息 + 内边距 + 外边距)
-    const width = 300; // 假定卡片宽度
-
-    // 媒体卡片
-    if (post.images && post.images.length > 0) {
-      const imgUrl = post.images[0].image;
-      const match = imgUrl ? imgUrl.match(/(\d+)x(\d+)/) : null;
-      if (match) {
-        const w = parseInt(match[1]);
-        const h = parseInt(match[2]);
-        height += (h / w) * width;
-      } else {
-        height += 300; // 媒体默认高度估算
-      }
-    }
-    // 仅文字卡片
-    else if (post.content) {
-      height += 68;
-    }
-    return height;
-  };
-
   sortedCollectionPosts.value.forEach((post) => {
-    // 寻找最短列
-    let minHeight = colHeights[0];
-    let minIndex = 0;
+    const height = cardHeights.get(post._id) ?? getEstimatedHeight(post);
+    let minIdx = 0;
     for (let i = 1; i < columnCount.value; i++) {
-      if (colHeights[i] < minHeight) {
-        minHeight = colHeights[i];
-        minIndex = i;
-      }
+      if (colHeights[i] < colHeights[minIdx]) minIdx = i;
     }
-    // 加入最短列
-    cols[minIndex].push(post);
-    colHeights[minIndex] += getPostEstimatedHeight(post);
+    cols[minIdx].push(post);
+    colHeights[minIdx] += height;
   });
 
-  return cols;
+  columns.value = cols;
+};
+
+// 测量所有卡片的真实 DOM 高度
+const measureCardHeights = () => {
+  if (!masonryRef.value) return false;
+  let changed = false;
+  const cards = masonryRef.value.querySelectorAll<HTMLElement>('.daily-card[data-post-id]');
+  cards.forEach((el) => {
+    const id = el.dataset.postId;
+    if (!id) return;
+    const h = el.offsetHeight;
+    if (cardHeights.get(id) !== h) {
+      cardHeights.set(id, h);
+      changed = true;
+    }
+  });
+  return changed;
+};
+
+// 数据或列数变化 → 分配 → 测量 → 重新分配
+watch([sortedCollectionPosts, columnCount], () => {
+  distributeCards();
+  nextTick(() => {
+    if (measureCardHeights()) {
+      distributeCards();
+    }
+  });
 });
+
+// 图片加载完成后重新测量（防抖 100ms）
+const onImageLoad = () => {
+  if (imgLoadTimer) clearTimeout(imgLoadTimer);
+  imgLoadTimer = setTimeout(() => {
+    if (measureCardHeights()) {
+      distributeCards();
+    }
+  }, 100);
+};
 
 const openCollection = async (collection: CollectionDisplay, event: MouseEvent) => {
   if (isClosing.value) return;
@@ -342,6 +365,8 @@ const closePost = () => {
 onMounted(async () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
+  // 监听 masonry 容器内图片加载事件（capture 模式捕获子元素 load）
+  masonryRef.value?.addEventListener('load', onImageLoad, true);
   try {
     collections.value = await fetchCollectionsFromCloud();
   } catch (error) {
@@ -353,6 +378,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateColumnCount);
+  masonryRef.value?.removeEventListener('load', onImageLoad, true);
+  if (imgLoadTimer) clearTimeout(imgLoadTimer);
 });
 </script>
 
