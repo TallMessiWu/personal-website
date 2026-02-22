@@ -22,9 +22,9 @@
         v-for="item in collections"
         :key="item._id"
         class="portfolio-item"
-        @click="(e) => openCollection(item, e)"
+        @click.stop="handleCardClick(item, $event)"
       >
-        <div class="image-wrapper">
+        <div class="image-wrapper" :class="{ 'is-active': activeCardId === item._id }">
           <img
             v-if="item.thumbnail"
             :src="item.thumbnail"
@@ -43,7 +43,7 @@
             <div class="item-meta">
               <span class="post-count">{{ item.postCount }} {{ t('portfolio.posts') }}</span>
             </div>
-            <span class="view-btn">{{ t('portfolio.viewBtn') }}</span>
+            <span class="view-btn" @click.stop="openCollection(item, $event)">{{ t('portfolio.viewBtn') }}</span>
           </div>
         </div>
       </div>
@@ -135,6 +135,9 @@ const modalStyle = ref<CSSProperties>({});
 const originRect = ref<DOMRect | null>(null);
 const isClosing = ref(false);
 
+// Active card for mobile (simulates hover)
+const activeCardId = ref<string | null>(null);
+
 // Masonry Logic — 基于真实 DOM 高度的两阶段瀑布流
 const columnCount = ref(3);
 const columns = ref<Post[][]>([]);
@@ -222,10 +225,26 @@ const onImageLoad = () => {
   }, 100);
 };
 
+const handleCardClick = (collection: CollectionDisplay, event: MouseEvent) => {
+  const isMobile = window.innerWidth <= 800;
+  if (isMobile) {
+    if (activeCardId.value === collection._id) {
+      activeCardId.value = null;
+    } else {
+      activeCardId.value = collection._id;
+    }
+  } else {
+    openCollection(collection, event);
+  }
+};
+
 const openCollection = async (collection: CollectionDisplay, event: MouseEvent) => {
   if (isClosing.value) return;
 
-  const target = event.currentTarget as HTMLElement;
+  // Reset active card when opening modal
+  activeCardId.value = null;
+
+  const target = (event.currentTarget as HTMLElement).closest('.portfolio-item') as HTMLElement;
   const rect = target.getBoundingClientRect();
   originRect.value = rect;
 
@@ -362,9 +381,14 @@ const closePost = () => {
   }, 400);
 };
 
+const handleGlobalClick = () => {
+  activeCardId.value = null;
+};
+
 onMounted(async () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
+  window.addEventListener('click', handleGlobalClick);
   // 监听 masonry 容器内图片加载事件（capture 模式捕获子元素 load）
   masonryRef.value?.addEventListener('load', onImageLoad, true);
   try {
@@ -378,6 +402,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateColumnCount);
+  window.removeEventListener('click', handleGlobalClick);
   masonryRef.value?.removeEventListener('load', onImageLoad, true);
   if (imgLoadTimer) clearTimeout(imgLoadTimer);
 });
@@ -488,17 +513,46 @@ onUnmounted(() => {
       backdrop-filter: blur(2px);
     }
 
-    &:hover {
+    /* Hover effect for desktop, active class for mobile */
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--color-accent-primary);
+
+        img,
+        .placeholder-cover {
+          transform: scale(1.1);
+          opacity: 0.6;
+        }
+
+        .overlay {
+          opacity: 1;
+
+          .item-title,
+          .item-meta,
+          .view-btn {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+
+    &.is-active {
       border-color: var(--color-accent-primary);
 
       img,
       .placeholder-cover {
         transform: scale(1.1);
-        opacity: 0.6; /* 稍微降低透明度，配合 dark overlay 提升文字可读性 */
+        opacity: 0.6;
       }
 
       .overlay {
         opacity: 1;
+
+        .item-title,
+        .item-meta,
+        .view-btn {
+          transform: translateY(0);
+        }
       }
     }
   }
