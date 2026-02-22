@@ -153,3 +153,70 @@ export const fetchCollectionsFromCloud = async (): Promise<CollectionDisplay[]> 
     return [];
   }
 };
+
+/**
+ * 根据合集 ID 获取其包含的所有 Post
+ */
+export const fetchPostsByCollectionId = async (collectionId: string): Promise<Post[]> => {
+  try {
+    await ensureAuth();
+
+    // 1. 获取合集详情
+    const collRes = await db.collection('collections').doc(collectionId).get();
+    let postsIds: string[] = [];
+
+    if (collRes.data && collRes.data.length > 0) {
+      // 兼容 list 获取和 doc 获取的差异
+      const coll = (Array.isArray(collRes.data) ? collRes.data[0] : collRes.data) as Collection;
+      postsIds = coll.posts || [];
+    } else {
+      // 尝试通过 where 查询（防止 docId 与 _id 不一致的情况）
+      const collResById = await db.collection('collections').where({ _id: collectionId }).get();
+      if (collResById.data && collResById.data.length > 0) {
+        postsIds = (collResById.data[0] as Collection).posts || [];
+      }
+    }
+
+    if (postsIds.length === 0) return [];
+
+    // 2. 批量获取 posts
+    const _ = db.command;
+    const postRes = await db.collection('posts')
+      .where({
+        _id: _.in(postsIds)
+      })
+      .limit(500)
+      .get();
+
+    if (!postRes.data || postRes.data.length === 0) return [];
+
+    const rawPosts = postRes.data as Post[];
+
+    // 3. 处理作品中的 fileId (封面图、图片列表等)
+    const fileIdSet = new Set<string>();
+    rawPosts.forEach(p => {
+      if (p.images) {
+        p.images.forEach(img => {
+          if (img.image && isFileId(img.image)) fileIdSet.add(img.image);
+          if (img.thumbnail && isFileId(img.thumbnail)) fileIdSet.add(img.thumbnail);
+        });
+      }
+    });
+
+    const fileMap = await resolveFileIds(Array.from(fileIdSet));
+
+    return rawPosts.map(p => {
+       if (p.images) {
+         p.images = p.images.map(img => ({
+           ...img,
+           image: isFileId(img.image) ? fileMap.get(img.image!) || img.image : img.image,
+           thumbnail: isFileId(img.thumbnail) ? fileMap.get(img.thumbnail!) || img.thumbnail : img.thumbnail
+         }));
+       }
+       return p;
+    });
+  } catch (error) {
+    console.error('Failed to fetch posts by collectionId:', error);
+    return [];
+  }
+};
