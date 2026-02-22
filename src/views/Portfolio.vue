@@ -543,14 +543,12 @@ onUnmounted(() => {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
   z-index: 2000;
   display: flex; justify-content: center; align-items: center;
   transition: all 0.4s ease;
 
   &.is-closing {
     background-color: transparent;
-    backdrop-filter: none;
   }
 }
 

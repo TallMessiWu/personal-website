@@ -331,7 +331,6 @@ const closePost = () => {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
-  backdrop-filter: blur(5px);
   z-index: 2000;
   display: flex;
   justify-content: center;
@@ -340,7 +339,6 @@ const closePost = () => {
 
   &.is-closing {
     background-color: transparent;
-    backdrop-filter: none;
   }
 }
 
