@@ -431,7 +431,7 @@ onUnmounted(() => {
       object-fit: cover;
       display: block;
       transition: transform 0.5s ease;
-      opacity: 0.8;
+      opacity: 1; /* 取消默认透明度，防止颜色泛白 */
     }
 
     .placeholder-cover {
@@ -467,7 +467,7 @@ onUnmounted(() => {
       img,
       .placeholder-cover {
         transform: scale(1.1);
-        opacity: 0.4;
+        opacity: 0.6; /* 稍微降低透明度，配合 dark overlay 提升文字可读性 */
       }
 
       .overlay {
