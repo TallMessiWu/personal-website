@@ -603,6 +603,10 @@ onUnmounted(() => {
     color: var(--color-text-secondary);
     font-size: 1rem;
   }
+
+  @media (max-width: 800px) {
+    padding-left: 56px; /* 进一步避开下移后的关闭按钮 */
+  }
 }
 
 .masonry-container {
@@ -639,7 +643,7 @@ onUnmounted(() => {
 
 .close-btn {
   position: absolute;
-  top: 12px;
+  top: 20px;
   left: -60px;
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.1);
@@ -650,7 +654,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 200; /* 高于 modal-content 的 105 */
   transition: all 0.2s;
 
   &:hover {
@@ -663,10 +667,28 @@ onUnmounted(() => {
     color: #fff;
   }
 
-  @media (max-width: 1300px) {
-    left: 20px;
-    top: 20px;
+  @media (max-width: 800px) {
+    left: 15px;
+    top: 25px;
     background: rgba(0,0,0,0.5);
+    border: none;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 800px) {
+  .modal-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+
+  .modal-content {
+    border-radius: 0;
+    border: none;
   }
 }
 
