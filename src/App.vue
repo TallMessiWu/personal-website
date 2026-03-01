@@ -22,10 +22,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-router.push("/home");
 
 const showBackToTop = ref(false);
 
