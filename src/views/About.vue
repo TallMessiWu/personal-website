@@ -285,7 +285,7 @@ const yearTicks = computed(() => {
     const ticks: YearTick[] = [];
 
     const startYear = max.getFullYear();
-    const endYear = min.getFullYear() - 1;
+    const endYear = min.getFullYear();
 
     for (let y = startYear; y >= endYear; y--) {
         const d = new Date(y, 0, 1);
