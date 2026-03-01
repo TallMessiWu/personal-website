@@ -25,6 +25,13 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(router)
 app.use(i18n)
 
+// SPA 路由回退：从 404.html 跳转回来后恢复原始路径
+const redirectPath = sessionStorage.getItem('spa-redirect');
+if (redirectPath) {
+  sessionStorage.removeItem('spa-redirect');
+  router.replace(redirectPath);
+}
+
 // 用来处理路由跳转后页面滚动到顶部
 router.afterEach((to, from, next) => {
     window.scrollTo(0, 0);

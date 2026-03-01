@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // SPA 路由回退：将 404 路径信息保存后跳转到首页，由前端路由接管
+    var path = window.location.pathname;
+    var query = window.location.search;
+    var hash = window.location.hash;
+    // 跳转到首页，把原始路径通过 sessionStorage 传递
+    sessionStorage.setItem('spa-redirect', path + query + hash);
+    window.location.replace('/');
+  </script>
+</head>
+<body>
+</body>
+</html>
