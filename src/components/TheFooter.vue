@@ -25,6 +25,7 @@
         </a>
       </div>
       <p class="copyright">{{ t('footer.rights') }}</p>
+      <a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2026009767号</a>
     </div>
   </div>
 </template>
@@ -110,6 +111,19 @@ const { t } = useI18n()
   font-size: 0.85rem;
   color: var(--color-text-secondary);
   font-family: var(--font-family-base);
+  margin-bottom: 0.5rem;
+}
+
+.icp-link {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+  }
 }
 </style>
 
