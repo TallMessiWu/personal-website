@@ -66,13 +66,7 @@ import { useI18n } from 'vue-i18n';
 const { t, tm } = useI18n();
 
 useHead({
-  title: computed(() => `${t('nav.home')} | ${t('app.title')}`),
-  meta: [
-    {
-      name: 'description',
-      content: 'Welcome to the personal website of TallMessiwu. Explore my portfolio, daily life, and creative projects.'
-    }
-  ]
+  title: computed(() => `${t('nav.home')} | ${t('app.title')}`)
 })
 </script>
 
