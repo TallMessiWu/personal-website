@@ -25,7 +25,14 @@
         </a>
       </div>
       <p class="copyright">{{ t('footer.rights') }}</p>
-      <a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2026009767号</a>
+      <div class="beian-links">
+        <a class="gongan-link" href="https://beian.mps.gov.cn/#/query/webSearch?code=32030302308122" rel="noreferrer" target="_blank">
+          <img src="@/assets/beian_icon.png" alt="公安备案" class="gongan-icon" />
+          苏公网安备32030302308122号
+        </a>
+        <span class="beian-divider">|</span>
+        <a class="icp-link" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2026009767号-1</a>
+      </div>
     </div>
   </div>
 </template>
@@ -123,6 +130,41 @@ const { t } = useI18n()
   &:hover {
     color: var(--color-text-primary);
     text-decoration: underline;
+  }
+}
+
+.beian-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.beian-divider {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+}
+
+.gongan-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+  }
+
+  .gongan-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
   }
 }
 </style>
