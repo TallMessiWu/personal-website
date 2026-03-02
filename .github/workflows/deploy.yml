@@ -32,10 +32,25 @@ jobs:
       run: npm install -g @cloudbase/cli
 
     - name: Login CloudBase CLI
-      run: tcb login --apiKeyId ${{ secrets.TCB_SECRET_ID }} --apiKey ${{ secrets.TCB_SECRET_KEY }}
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 3
+        retry_wait_seconds: 10
+        command: tcb login --apiKeyId ${{ secrets.TCB_SECRET_ID }} --apiKey ${{ secrets.TCB_SECRET_KEY }}
 
     - name: Clean old files on CloudBase
-      run: tcb hosting delete / -e ${{ secrets.TCB_ENV_ID }} -d || true
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 3
+        retry_wait_seconds: 10
+        command: tcb hosting delete / -e ${{ secrets.TCB_ENV_ID }} -d || true
 
     - name: Deploy to CloudBase Static Hosting
-      run: tcb hosting deploy ./dist / -e ${{ secrets.TCB_ENV_ID }}
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 5
+        max_attempts: 3
+        retry_wait_seconds: 10
+        command: tcb hosting deploy ./dist / -e ${{ secrets.TCB_ENV_ID }}
