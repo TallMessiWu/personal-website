@@ -20,7 +20,7 @@
 - 🌗 **深色 / 浅色主题** — 一键切换，偏好自动持久化至 `localStorage`，首次访问跟随系统主题
 - 🌍 **国际化 (i18n)** — 中英文动态切换，所有页面内容同步更新
 - 📱 **响应式布局** — 适配手机、平板和桌面端
-- 🚀 **GitHub Actions 自动部署** — 推送 `main` 分支即自动构建并部署至 GitHub Pages
+- 🚀 **GitHub Actions 自动部署** — 推送 `master` 分支即自动构建并部署至腾讯云 CloudBase 静态托管
 - 🔍 **SEO 优化** — 动态 `<title>`、`meta` 描述、`robots.txt` 和 `sitemap.xml`
 - ✨ **丰富的交互动效** — 页面过渡动画、卡片悬浮效果、模态框展开/收起动画
 
@@ -45,7 +45,7 @@
 | 路由管理 | [Vue Router 4](https://router.vuejs.org/zh/) |
 | 国际化 | [Vue I18n](https://vue-i18n.intlify.dev/) |
 | SEO | [@vueuse/head](https://github.com/vueuse/head) |
-| 部署 | [GitHub Actions](https://docs.github.com/zh/actions) + GitHub Pages |
+| 部署 | [GitHub Actions](https://docs.github.com/zh/actions) + [CloudBase 静态托管](https://cloud.tencent.com/product/wh) |
 
 ## 📁 项目结构
 
@@ -119,12 +119,14 @@ npm run type-check
 
 ## 🌐 部署
 
-项目已配置 GitHub Actions 自动部署至 GitHub Pages：
+项目已配置 GitHub Actions 自动部署至腾讯云 CloudBase 静态托管：
 
-1. 将代码推送到 `main` 分支
-2. GitHub Actions 自动执行构建与部署
-3. 进入仓库 **Settings** → **Pages** → **Source** 选择 `GitHub Actions`
-4. 网站上线地址：`https://<你的用户名>.github.io/personal-website/`
+1. 将代码推送到 `master` 分支
+2. GitHub Actions 自动执行构建，并通过 CloudBase CLI 部署至静态托管
+3. 需在仓库 **Settings** → **Secrets** 中配置以下密钥：
+   - `TCB_SECRET_ID` — 腾讯云 API 密钥 ID
+   - `TCB_SECRET_KEY` — 腾讯云 API 密钥 Key
+   - `TCB_ENV_ID` — CloudBase 环境 ID
 
 ## 📝 许可证
 

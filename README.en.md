@@ -20,7 +20,7 @@
 - 🌗 **Dark / Light Theme** — One-click toggle, preference persisted in `localStorage`, defaults to system theme on first visit
 - 🌍 **Internationalization (i18n)** — Seamless Chinese/English switching with real-time content updates
 - 📱 **Responsive Layout** — Optimized for mobile, tablet, and desktop
-- 🚀 **GitHub Actions CI/CD** — Auto-build and deploy to GitHub Pages on push to `main`
+- 🚀 **GitHub Actions CI/CD** — Auto-build and deploy to Tencent CloudBase Static Hosting on push to `master`
 - 🔍 **SEO Optimized** — Dynamic `<title>`, `meta` descriptions, `robots.txt`, and `sitemap.xml`
 - ✨ **Rich Interactions** — Page transitions, card hover effects, and modal open/close animations
 
@@ -45,7 +45,7 @@
 | Routing | [Vue Router 4](https://router.vuejs.org/) |
 | i18n | [Vue I18n](https://vue-i18n.intlify.dev/) |
 | SEO | [@vueuse/head](https://github.com/vueuse/head) |
-| Deployment | [GitHub Actions](https://docs.github.com/en/actions) + GitHub Pages |
+| Deployment | [GitHub Actions](https://docs.github.com/en/actions) + [CloudBase Static Hosting](https://cloud.tencent.com/product/wh) |
 
 ## 📁 Project Structure
 
@@ -119,12 +119,14 @@ npm run type-check
 
 ## 🌐 Deployment
 
-The project is configured with GitHub Actions for automatic deployment to GitHub Pages:
+The project is configured with GitHub Actions for automatic deployment to Tencent CloudBase Static Hosting:
 
-1. Push code to the `main` branch
-2. GitHub Actions automatically builds and deploys
-3. Go to **Settings** → **Pages** → **Source** and select `GitHub Actions`
-4. Live at: `https://<your-username>.github.io/personal-website/`
+1. Push code to the `master` branch
+2. GitHub Actions automatically builds and deploys via CloudBase CLI
+3. Configure the following secrets in **Settings** → **Secrets**:
+   - `TCB_SECRET_ID` — Tencent Cloud API Secret ID
+   - `TCB_SECRET_KEY` — Tencent Cloud API Secret Key
+   - `TCB_ENV_ID` — CloudBase Environment ID
 
 ## 📝 License
 
