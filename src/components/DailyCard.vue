@@ -187,7 +187,7 @@
         <p class="text-content">{{ post.content }}</p>
       </div>
       <!-- Show content ONLY if it's a text-only post (no image/video) and collapsed -->
-      <p v-if="(!post.images?.length && !post.video) && post.content" class="excerpt">{{ post.content }}</p>
+      <p v-if="(!post.images?.length && !post.video) && post.content && !expanded" class="excerpt">{{ post.content }}</p>
 
       <div class="meta">
         <span class="date">{{ formattedDate }}</span>
