@@ -10,6 +10,12 @@
            <h1 class="name">{{ t('about.profile.name') }}</h1>
            <p class="title">{{ t('about.profile.title') }}</p>
            <p class="bio">{{ t('about.profile.bio') }}</p>
+           <div class="resume-wrapper">
+             <el-button type="primary" round plain class="resume-btn" @click="openResume">
+               <el-icon class="el-icon--left"><Document /></el-icon>
+               {{ t('about.profile.resume') }}
+             </el-button>
+           </div>
            <div class="social-links">
              <a href="https://gitee.com/tallmessiwu" target="_blank" class="social-btn">
                <img src="@/assets/social_media_icons/gitee.svg" alt="Gitee" class="gitee-style" />
@@ -177,10 +183,16 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHead } from '@vueuse/head';
 import {
-  Message, School, Briefcase, Folder, Cpu, TopRight
+  Message, School, Briefcase, Folder, Cpu, TopRight, Document
 } from '@element-plus/icons-vue';
 
-const { t, tm } = useI18n();
+const { t, tm, locale } = useI18n();
+
+// Resume Download Logic
+const openResume = () => {
+  const resumeFile = locale.value === 'zh' ? '吴俊霖_数据科学.pdf' : 'Junlin Wu_Data Scientist.pdf';
+  window.open(`/${resumeFile}`, '_blank');
+};
 
 useHead({
   title: computed(() => `${t('nav.about')} | ${t('app.title')}`),
@@ -670,10 +682,31 @@ const closeEvent = () => {
 
     .bio {
       max-width: 600px;
-      margin: 0 auto 25px;
+      margin: 0 auto 20px;
       color: var(--color-text-secondary);
       line-height: 1.7;
       font-size: 1.05rem;
+    }
+
+    .resume-wrapper {
+      margin-bottom: 25px;
+
+      .resume-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-color: var(--color-accent-primary);
+        color: var(--color-accent-primary);
+        background: transparent;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: var(--color-accent-primary);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(var(--color-accent-primary-rgb), 0.3);
+        }
+      }
     }
   }
 
