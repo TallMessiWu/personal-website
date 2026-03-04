@@ -84,7 +84,6 @@
 import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, h, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Refresh, Menu, Close } from '@element-plus/icons-vue';
 
 const router = useRouter();
 const route = useRoute();
