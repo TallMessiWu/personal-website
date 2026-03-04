@@ -7,6 +7,13 @@
       <p class="subtitle">{{ t('daily.subtitle') }}</p>
     </div>
 
+    <!-- 刷新时的 Loading Bar (撑开式) -->
+    <transition name="expand">
+      <div v-if="isRefreshing" class="refresh-load-bar">
+        <div class="refresh-spinner"></div>
+      </div>
+    </transition>
+
     <div class="masonry-container" ref="masonryRef" v-show="!isLoading && columns.length > 0">
       <div class="masonry-column" v-for="(column, index) in columns" :key="index">
         <daily-card
@@ -76,6 +83,7 @@ import { fetchPostsFromCloud, type Post } from '@/data/dailyData';
 
 const posts = ref<Post[]>([]);
 const isLoading = ref(true);
+const isRefreshing = ref(false);
 const showSkeleton = ref(false);
 let skeletonTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -194,6 +202,42 @@ const onImageLoad = () => {
   }, 100);
 };
 
+// 刷新页面数据
+const handleRefresh = async () => {
+  if (isRefreshing.value || isLoading.value) return;
+
+  isRefreshing.value = true;
+  // 模拟数据加载过程以平滑显示图标，防止闪烁太快
+  const startTime = Date.now();
+
+  try {
+    const cloudPosts = await fetchPostsFromCloud();
+
+    // 确保 loading 最少显示 600ms 以增加视觉上的真实感
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 600) {
+      await new Promise(resolve => setTimeout(resolve, 600 - elapsed));
+    }
+
+    posts.value = cloudPosts;
+    page.value = 1; // 重置分页
+    cardHeights.clear(); // 清除高度缓存
+  } catch (error) {
+    console.error('Failed to refresh daily posts:', error);
+  } finally {
+    isRefreshing.value = false;
+  }
+};
+
+const onRefreshEvent = (e: Event) => {
+  const customEvent = e as CustomEvent;
+  if (customEvent.detail === '/daily') {
+    // 回到顶部后再刷新，或者直接刷新
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleRefresh();
+  }
+};
+
 onMounted(async () => {
   updateColumnCount();
   window.addEventListener('resize', updateColumnCount);
@@ -231,6 +275,8 @@ onMounted(async () => {
   if (loadTrigger.value) {
     observer.observe(loadTrigger.value);
   }
+
+  window.addEventListener('refresh-page', onRefreshEvent);
 });
 
 onUnmounted(() => {
@@ -241,6 +287,7 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect();
   }
+  window.removeEventListener('refresh-page', onRefreshEvent);
 });
 
 const activePost = ref<Post | null>(null);
@@ -540,6 +587,39 @@ const closePost = () => {
     align-items: center;
     justify-content: center;
   }
+}
+
+.refresh-load-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  position: relative;
+  width: 100%;
+}
+
+.refresh-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-accent-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 撑开动画 */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  height: 0;
+  opacity: 0;
+  margin-bottom: 0;
 }
 </style>
 

@@ -10,8 +10,8 @@
       <!-- Navigation (Desktop) -->
       <nav class="nav-links desktop-nav">
         <router-link to="/home" class="nav-item" active-class="active">{{ t('nav.home') }}</router-link>
-        <router-link to="/daily" class="nav-item" active-class="active">{{ t('nav.daily') }}</router-link>
-        <router-link to="/portfolio" class="nav-item" active-class="active">{{ t('nav.portfolio') }}</router-link>
+        <a href="/daily" class="nav-item" :class="{ active: route.path === '/daily' }" @click.prevent="handleNavClick('/daily')">{{ t('nav.daily') }}</a>
+        <a href="/portfolio" class="nav-item" :class="{ active: route.path === '/portfolio' }" @click.prevent="handleNavClick('/portfolio')">{{ t('nav.portfolio') }}</a>
         <router-link to="/about" class="nav-item" active-class="active">{{ t('nav.about') }}</router-link>
 
         <!-- Theme Toggle -->
@@ -54,8 +54,8 @@
            </div>
            <div class="drawer-content">
               <router-link to="/home" class="mobile-nav-item" active-class="active">{{ t('nav.home') }}</router-link>
-              <router-link to="/daily" class="mobile-nav-item" active-class="active">{{ t('nav.daily') }}</router-link>
-              <router-link to="/portfolio" class="mobile-nav-item" active-class="active">{{ t('nav.portfolio') }}</router-link>
+              <a href="/daily" class="mobile-nav-item" :class="{ active: route.path === '/daily' }" @click.prevent="handleNavClick('/daily')">{{ t('nav.daily') }}</a>
+              <a href="/portfolio" class="mobile-nav-item" :class="{ active: route.path === '/portfolio' }" @click.prevent="handleNavClick('/portfolio')">{{ t('nav.portfolio') }}</a>
               <router-link to="/about" class="mobile-nav-item" active-class="active">{{ t('nav.about') }}</router-link>
 
               <div class="divider"></div>
@@ -81,13 +81,24 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, h, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Refresh, Menu, Close } from '@element-plus/icons-vue';
 
 const router = useRouter();
+const route = useRoute();
 const { t, locale } = useI18n();
+
+// 处理日常/作品集导航点击：若已在目标页面则触发刷新事件，否则正常跳转
+const handleNavClick = (path: string) => {
+  if (route.path === path) {
+    window.dispatchEvent(new CustomEvent('refresh-page', { detail: path }));
+  } else {
+    router.push(path);
+  }
+  closeMobileMenu();
+};
 
 const isMobileMenuOpen = ref(false);
 

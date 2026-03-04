@@ -4,6 +4,13 @@
       <h1 class="page-title">{{ t('portfolio.title') }}</h1>
     </div>
 
+    <!-- 刷新时的 Loading Bar (撑开式) -->
+    <transition name="expand">
+      <div v-if="isRefreshing" class="refresh-load-bar">
+        <div class="refresh-spinner"></div>
+      </div>
+    </transition>
+
     <!-- 加载中（防抖：仅在加载超过 200ms 时才显示） -->
     <div v-if="showSkeleton" class="portfolio-grid">
       <portfolio-card-skeleton v-for="n in 6" :key="'pskel-'+n" />
@@ -138,6 +145,7 @@ useHead({
 
 const collections = ref<CollectionDisplay[]>([]);
 const isLoading = ref(true);
+const isRefreshing = ref(false);
 const showSkeleton = ref(false);
 let skeletonTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -404,6 +412,49 @@ const closePost = () => {
   }, 400);
 };
 
+// 刷新页面数据
+const handleRefresh = async () => {
+  if (isRefreshing.value || isLoading.value) return;
+
+  // 1. 如果有打开的 modal，立即关闭它们（不带动画以立即响应刷新状态）
+  if (activePost.value) {
+    activePost.value = null;
+    postOriginRect.value = null;
+    isPostClosing.value = false;
+  }
+
+  if (activeCollection.value) {
+    activeCollection.value = null;
+    collectionPosts.value = [];
+    originRect.value = null;
+    isClosing.value = false;
+  }
+
+  isRefreshing.value = true;
+  const startTime = Date.now();
+
+  try {
+    collections.value = await fetchCollectionsFromCloud();
+
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 600) {
+      await new Promise(resolve => setTimeout(resolve, 600 - elapsed));
+    }
+  } catch (error) {
+    console.error('Failed to refresh portfolio:', error);
+  } finally {
+    isRefreshing.value = false;
+  }
+};
+
+const onRefreshEvent = (e: Event) => {
+  const customEvent = e as CustomEvent;
+  if (customEvent.detail === '/portfolio') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleRefresh();
+  }
+};
+
 const handleGlobalClick = () => {
   activeCardId.value = null;
 };
@@ -429,6 +480,8 @@ onMounted(async () => {
     showSkeleton.value = false;
     isLoading.value = false;
   }
+
+  window.addEventListener('refresh-page', onRefreshEvent);
 });
 
 onUnmounted(() => {
@@ -438,6 +491,7 @@ onUnmounted(() => {
   if (imgLoadTimer) clearTimeout(imgLoadTimer);
   if (skeletonTimer) clearTimeout(skeletonTimer);
   if (postsSkeletonTimer) clearTimeout(postsSkeletonTimer);
+  window.removeEventListener('refresh-page', onRefreshEvent);
 });
 </script>
 
@@ -837,5 +891,38 @@ onUnmounted(() => {
 .list-leave-to {
   opacity: 0;
   transform: translateY(30px);
+}
+
+.refresh-load-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  position: relative;
+  width: 100%;
+}
+
+.refresh-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-accent-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 撑开动画 */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  height: 0;
+  opacity: 0;
+  margin-bottom: 0;
 }
 </style>
