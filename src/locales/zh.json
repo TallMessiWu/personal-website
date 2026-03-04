@@ -62,7 +62,8 @@
         "title": "作品集",
         "viewBtn": "查看详情",
         "posts": "篇",
-        "pinned": "置顶"
+        "pinned": "置顶",
+        "latestDate": "最近更新："
     },
     "about": {
         "profile": {

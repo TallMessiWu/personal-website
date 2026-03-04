@@ -62,7 +62,8 @@
         "title": "Portfolio",
         "viewBtn": "View Details",
         "posts": "posts",
-        "pinned": "Pinned"
+        "pinned": "Pinned",
+        "latestDate": "Latest:"
     },
     "about": {
         "profile": {

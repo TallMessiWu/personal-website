@@ -531,11 +531,14 @@ const closePost = () => {
 
   &::before,
   &::after {
-    content: "";
+    content: "——";
     flex: 1;
     height: 1px;
-    background-color: var(--color-text-secondary);
-    opacity: 0.3;
+    background-color: transparent;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>

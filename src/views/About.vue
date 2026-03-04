@@ -586,7 +586,7 @@ const closeEvent = () => {
 .content-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 20px 60px;
+  padding: 0 20px 20px;
 }
 
 .section-container {

@@ -40,12 +40,18 @@
             <h3 class="item-title">{{ item.name }}</h3>
             <div class="item-meta">
               <span class="post-count">{{ item.postCount }} {{ t('portfolio.posts') }}</span>
+              <span v-if="item.latestPostDate" class="latest-date">{{ t('portfolio.latestDate') }} {{ item.latestPostDate.split(' ')[0] }}</span>
             </div>
             <span class="view-btn" @click.stop="openCollection(item, $event)">{{ t('portfolio.viewBtn') }}</span>
           </div>
         </div>
       </div>
     </transition-group>
+
+    <!-- 分页结束标识 -->
+    <div v-if="!isLoading && collections.length > 0" class="end-message">
+      <span>·</span>
+    </div>
 
     <!-- Collection Details Modal -->
     <transition name="modal-fade">
@@ -72,6 +78,11 @@
                     @click="(e: MouseEvent) => openPost(post, e)"
                   />
                 </div>
+              </div>
+
+              <!-- Posts End Message -->
+              <div v-if="!isPostsLoading && collectionPosts.length > 0" class="end-message">
+                <span>·</span>
               </div>
 
               <!-- Posts Skeleton Loading（防抖：仅在加载超过 200ms 时才显示） -->
@@ -468,11 +479,14 @@ onUnmounted(() => {
 
   &::before,
   &::after {
-    content: "";
+    content: "——";
     flex: 1;
     height: 1px;
-    background-color: var(--color-text-secondary);
-    opacity: 0.3;
+    background-color: transparent;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -603,12 +617,19 @@ onUnmounted(() => {
 
 .item-meta {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
   transform: translateY(20px);
   transition: transform 0.3s ease 0.05s;
+  margin-bottom: 0.66rem;
+
+  .latest-date {
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
 }
 
 .pinned-indicator {
