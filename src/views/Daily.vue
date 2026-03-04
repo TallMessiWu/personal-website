@@ -19,8 +19,8 @@
       </div>
     </div>
 
-    <!-- Skeleton Loading State -->
-    <div class="masonry-container" v-if="isLoading">
+    <!-- Skeleton Loading State（防抖：仅在加载超过 200ms 时才显示） -->
+    <div class="masonry-container" v-if="showSkeleton">
       <div class="masonry-column" v-for="colIndex in columnCount" :key="'skel-col-'+colIndex">
         <daily-card-skeleton v-for="itemIndex in 3" :key="'skel-item-'+colIndex+'-'+itemIndex" :seed="itemIndex * colIndex" />
       </div>
@@ -76,6 +76,8 @@ import { fetchPostsFromCloud, type Post } from '@/data/dailyData';
 
 const posts = ref<Post[]>([]);
 const isLoading = ref(true);
+const showSkeleton = ref(false);
+let skeletonTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Lazy Loading State
 const page = ref(1);
@@ -199,6 +201,11 @@ onMounted(async () => {
   // 监听 masonry 容器内图片加载事件（capture 模式捕获子元素 load）
   masonryRef.value?.addEventListener('load', onImageLoad, true);
 
+  // 防抖：200ms 后才显示骨架屏，避免快速加载时的闪烁
+  skeletonTimer = setTimeout(() => {
+    if (isLoading.value) showSkeleton.value = true;
+  }, 200);
+
   // Fetch data from CloudBase
   try {
     const cloudPosts = await fetchPostsFromCloud();
@@ -206,6 +213,8 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to load daily posts:', error);
   } finally {
+    if (skeletonTimer) clearTimeout(skeletonTimer);
+    showSkeleton.value = false;
     isLoading.value = false;
   }
 
@@ -228,6 +237,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateColumnCount);
   masonryRef.value?.removeEventListener('load', onImageLoad, true);
   if (imgLoadTimer) clearTimeout(imgLoadTimer);
+  if (skeletonTimer) clearTimeout(skeletonTimer);
   if (observer) {
     observer.disconnect();
   }

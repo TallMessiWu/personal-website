@@ -62,7 +62,6 @@
         "title": "Portfolio",
         "viewBtn": "View Details",
         "posts": "posts",
-        "empty": "No collections yet",
         "pinned": "Pinned"
     },
     "about": {
@@ -145,6 +144,7 @@
                 "Python",
                 "Vue.js",
                 "TypeScript",
+                "JavaScript",
                 "Java",
                 "SQL",
                 "PyTorch",

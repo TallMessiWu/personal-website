@@ -62,7 +62,6 @@
         "title": "作品集",
         "viewBtn": "查看详情",
         "posts": "篇",
-        "empty": "暂无合集",
         "pinned": "置顶"
     },
     "about": {
@@ -145,6 +144,7 @@
                 "Python",
                 "Vue.js",
                 "TypeScript",
+                "JavaScript",
                 "Java",
                 "SQL",
                 "PyTorch",

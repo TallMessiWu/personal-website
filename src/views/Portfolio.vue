@@ -4,14 +4,14 @@
       <h1 class="page-title">{{ t('portfolio.title') }}</h1>
     </div>
 
-    <!-- 加载中 -->
-    <div v-if="isLoading" class="portfolio-grid">
+    <!-- 加载中（防抖：仅在加载超过 200ms 时才显示） -->
+    <div v-if="showSkeleton" class="portfolio-grid">
       <portfolio-card-skeleton v-for="n in 6" :key="'pskel-'+n" />
     </div>
 
-    <!-- 数据为空 -->
-    <div v-else-if="collections.length === 0" class="empty-state">
-      <span>{{ t('portfolio.empty') }}</span>
+    <!-- 数据为空（需确认加载已结束） -->
+    <div v-else-if="!isLoading && collections.length === 0" class="end-message">
+      <span>·</span>
     </div>
 
     <!-- 合集网格 -->
@@ -74,8 +74,8 @@
                 </div>
               </div>
 
-              <!-- Posts Skeleton Loading -->
-              <div class="masonry-container" v-if="isPostsLoading">
+              <!-- Posts Skeleton Loading（防抖：仅在加载超过 200ms 时才显示） -->
+              <div class="masonry-container" v-if="showPostsSkeleton">
                 <div class="masonry-column" v-for="colIndex in columnCount" :key="'skel-col-'+colIndex">
                   <daily-card-skeleton v-for="itemIndex in 2" :key="'skel-item-'+colIndex+'-'+itemIndex" :seed="itemIndex * colIndex" />
                 </div>
@@ -127,11 +127,15 @@ useHead({
 
 const collections = ref<CollectionDisplay[]>([]);
 const isLoading = ref(true);
+const showSkeleton = ref(false);
+let skeletonTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Modal State
 const activeCollection = ref<CollectionDisplay | null>(null);
 const collectionPosts = ref<Post[]>([]);
 const isPostsLoading = ref(false);
+const showPostsSkeleton = ref(false);
+let postsSkeletonTimer: ReturnType<typeof setTimeout> | null = null;
 const modalStyle = ref<CSSProperties>({});
 const originRect = ref<DOMRect | null>(null);
 const isClosing = ref(false);
@@ -263,10 +267,17 @@ const openCollection = async (collection: CollectionDisplay, event: MouseEvent) 
   activeCollection.value = collection;
   isPostsLoading.value = true;
 
+  // 防抖：200ms 后才显示详情骨架屏
+  postsSkeletonTimer = setTimeout(() => {
+    if (isPostsLoading.value) showPostsSkeleton.value = true;
+  }, 200);
+
   // Fetch posts for this collection
   try {
     collectionPosts.value = await fetchPostsByCollectionId(collection._id);
   } finally {
+    if (postsSkeletonTimer) clearTimeout(postsSkeletonTimer);
+    showPostsSkeleton.value = false;
     isPostsLoading.value = false;
   }
 
@@ -392,11 +403,19 @@ onMounted(async () => {
   window.addEventListener('click', handleGlobalClick);
   // 监听 masonry 容器内图片加载事件（capture 模式捕获子元素 load）
   masonryRef.value?.addEventListener('load', onImageLoad, true);
+
+  // 防抖：200ms 后才显示骨架屏，避免快速加载时的闪烁
+  skeletonTimer = setTimeout(() => {
+    if (isLoading.value) showSkeleton.value = true;
+  }, 200);
+
   try {
     collections.value = await fetchCollectionsFromCloud();
   } catch (error) {
     console.error('Failed to load portfolio collections:', error);
   } finally {
+    if (skeletonTimer) clearTimeout(skeletonTimer);
+    showSkeleton.value = false;
     isLoading.value = false;
   }
 });
@@ -406,6 +425,8 @@ onUnmounted(() => {
   window.removeEventListener('click', handleGlobalClick);
   masonryRef.value?.removeEventListener('load', onImageLoad, true);
   if (imgLoadTimer) clearTimeout(imgLoadTimer);
+  if (skeletonTimer) clearTimeout(skeletonTimer);
+  if (postsSkeletonTimer) clearTimeout(postsSkeletonTimer);
 });
 </script>
 
@@ -432,14 +453,27 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-.loading-state,
-.empty-state {
+.end-message {
+  opacity: 0.5;
+  font-size: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
+  width: 100%;
+  max-width: 200px;
+  margin: 40px auto;
+  gap: 15px;
   color: var(--color-text-secondary);
-  font-size: 1rem;
+  font-weight: bold;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-text-secondary);
+    opacity: 0.3;
+  }
 }
 
 .loading-spinner {
