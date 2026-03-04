@@ -62,7 +62,14 @@
                <div v-for="(job, index) in workList" :key="index" class="list-item">
                  <div class="item-main">{{ job.company }}</div>
                  <div class="item-sub">{{ job.role }}</div>
-                 <div class="item-desc">{{ job.desc }}</div>
+                 <div class="item-desc">
+                   <template v-if="Array.isArray(job.desc)">
+                     <div v-for="(line, i) in job.desc" :key="i" class="desc-line">{{ line }}</div>
+                   </template>
+                   <template v-else>
+                     {{ job.desc }}
+                   </template>
+                 </div>
                </div>
             </div>
           </div>
@@ -79,7 +86,14 @@
                    {{ proj.name }}
                    <el-icon class="link-icon"><TopRight /></el-icon>
                  </div>
-                 <div class="item-desc">{{ proj.desc }}</div>
+                 <div class="item-desc">
+                   <template v-if="Array.isArray(proj.desc)">
+                     <div v-for="(line, i) in proj.desc" :key="i" class="desc-line">{{ line }}</div>
+                   </template>
+                   <template v-else>
+                     {{ proj.desc }}
+                   </template>
+                 </div>
                </a>
             </div>
           </div>
@@ -136,7 +150,7 @@
               >
                  <div class="geo-content" :style="{ '--desc-lines': event.descLines }">
                    <div class="geo-time" :class="{ 'is-hidden': !event.showTime }">
-                      <span class="time-range">{{ formatEventDate(event.startDate) }} - {{ formatEventDate(event.endDate) }}</span>
+                      <span class="time-range">{{ formatEventDate(event.startDate) }} - {{ event.isCurrent ? event.raw.end : formatEventDate(event.endDate) }}</span>
                    </div>
                    <h4 class="geo-title">{{ event.raw.title }}</h4>
                    <p class="geo-desc" :class="{ 'is-hidden': !event.showDesc }">{{ event.raw.description }}</p>
@@ -168,7 +182,7 @@
        <div v-if="activeEvent" class="geo-event-modal" :style="modalStyle" @click="closeEvent">
            <div class="geo-content modal-content">
               <div class="geo-time">
-                  <span class="time-range">{{ formatEventDate(activeEvent.startDate) }} - {{ formatEventDate(activeEvent.endDate) }}</span>
+                  <span class="time-range">{{ formatEventDate(activeEvent.startDate) }} - {{ activeEvent.isCurrent ? activeEvent.raw.end : formatEventDate(activeEvent.endDate) }}</span>
               </div>
               <h4 class="geo-title modal-title">{{ activeEvent.raw.title }}</h4>
               <p class="geo-desc modal-desc">{{ activeEvent.raw.description }}</p>
@@ -223,6 +237,7 @@ interface GeoEvent {
     raw: any;
     startDate: Date;
     endDate: Date;
+    isCurrent: boolean;
     top: number;
     bottom: number;
     height: number;
@@ -357,6 +372,7 @@ const processedEvents = computed(() => {
         raw: e,
         startDate: parseDate(e.start),
         endDate: parseDate(e.end),
+        isCurrent: !!(e.end && /(Present|至今|Current|在读)/i.test(e.end)),
         top: 0, bottom: 0, height: 0,
         laneIndex: 0,
         renderTop: 0, renderHeight: 0, left: '0%', width: '100%', borderRadius: '16px',
@@ -374,14 +390,19 @@ const processedEvents = computed(() => {
     });
 
     // 3. Greedy lane assignment (dynamic N lanes)
-    const sortedForLayout = [...events].sort((a, b) => a.top - b.top);
+    const sortedForLayout = [...events].sort((a, b) => {
+        const diff = b.bottom - a.bottom;
+        if (Math.abs(diff) > 1) return diff;
+        return a.top - b.top; // 如果底端一致，顶端靠上的排前面
+    });
     const lanes: GeoEvent[][] = [];
 
     sortedForLayout.forEach(e => {
         let placed = false;
         for (let i = 0; i < lanes.length; i++) {
             const lastInLane = lanes[i][lanes[i].length - 1];
-            if (e.top >= lastInLane.bottom) {
+            // 改为自底朝上，新事件的底部不能超过轨道已有最后一个事件的顶部
+            if (e.bottom <= lastInLane.top + 0.5) {
                 lanes[i].push(e);
                 e.laneIndex = i;
                 placed = true;
@@ -826,6 +847,24 @@ const closeEvent = () => {
       color: var(--color-text-secondary);
       margin-top: 6px;
       line-height: 1.5;
+
+      .desc-line {
+        position: relative;
+        padding-left: 12px;
+        margin-bottom: 4px;
+
+        &::before {
+          content: '·';
+          position: absolute;
+          left: 0;
+          top: 0;
+          font-weight: 1000;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
 
     .item-meta {
@@ -1258,6 +1297,11 @@ const closeEvent = () => {
     display: block;
     font-family: var(--font-family-code);
   }
+}
+
+/* 针对工作经验模块收窄显示宽度 */
+.highlight-card.work-card .item-desc {
+  padding-right: 10%;
 }
 </style>
 

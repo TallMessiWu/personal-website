@@ -81,7 +81,7 @@
                     "year": "2024 - Present"
                 },
                 {
-                    "school": "UC San Diego",
+                    "school": "University of California San Diego",
                     "degree": "B.S. in Data Science",
                     "minor": "Minor in Economics",
                     "year": "2020 - 2023"
@@ -89,24 +89,39 @@
                 {
                     "school": "The Derryfield School",
                     "degree": "High School Diploma",
-                    "year": "2016 - 2020"
+                    "year": "2017 - 2019"
+                },
+                {
+                    "school": "Linfield Christian School",
+                    "degree": "High School",
+                    "year": "2015 - 2017"
                 }
             ],
             "work": [
                 {
-                    "role": "Technical Director",
+                    "company": "Huawei Technologies Co., Ltd.",
+                    "role": "AI Engineer",
+                    "desc": [
+                        "Responsible for model optimization and adaptation within the ICT Computing Product Line, identifying performance bottlenecks through operator profiling data analysis and driving ecosystem adaptation.",
+                        "Integrated new acceleration features, such as fused operators, to optimize overall model performance."
+                    ]
+                },
+                {
+                    "company": "Columbia University Medical Center",
+                    "role": "Data Analyst",
+                    "desc": [
+                        "Participated in an in vivo neuronal recording project. Correlated key neuronal activity metrics with animal feeding behaviors and intake data.",
+                        "Developed Python scripts for data processing and analysis, quantifying the relationship between neuronal activity and feeding behavior. Visualized experimental data using Matplotlib and Seaborn to assist the research team in understanding neural activity patterns.",
+                        "Built an automated data processing pipeline, enabling researchers to automatically analyze subsequent similar datasets."
+                    ]
+                },
+                {
                     "company": "UCSD CSSA",
-                    "desc": "Led a team of 10 developers to build and maintain the official website and WeChat mini-program, serving over 5000 students."
-                },
-                {
-                    "role": "Software Engineer Intern",
-                    "company": "Tech Giant Corp [Demo]",
-                    "desc": "Developed microservices using Go and gRPC. Optimized database queries reducing latency by 40%."
-                },
-                {
-                    "role": "Research Assistant",
-                    "company": "Data Lab [Demo]",
-                    "desc": "Conducted research on computer vision algorithms for autonomous driving. Published a paper at CVPR."
+                    "role": "Head of Development",
+                    "desc": [
+                        "Developed the organization's website utilizing Vue.js, Vite, and Flask. Conducted usability testing and gathered feedback to enhance application functionality. Organized academic seminars and events, including the Spring Festival Gala.",
+                        "Created programming tutorials for 15 team members to improve their technical skills. Designed a departmental website for sharing tutorials and synchronizing daily information."
+                    ]
                 }
             ],
             "projects": [
@@ -124,11 +139,6 @@
                     "name": "Personal Website",
                     "desc": "A modern, responsive portfolio website built with Vue 3, TypeScript, and Element Plus.",
                     "link": "https://github.com/TallMessiWu"
-                },
-                {
-                    "name": "Smart Home Hub [Demo]",
-                    "desc": "IoT dashboard for controlling smart home devices with voice commands and automated routines.",
-                    "link": "#"
                 }
             ],
             "skills": [
@@ -140,8 +150,6 @@
                 "PyTorch",
                 "Flask",
                 "Docker",
-                "AWS",
-                "gRPC",
                 "Redis",
                 "MongoDB",
                 "Git",
@@ -158,46 +166,46 @@
         },
         "timeline": [
             {
-                "start": "Sep 2024",
+                "start": "Aug 2025",
                 "end": "Present",
+                "duration": "",
+                "title": "Huawei Technologies Co., Ltd.",
+                "description": "AI Engineer"
+            },
+            {
+                "start": "Nov 2023",
+                "end": "Dec 2024",
                 "duration": "1 Year",
-                "title": "Master's at Columbia",
-                "description": "Moved to New York to pursue M.S. in Data Science at Columbia University."
+                "title": "Columbia University Medical Center",
+                "description": "Data Analyst"
             },
             {
-                "start": "Jan 2025",
-                "end": "Jun 2025",
-                "duration": "6 Months",
-                "title": "AI Competition Training [Test]",
-                "description": "Participated in Kaggle competitions and won a silver medal, focusing on LLM fine-tuning."
+                "start": "Aug 2023",
+                "end": "Dec 2024",
+                "duration": "1.5 Years",
+                "title": "Columbia University",
+                "description": "Master's, Data Science."
             },
             {
-                "start": "Sep 2020",
-                "end": "Jun 2023",
-                "duration": "3 Years",
-                "title": "Graduated from UCSD",
-                "description": "Completed Bachelor's degree with honors. Awarded Outstanding Student."
-            },
-            {
-                "start": "Mar 2021",
-                "end": "Dec 2022",
-                "duration": "1 Year 9 Months",
-                "title": "Open Source Contributions [Test]",
-                "description": "Contributed code to several popular open source projects in data visualization and ML tools."
-            },
-            {
-                "start": "Jun 2022",
-                "end": "Sep 2022",
-                "duration": "3 Months",
-                "title": "First Internship",
-                "description": "Worked as a Software Engineer Intern at a tech startup in San Diego."
-            },
-            {
-                "start": "Sep 2016",
-                "end": "Jun 2020",
+                "start": "Sep 2019",
+                "end": "Mar 2023",
                 "duration": "4 Years",
-                "title": "High School in US",
-                "description": "Came to the United States for high school education."
+                "title": "University of California San Diego",
+                "description": "Bachelor's in Data Science, Minor in Economics. Graduated a quarter early with honors, awarded Outstanding Graduate."
+            },
+            {
+                "start": "Sep 2017",
+                "end": "Jun 2019",
+                "duration": "2 Years",
+                "title": "The Derryfield School",
+                "description": "Attended high school at The Derryfield School."
+            },
+            {
+                "start": "Aug 2015",
+                "end": "Jun 2017",
+                "duration": "2 Years",
+                "title": "Linfield Christian School",
+                "description": "Attended high school at Linfield Christian School."
             }
         ],
         "hobbies": [
