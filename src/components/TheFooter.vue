@@ -108,6 +108,8 @@ const { t } = useI18n()
   }
 
   .github-style {
+    width: 27px !important;
+    height: 27px !important;
     background: radial-gradient(circle closest-side, #ffffff 88%, transparent 85%);
     border-radius: 50%;
     filter: invert(1);

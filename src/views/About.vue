@@ -769,6 +769,8 @@ const closeEvent = () => {
       }
 
       .github-style {
+        width: 27px;
+        height: 27px;
         background: radial-gradient(circle closest-side, #ffffff 88%, transparent 85%);
         border-radius: 50%;
         filter: invert(1);
