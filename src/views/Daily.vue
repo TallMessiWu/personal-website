@@ -7,7 +7,7 @@
       <p class="subtitle">{{ t('daily.subtitle') }}</p>
     </div>
 
-    <div class="masonry-container" ref="masonryRef">
+    <div class="masonry-container" ref="masonryRef" v-show="!isLoading && columns.length > 0">
       <div class="masonry-column" v-for="(column, index) in columns" :key="index">
         <daily-card
           v-for="post in column"
@@ -19,9 +19,16 @@
       </div>
     </div>
 
+    <!-- Skeleton Loading State -->
+    <div class="masonry-container" v-if="isLoading">
+      <div class="masonry-column" v-for="colIndex in columnCount" :key="'skel-col-'+colIndex">
+        <daily-card-skeleton v-for="itemIndex in 3" :key="'skel-item-'+colIndex+'-'+itemIndex" :seed="itemIndex * colIndex" />
+      </div>
+    </div>
+
     <!-- Load More Trigger (Sentinel) -->
-    <div ref="loadTrigger" class="load-trigger">
-      <div v-if="isLoading || hasMore" class="loading-spinner">
+    <div ref="loadTrigger" class="load-trigger" v-show="!isLoading">
+      <div v-if="hasMore" class="loading-spinner">
         <span>{{ t('common.loading') }}</span>
       </div>
       <div v-else class="end-message">
@@ -48,6 +55,7 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head';
 import DailyCard from '@/components/DailyCard.vue';
+import DailyCardSkeleton from '@/components/DailyCardSkeleton.vue';
 import { Close } from '@element-plus/icons-vue';
 import { ref, onMounted, onUnmounted, nextTick, computed, watch, type CSSProperties } from 'vue';
 import { useI18n } from 'vue-i18n';

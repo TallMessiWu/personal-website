@@ -5,10 +5,8 @@
     </div>
 
     <!-- 加载中 -->
-    <div v-if="isLoading" class="loading-state">
-      <div class="loading-spinner">
-        <span>{{ t('common.loading') }}</span>
-      </div>
+    <div v-if="isLoading" class="portfolio-grid">
+      <portfolio-card-skeleton v-for="n in 6" :key="'pskel-'+n" />
     </div>
 
     <!-- 数据为空 -->
@@ -64,7 +62,7 @@
               </div>
 
               <!-- Posts Masonry -->
-              <div class="masonry-container" ref="masonryRef">
+              <div class="masonry-container" ref="masonryRef" v-show="!isPostsLoading && columns.length > 0">
                 <div class="masonry-column" v-for="(column, index) in columns" :key="index">
                   <daily-card
                     v-for="post in column"
@@ -76,9 +74,10 @@
                 </div>
               </div>
 
-              <div v-if="isPostsLoading" class="modal-loading">
-                <div class="loading-spinner">
-                  <span>{{ t('common.loading') }}</span>
+              <!-- Posts Skeleton Loading -->
+              <div class="masonry-container" v-if="isPostsLoading">
+                <div class="masonry-column" v-for="colIndex in columnCount" :key="'skel-col-'+colIndex">
+                  <daily-card-skeleton v-for="itemIndex in 2" :key="'skel-item-'+colIndex+'-'+itemIndex" :seed="itemIndex * colIndex" />
                 </div>
               </div>
             </div>
@@ -109,6 +108,8 @@ import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 import { Close } from '@element-plus/icons-vue';
 import DailyCard from '@/components/DailyCard.vue';
+import DailyCardSkeleton from '@/components/DailyCardSkeleton.vue';
+import PortfolioCardSkeleton from '@/components/PortfolioCardSkeleton.vue';
 import { fetchCollectionsFromCloud, fetchPostsByCollectionId, type CollectionDisplay } from '@/data/portfolioData';
 import type { Post } from '@/data/dailyData';
 
@@ -709,17 +710,7 @@ onUnmounted(() => {
   min-width: 0;
 }
 
-.modal-loading {
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 110;
-}
-
+/* Removed modal-loading as we now use skeleton masonry */
 .close-btn {
   position: absolute;
   top: 20px;
