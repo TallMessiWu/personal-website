@@ -60,6 +60,7 @@
                            <video v-show="index === viewerIndex && viewerIsPlaying"
                                   ref="viewerVideoRef"
                                   :src="item.video"
+                                  :muted="isLiveMuted"
                                   class="viewer-video"
                                   playsinline
                                   @ended="viewerIsPlaying = false"
@@ -89,6 +90,14 @@
                        <div class="lazy-placeholder"></div>
                      </template>
                   </div>
+               </div>
+
+               <!-- Viewer Audio Control Button -->
+               <div v-if="isViewerLivePhoto" class="viewer-audio-btn" @click.stop="toggleLiveMute">
+                 <transition name="audio-fade">
+                   <img v-if="isLiveMuted" key="mute" :src="muteIcon" alt="audio muted" class="audio-icon" />
+                   <img v-else key="unmute" :src="unmuteIcon" alt="audio unmuted" class="audio-icon" />
+                 </transition>
                </div>
             </div>
           </div>
@@ -138,6 +147,7 @@
                      <video v-show="index === currentImageIndex && isPlayingLive"
                             ref="liveVideoRef"
                             :src="item.video"
+                            :muted="isLiveMuted"
                             class="slider-image live-video"
                             playsinline
                             @ended="onLiveVideoEnded"
@@ -160,6 +170,14 @@
           {{ currentImageIndex + 1 }} / {{ post.images.length }}
         </div>
 
+        <!-- Slider Audio Control Button -->
+        <div v-if="isCurrentLivePhoto" class="slider-audio-btn" @click.stop="toggleLiveMute">
+          <transition name="audio-fade">
+            <img v-if="isLiveMuted" key="mute" :src="muteIcon" alt="audio muted" class="audio-icon" />
+            <img v-else key="unmute" :src="unmuteIcon" alt="audio unmuted" class="audio-icon" />
+          </transition>
+        </div>
+
         <div class="slider-nav prev" v-if="currentImageIndex > 0" @click.stop="prevImage" title="Previous">
           <el-icon><ArrowLeft /></el-icon>
         </div>
@@ -177,10 +195,19 @@
               <video v-show="isPlayingLive"
                      ref="liveVideoRef"
                      :src="singleLivePhotoData.video"
+                     :muted="isLiveMuted"
                      playsinline
                      class="live-video"
                      @ended="onLiveVideoEnded"
               ></video>
+           </div>
+
+           <!-- Single Expanded Audio Control Button -->
+           <div v-if="isPlayingLive" class="slider-audio-btn single-audio-btn" @click.stop="toggleLiveMute">
+             <transition name="audio-fade">
+               <img v-if="isLiveMuted" key="mute" :src="muteIcon" alt="audio muted" class="audio-icon" />
+               <img v-else key="unmute" :src="unmuteIcon" alt="audio unmuted" class="audio-icon" />
+             </transition>
            </div>
         </template>
 
@@ -232,6 +259,8 @@ import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close, ArrowDown, R
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 
 import { dailyData, type Post } from '@/data/dailyData';
+import muteIcon from '@/assets/buttons/mute.svg';
+import unmuteIcon from '@/assets/buttons/unmute.svg';
 
 const props = defineProps<{
   post: Post,
@@ -242,10 +271,17 @@ const props = defineProps<{
 const viewerShow = ref(false);
 const viewerIndex = ref(0);
 const viewerIsPlaying = ref(false);
-const viewerVideoRef = ref<HTMLVideoElement | null>(null);
+const viewerVideoRef = ref<any[] | any>(null);
 let viewerLiveTimer: ReturnType<typeof setTimeout> | null = null;
 const viewerLiveIconExpanded = ref(false);
 const liveIconExpanded = ref(false);
+
+// Live Photo global audio control
+const isLiveMuted = ref(true);
+
+const toggleLiveMute = () => {
+  isLiveMuted.value = !isLiveMuted.value;
+};
 
 // Check if post has any media
 const hasMedia = computed(() => {
@@ -260,7 +296,7 @@ const previewList = computed(() => {
 
 // Slider Logic
 const currentImageIndex = ref(0);
-const liveVideoRef = ref<HTMLVideoElement[]>([]); // 改为数组因为会有多个v-for循环出的ref
+const liveVideoRef = ref<any>(null); // 使用 any 避免 TS 按严格数组推断导致单例分支被判定为 never
 const isPlayingLive = ref(false);
 let livePhotoTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -286,12 +322,7 @@ const isCurrentLivePhoto = computed(() => {
   return !!props.post.images[currentImageIndex.value]?.video;
 });
 
-// Helper to get current Live Photo object
-const currentLivePhoto = computed(() => {
-  if (!props.post.images || !props.post.images.length) return { cover: '', video: '' };
-  const item = props.post.images[currentImageIndex.value];
-  return item ? { cover: item.thumbnail || item.image, video: item.video || '' } : { cover: '', video: '' };
-});
+
 
 // Helper for single Live Photo (non-slider mode)
 const isSingleLivePhoto = computed(() => {
@@ -394,6 +425,7 @@ const closeViewer = () => {
   viewerShow.value = false;
   viewerLiveIconExpanded.value = false;
   stopViewerLive();
+  isLiveMuted.value = true; // 关闭查看器也重置为静音
 };
 
 const playViewerLive = () => {
@@ -421,15 +453,15 @@ const stopViewerLive = () => {
   if (viewerLiveTimer) clearTimeout(viewerLiveTimer);
 
   if (Array.isArray(viewerVideoRef.value)) {
-    viewerVideoRef.value.forEach(v => {
+    viewerVideoRef.value.forEach((v: any) => {
       if (v) {
         v.pause();
         v.currentTime = 0;
       }
     });
   } else if (viewerVideoRef.value) {
-    viewerVideoRef.value.pause();
-    viewerVideoRef.value.currentTime = 0;
+    (viewerVideoRef.value as any).pause();
+    (viewerVideoRef.value as any).currentTime = 0;
   }
 
   viewerIsPlaying.value = false;
@@ -461,19 +493,9 @@ const prevViewerImage = () => {
   }
 };
 
-const viewerMediaSrc = computed(() => {
-  if (!props.post.images || !props.post.images.length) return '';
-  return props.post.images[viewerIndex.value]?.image || '';
-});
-
 const isViewerLivePhoto = computed(() => {
   if (!props.post.images || !props.post.images.length) return false;
   return !!props.post.images[viewerIndex.value]?.video;
-});
-
-const viewerVideoSrc = computed(() => {
-  if (!isViewerLivePhoto.value || !props.post.images) return '';
-  return props.post.images[viewerIndex.value]?.video || '';
 });
 
 // Keyboard Support
@@ -508,9 +530,9 @@ onUnmounted(() => {
 const onLiveVideoEnded = () => {
   isPlayingLive.value = false;
   if (Array.isArray(liveVideoRef.value)) {
-     liveVideoRef.value.forEach(v => { if (v) v.currentTime = 0; });
+     liveVideoRef.value.forEach((v: any) => { if (v) v.currentTime = 0; });
   } else if (liveVideoRef.value) {
-     liveVideoRef.value.currentTime = 0;
+     (liveVideoRef.value as any).currentTime = 0;
   }
 };
 
@@ -526,12 +548,14 @@ watch(currentImageIndex, () => {
 watch(() => props.expanded, (newVal) => {
   if (newVal) {
     document.body.classList.add('modal-open');
+    isLiveMuted.value = true; // 重置为默认静音
     if (isCurrentLivePhoto.value || isSingleLivePhoto.value) {
       playLivePhoto();
     }
   } else {
     document.body.classList.remove('modal-open');
     stopLivePhoto();
+    isLiveMuted.value = true; // 关闭卡片时重置静音状态
   }
 });
 
@@ -830,6 +854,37 @@ const formattedDate = computed(() => {
       z-index: 10;
     }
 
+    .slider-audio-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 28px;
+      height: 28px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+
+      .audio-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+      }
+    }
+
     .slider-nav {
       position: absolute;
       top: 50%;
@@ -863,6 +918,37 @@ const formattedDate = computed(() => {
   .media-preview {
     position: relative;
     width: 100%;
+
+    .single-audio-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+
+      .audio-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+      }
+    }
 
     img {
       width: 100%;
@@ -1266,6 +1352,15 @@ const formattedDate = computed(() => {
 
   &.prev { left: 40px; }
   &.next { right: 40px; }
+
+  @media (max-width: 768px) {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+
+    &.prev { left: 10px; }
+    &.next { right: 10px; }
+  }
 }
 
 .viewer-counter {
@@ -1282,6 +1377,75 @@ const formattedDate = computed(() => {
   border-radius: 20px;
   backdrop-filter: blur(4px);
   z-index: 3100;
+}
+
+.viewer-audio-btn {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3100;
+  transition: all 0.3s;
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  .audio-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 768px) {
+    bottom: 50px;
+    right: 30px;
+    width: 32px;
+    height: 32px;
+
+    .audio-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+/* Audio toggle transition */
+.audio-fade-enter-active,
+.audio-fade-leave-active {
+  transition: opacity 0.3s ease, clip-path 0.3s ease;
+  will-change: clip-path, opacity;
+}
+
+.audio-fade-enter-from {
+  clip-path: inset(0 0 100% 0); /* Bottom hidden, reveals from top */
+  opacity: 0;
+}
+.audio-fade-enter-to {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+
+.audio-fade-leave-from {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+.audio-fade-leave-to {
+  clip-path: inset(100% 0 0 0); /* Top hidden, shrinks towards bottom */
+  opacity: 0;
 }
 
 .viewer-fade-enter-active,
