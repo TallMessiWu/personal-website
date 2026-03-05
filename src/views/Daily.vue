@@ -508,6 +508,7 @@ const closePost = () => {
 
   .masonry-container {
     flex-direction: column; /* Ensure 1 column stacking naturally even if JS fails, but JS handles it */
+    align-items: stretch;
   }
 
   .modal-wrapper {

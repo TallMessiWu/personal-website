@@ -857,6 +857,11 @@ onUnmounted(() => {
 }
 
 @media (max-width: 800px) {
+  .masonry-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .modal-wrapper {
     width: 100% !important;
     height: 100% !important;

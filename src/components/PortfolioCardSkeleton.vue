@@ -23,6 +23,7 @@
 <style scoped lang="less">
 .portfolio-card-skeleton {
   width: 100%;
+  box-sizing: border-box;
 }
 
 .image-wrapper-skeleton {

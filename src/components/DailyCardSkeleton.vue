@@ -69,7 +69,7 @@ const estimatedMediaHeight = computed(() => {
   break-inside: avoid;
   box-shadow: var(--shadow-sm);
   width: 100%;
-  margin-bottom: 20px; /* 在真实的 DailyCard 中 margin-bottom 是 20px 由于瀑布流 */
+  box-sizing: border-box;
 }
 
 .media-container-skeleton {
