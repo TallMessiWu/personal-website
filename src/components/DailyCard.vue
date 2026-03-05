@@ -43,38 +43,53 @@
               <el-icon><ArrowRight /></el-icon>
             </button>
 
-            <!-- Media Container -->
-            <div class="viewer-media-wrapper">
-               <template v-if="isViewerLivePhoto">
-                 <div class="viewer-live-container">
-                   <img :src="viewerMediaSrc" alt="viewer cover" class="viewer-image" />
-                   <video v-show="viewerIsPlaying"
-                          ref="viewerVideoRef"
-                          :src="viewerVideoSrc"
-                          class="viewer-video"
-                          playsinline
-                          @ended="viewerIsPlaying = false"
-                   ></video>
-                   <div v-if="isViewerLivePhoto && !viewerIsPlaying" class="live-icon-wrapper in-viewer">
-                      <div class="live-icon-badge"
-                           :class="{ 'is-expanded': viewerLiveIconExpanded }"
-                           @click.stop="toggleViewerLiveIcon">
-                        <div class="live-icon-symbol">◎</div>
-                        <span>{{ $t('daily.live') }}</span>
-                        <el-icon class="live-arrow" :class="{ 'is-rotated': viewerLiveIconExpanded }"><ArrowDown /></el-icon>
-                      </div>
-                      <transition name="fade-slide">
-                        <div v-if="viewerLiveIconExpanded" class="live-menu" @click.stop="replayViewerLivePhoto">
-                           <el-icon><RefreshRight /></el-icon>
-                           <span>{{ $t('daily.replay') }}</span>
-                        </div>
-                      </transition>
-                   </div>
-                 </div>
-               </template>
-               <template v-else>
-                 <img :src="viewerMediaSrc" alt="viewer image" class="viewer-image" />
-               </template>
+            <!-- Media Container Track -->
+            <div v-if="post.images" class="viewer-track-wrapper">
+               <div class="viewer-media-wrapper"
+                    :class="{ 'is-swiping': viewerIsSwiping }"
+                    :style="{ transform: `translateX(calc(-${viewerIndex * 100}% + ${viewerSwipeDeltaX}px))` }"
+                    @touchstart.passive="onViewerSwipeStart"
+                    @touchmove.passive="onViewerSwipeMove"
+                    @touchend="onViewerSwipeEnd">
+
+                  <div v-for="(item, index) in post.images" :key="index" class="viewer-slide-item">
+                     <template v-if="shouldRenderViewerMedia(index)">
+                       <template v-if="item.video">
+                         <div class="viewer-live-container">
+                           <img :src="item.image" alt="viewer cover" class="viewer-image" draggable="false" />
+                           <video v-show="index === viewerIndex && viewerIsPlaying"
+                                  ref="viewerVideoRef"
+                                  :src="item.video"
+                                  class="viewer-video"
+                                  playsinline
+                                  @ended="viewerIsPlaying = false"
+                           ></video>
+                           <div v-if="index === viewerIndex && !viewerIsPlaying" class="live-icon-wrapper in-viewer">
+                              <div class="live-icon-badge"
+                                   :class="{ 'is-expanded': viewerLiveIconExpanded }"
+                                   @click.stop="toggleViewerLiveIcon">
+                                <div class="live-icon-symbol">◎</div>
+                                <span>{{ $t('daily.live') }}</span>
+                                <el-icon class="live-arrow" :class="{ 'is-rotated': viewerLiveIconExpanded }"><ArrowDown /></el-icon>
+                              </div>
+                              <transition name="fade-slide">
+                                <div v-if="viewerLiveIconExpanded" class="live-menu" @click.stop="replayViewerLivePhoto">
+                                   <el-icon><RefreshRight /></el-icon>
+                                   <span>{{ $t('daily.replay') }}</span>
+                                </div>
+                              </transition>
+                           </div>
+                         </div>
+                       </template>
+                       <template v-else>
+                         <img :src="item.image" alt="viewer image" class="viewer-image" draggable="false" />
+                       </template>
+                     </template>
+                     <template v-else>
+                       <div class="lazy-placeholder"></div>
+                     </template>
+                  </div>
+               </div>
             </div>
           </div>
         </div>
@@ -101,28 +116,44 @@
 
       <!-- 2. Multi-Image Expanded Mode: Slider -->
       <div v-else-if="post.images && post.images.length > 1 && expanded" class="image-slider">
-        <!-- Image/Video Renderer -->
-        <div class="slider-item" @click="handleMediaClick">
-          <template v-if="isCurrentLivePhoto">
-             <!-- Live Photo Container -->
-             <div class="live-photo-container">
-                <!-- Cover Image -->
-                <img :src="currentLivePhoto.cover" alt="live photo cover" class="slider-image live-cover" />
+        <!-- Image Slider Track -->
+        <div class="slider-track"
+             :class="{ 'is-swiping': isSwiping }"
+             :style="{ transform: `translateX(calc(-${currentImageIndex * 100}% + ${swipeDeltaX}px))` }"
+             @touchstart.passive="onSwipeStart"
+             @touchmove.passive="onSwipeMove"
+             @touchend="onSwipeEnd"
+             @click="handleMediaClick">
 
-                <!-- Video -->
-                <video v-show="isPlayingLive"
-                       ref="liveVideoRef"
-                       :src="currentLivePhoto.video"
-                       class="slider-image live-video"
-                       playsinline
-                       @ended="onLiveVideoEnded"
-                ></video>
-             </div>
-          </template>
-          <template v-else>
-              <!-- Standard Image -->
-              <img :src="currentImageSrc" alt="post image" class="slider-image" />
-          </template>
+          <div v-for="(item, index) in post.images" :key="index" class="slider-item">
+             <!-- 懒加载条件：只渲染当前、上一张、下一张 -->
+             <template v-if="shouldRenderMedia(index)">
+               <template v-if="item.video">
+                  <!-- Live Photo Container -->
+                  <div class="live-photo-container">
+                     <!-- Cover Image -->
+                     <img :src="item.thumbnail || item.image" alt="live photo cover" class="slider-image live-cover" draggable="false" />
+
+                     <!-- Video (Only play if current) -->
+                     <video v-show="index === currentImageIndex && isPlayingLive"
+                            ref="liveVideoRef"
+                            :src="item.video"
+                            class="slider-image live-video"
+                            playsinline
+                            @ended="onLiveVideoEnded"
+                     ></video>
+                  </div>
+               </template>
+               <template v-else>
+                   <!-- Standard Image -->
+                   <img :src="item.thumbnail || item.image" alt="post image" class="slider-image" draggable="false" />
+               </template>
+             </template>
+             <!-- 占位符供未加载图片使用，保持轨道宽度结构 -->
+             <template v-else>
+               <div class="lazy-placeholder"></div>
+             </template>
+          </div>
         </div>
 
         <div class="slider-counter">
@@ -229,11 +260,20 @@ const previewList = computed(() => {
 
 // Slider Logic
 const currentImageIndex = ref(0);
-const liveVideoRef = ref<HTMLVideoElement | null>(null);
+const liveVideoRef = ref<HTMLVideoElement[]>([]); // 改为数组因为会有多个v-for循环出的ref
 const isPlayingLive = ref(false);
 let livePhotoTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Helper to get current image source
+// 懒加载控制判断（只渲染当前、前后一张共 3 张）
+const shouldRenderMedia = (index: number) => {
+  return Math.abs(index - currentImageIndex.value) <= 1;
+};
+
+const shouldRenderViewerMedia = (index: number) => {
+  return Math.abs(index - viewerIndex.value) <= 1;
+};
+
+// Helper to get current image source (for single preview fallback)
 const currentImageSrc = computed(() => {
   if (!props.post.images || !props.post.images.length) return '';
   const item = props.post.images[currentImageIndex.value];
@@ -284,19 +324,39 @@ const playLivePhoto = () => {
   livePhotoTimer = setTimeout(() => {
     isPlayingLive.value = true;
     nextTick(() => {
-      if (liveVideoRef.value) {
-        liveVideoRef.value.play().catch(e => console.log('Autoplay blocked', e));
-      }
+       // 因 v-for 生成的是数组，我们要找到当前那个视频元素
+       let targetVideo: HTMLVideoElement | null = null;
+       if (Array.isArray(liveVideoRef.value)) {
+          // 由于 v-if 懒加载，数组可能包含 null 或者是 DOM，提取真实的视频元素进行播放
+          const activeVideos = liveVideoRef.value.filter(v => v !== null);
+          if (activeVideos.length > 0) {
+             targetVideo = activeVideos[0]; // 由于只有 current index 才会赋予 v-show true, 这也可以，或者是我们不需要找特定的，让它们去播
+          }
+       } else {
+          targetVideo = liveVideoRef.value; // 对于单张图片情况可能还不是数组
+       }
+       if (targetVideo) {
+         targetVideo.play().catch(e => console.log('Autoplay blocked', e));
+       }
     });
   }, 500);
 };
 
 const stopLivePhoto = () => {
   if (livePhotoTimer) clearTimeout(livePhotoTimer);
-  if (liveVideoRef.value) {
+
+  if (Array.isArray(liveVideoRef.value)) {
+    liveVideoRef.value.forEach(v => {
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+      }
+    });
+  } else if (liveVideoRef.value) {
     liveVideoRef.value.pause();
     liveVideoRef.value.currentTime = 0;
   }
+
   isPlayingLive.value = false;
   liveIconExpanded.value = false; // Close menu when stopped or finished
 };
@@ -343,8 +403,15 @@ const playViewerLive = () => {
   viewerLiveTimer = setTimeout(() => {
     viewerIsPlaying.value = true;
     nextTick(() => {
-      if (viewerVideoRef.value) {
-        viewerVideoRef.value.play().catch(e => console.log('Viewer autoplay blocked', e));
+      let targetVideo: HTMLVideoElement | null = null;
+      if (Array.isArray(viewerVideoRef.value)) {
+         const activeVideos = viewerVideoRef.value.filter(v => v !== null);
+         if (activeVideos.length > 0) targetVideo = activeVideos[0];
+      } else {
+         targetVideo = viewerVideoRef.value;
+      }
+      if (targetVideo) {
+        targetVideo.play().catch(e => console.log('Viewer autoplay blocked', e));
       }
     });
   }, 500);
@@ -352,10 +419,19 @@ const playViewerLive = () => {
 
 const stopViewerLive = () => {
   if (viewerLiveTimer) clearTimeout(viewerLiveTimer);
-  if (viewerVideoRef.value) {
+
+  if (Array.isArray(viewerVideoRef.value)) {
+    viewerVideoRef.value.forEach(v => {
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+      }
+    });
+  } else if (viewerVideoRef.value) {
     viewerVideoRef.value.pause();
     viewerVideoRef.value.currentTime = 0;
   }
+
   viewerIsPlaying.value = false;
   viewerLiveIconExpanded.value = false;
 };
@@ -431,8 +507,10 @@ onUnmounted(() => {
 
 const onLiveVideoEnded = () => {
   isPlayingLive.value = false;
-  if (liveVideoRef.value) {
-    liveVideoRef.value.currentTime = 0; // Reset to start
+  if (Array.isArray(liveVideoRef.value)) {
+     liveVideoRef.value.forEach(v => { if (v) v.currentTime = 0; });
+  } else if (liveVideoRef.value) {
+     liveVideoRef.value.currentTime = 0;
   }
 };
 
@@ -467,6 +545,91 @@ const prevImage = () => {
   if (props.post.images && currentImageIndex.value > 0) {
     currentImageIndex.value--;
   }
+};
+
+// ---- 触摸滑动：展开模式轮播 ----
+const SWIPE_THRESHOLD = 50; // 触发切换的最小滑动距离
+const swipeStartX = ref(0);
+const swipeDeltaX = ref(0);
+const isSwiping = ref(false);
+
+const onSwipeStart = (e: TouchEvent) => {
+  swipeStartX.value = e.touches[0].clientX;
+  swipeDeltaX.value = 0;
+  isSwiping.value = true;
+};
+
+const onSwipeMove = (e: TouchEvent) => {
+  if (!isSwiping.value) return;
+  const dx = e.touches[0].clientX - swipeStartX.value;
+
+  // 如果产生了实际滑动且正在播放Live图，立即停止播放
+  if (Math.abs(dx) > 5 && isPlayingLive.value) {
+     stopLivePhoto();
+  }
+
+  // 边界阻尼：到达首张右滑或末张左滑时，位移衰减
+  const atStart = currentImageIndex.value === 0 && dx > 0;
+  const atEnd = props.post.images && currentImageIndex.value >= props.post.images.length - 1 && dx < 0;
+  swipeDeltaX.value = (atStart || atEnd) ? dx * 0.25 : dx;
+};
+
+const onSwipeEnd = () => {
+  if (!isSwiping.value) return;
+  isSwiping.value = false;
+  const dx = swipeDeltaX.value;
+  if (Math.abs(dx) >= SWIPE_THRESHOLD) {
+    if (dx < 0) {
+      // 左滑 → 下一张
+      if (isPlayingLive.value) stopLivePhoto();
+      nextImage();
+    } else {
+      // 右滑 → 上一张
+      if (isPlayingLive.value) stopLivePhoto();
+      prevImage();
+    }
+  }
+  swipeDeltaX.value = 0;
+};
+
+// ---- 触摸滑动：全屏查看器 ----
+const viewerSwipeStartX = ref(0);
+const viewerSwipeDeltaX = ref(0);
+const viewerIsSwiping = ref(false);
+
+const onViewerSwipeStart = (e: TouchEvent) => {
+  viewerSwipeStartX.value = e.touches[0].clientX;
+  viewerSwipeDeltaX.value = 0;
+  viewerIsSwiping.value = true;
+};
+
+const onViewerSwipeMove = (e: TouchEvent) => {
+  if (!viewerIsSwiping.value) return;
+  const dx = e.touches[0].clientX - viewerSwipeStartX.value;
+
+  if (Math.abs(dx) > 5 && viewerIsPlaying.value) {
+     stopViewerLive();
+  }
+
+  const atStart = viewerIndex.value === 0 && dx > 0;
+  const atEnd = props.post.images && viewerIndex.value >= props.post.images.length - 1 && dx < 0;
+  viewerSwipeDeltaX.value = (atStart || atEnd) ? dx * 0.25 : dx;
+};
+
+const onViewerSwipeEnd = () => {
+  if (!viewerIsSwiping.value) return;
+  viewerIsSwiping.value = false;
+  const dx = viewerSwipeDeltaX.value;
+  if (Math.abs(dx) >= SWIPE_THRESHOLD) {
+    if (dx < 0) {
+      if (viewerIsPlaying.value) stopViewerLive();
+      nextViewerImage();
+    } else {
+      if (viewerIsPlaying.value) stopViewerLive();
+      prevViewerImage();
+    }
+  }
+  viewerSwipeDeltaX.value = 0;
 };
 
 // Bilibili Logic
@@ -611,28 +774,47 @@ const formattedDate = computed(() => {
     position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden; /* 隐藏轨道外的内容 */
+
+    .slider-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+      touch-action: pan-y;
+
+      &.is-swiping {
+        transition: none;
+      }
+    }
+
+    .slider-item {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+
+      .lazy-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+      }
+
+      /* Ensure cursor is zoom-in when expanded to indicate preview */
+      .is-expanded & {
+        cursor: zoom-in;
+      }
+    }
 
     .slider-image {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: contain;
-    }
-
-    .slider-item {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      /* Ensure cursor is zoom-in when expanded to indicate preview */
-      .is-expanded & {
-        cursor: zoom-in;
-      }
     }
 
     .slider-counter {
@@ -973,12 +1155,41 @@ const formattedDate = computed(() => {
   align-items: center;
 }
 
+.viewer-track-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
 .viewer-media-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  touch-action: pan-y;
+  user-select: none;
+
+  &.is-swiping {
+    transition: none;
+  }
+}
+
+.viewer-slide-item {
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+
+  .lazy-placeholder {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
 
   .viewer-image, .viewer-video {
     width: 100%;
