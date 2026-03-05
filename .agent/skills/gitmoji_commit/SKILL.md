@@ -12,9 +12,10 @@ description: 根据当前暂存区的代码变更和会话上下文，生成符�
 2.  **严禁推送 (git push)**，仅执行本地提交 (git commit)。
 3.  **格式规范**: `<emoji> <type>(<scope>): <subject>`
     *   **Emoji**: 使用 Gitmoji 代码（如 `:sparkles:`）或 Unicode 字符（如 ✨），推荐使用代码格式以便兼容性。
-    *   **Subject**: 简练的中文描述，动词开头，不超过 50 个字符。
-    *   Example: `:sparkles: feat(auth): 添加登录功能`
-    *   Example: `:bug: fix(nav): 修复导航栏样式偏移`
+    *   **Subject**: 简练的中文描述，动词开头，不超过 50 个字符。作为第一个 `-m` 的标题。
+    *   **Body (可选)**: 根据变更的复杂度决定是否需要补充详情。如果 commit 简单，则只需一个 `-m`；如果 commit 较复杂或包含多个细节项，**必须**使用第二个 `-m` 参数逐点列出详细内容。
+    *   Example (简单): `git commit -m ":sparkles: feat(auth): 添加登录功能"`
+    *   Example (复杂): `git commit -m ":bug: fix(nav): 修复导航栏样式偏移" -m "1. 修复了移动端下 margin 计算错误的 bug\n2. 统一了背景毛玻璃组件的 z-index"`
 
 ## 执行步骤
 
@@ -129,7 +130,11 @@ git diff --cached --name-only
 
 **只有在用户明确回复“是”、“确认”或“ok”后**，才执行 `run_command`：
 ```powershell
+# 简单 Commit
 git commit -m ":your-emoji: type(scope): subject"
+
+# 复杂 Commit
+git commit -m ":your-emoji: type(scope): subject" -m "1. 详细变更一\n2. 详细变更二"
 ```
 
 ## 注意事项
