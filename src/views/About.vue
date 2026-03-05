@@ -932,9 +932,11 @@ const closeEvent = () => {
     }
 
     &:active {
-      transform: scale(0.95);
-      background: var(--color-surface);
+      color: var(--color-accent-tertiary);
       border-color: var(--color-accent-tertiary);
+      background: var(--color-surface);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(78, 201, 176, 0.2);
     }
   }
 }
