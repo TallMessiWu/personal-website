@@ -1,4 +1,4 @@
-name: Deploy to CloudBase Static Hosting
+name: 部署到云开发静态网站
 
 on:
   push:
@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: 拉取代码
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
+    - name: 配置 Node.js 环境
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'npm' # 启用npm缓存加速构建
 
-    - name: Install dependencies
+    - name: 安装项目依赖
       run: npm ci # 使用npm ci替代npm install，更适合CI环境
 
-    - name: Build project
+    - name: 构建生产版本
       run: npm run build
 
-    - name: Install CloudBase CLI
+    - name: 安装 CloudBase CLI
       run: npm install -g @cloudbase/cli
 
-    - name: Login CloudBase CLI
+    - name: 登录云开发环境
       uses: nick-fields/retry@v3
       with:
         timeout_minutes: 1
@@ -39,7 +39,7 @@ jobs:
         retry_wait_seconds: 10
         command: tcb login --apiKeyId ${{ secrets.TCB_SECRET_ID }} --apiKey ${{ secrets.TCB_SECRET_KEY }}
 
-    - name: Clean old files on CloudBase
+    - name: 清理云端旧文件
       uses: nick-fields/retry@v3
       with:
         timeout_minutes: 1
@@ -47,7 +47,7 @@ jobs:
         retry_wait_seconds: 10
         command: tcb hosting delete / -e ${{ secrets.TCB_ENV_ID }} -d || true
 
-    - name: Deploy to CloudBase Static Hosting
+    - name: 部署至云开发静态托管
       uses: nick-fields/retry@v3
       with:
         timeout_minutes: 5
