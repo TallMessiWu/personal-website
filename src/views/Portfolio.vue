@@ -526,7 +526,7 @@ onUnmounted(() => {
   align-items: center;
   width: 100%;
   max-width: 200px;
-  margin: 40px auto;
+  margin: 40px auto 10px;
   gap: 15px;
   color: var(--color-text-secondary);
   font-weight: bold;
