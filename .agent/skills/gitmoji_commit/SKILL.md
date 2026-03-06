@@ -13,9 +13,9 @@ description: 根据当前暂存区的代码变更和会话上下文，生成符�
 3.  **格式规范**: `<emoji> <type>(<scope>): <subject>`
     *   **Emoji**: 使用 Gitmoji 代码（如 `:sparkles:`）或 Unicode 字符（如 ✨），推荐使用代码格式以便兼容性。
     *   **Subject**: 简练的中文描述，动词开头，不超过 50 个字符。作为第一个 `-m` 的标题。
-    *   **Body (可选)**: 根据变更的复杂度决定是否需要补充详情。如果 commit 简单，则只需一个 `-m`；如果 commit 较复杂或包含多个细节项，**必须**使用第二个 `-m` 参数逐点列出详细内容。
-    *   Example (简单): `git commit -m ":sparkles: feat(auth): 添加登录功能"`
-    *   Example (复杂): `git commit -m ":bug: fix(nav): 修复导航栏样式偏移" -m "1. 修复了移动端下 margin 计算错误的 bug\n2. 统一了背景毛玻璃组件的 z-index"`
+    *   **Body (可选)**: **强烈建议不要使用两个 `-m` 参数**，除非 commit 包含大量不同层面的复杂修改，且仅看标题无法清晰传达详细信息时才使用。一般情况下，只要 `Subject` 能够概括核心意图，就应尽量保持语言简洁，仅使用一个 `-m` 参数即可。
+    *   Example (默认推荐 - 简洁): `git commit -m ":sparkles: feat(auth): 添加登录功能"`
+    *   Example (仅限复杂变更 - 拆分细节): `git commit -m ":bug: fix(nav): 修复导航栏样式偏移" -m "1. 修复了移动端下 margin 计算错误的 bug\n2. 统一了背景毛玻璃组件的 z-index"`
 
 ## 执行步骤
 
