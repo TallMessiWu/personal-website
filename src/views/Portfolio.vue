@@ -291,15 +291,6 @@ const openCollection = async (collection: CollectionDisplay, event: MouseEvent) 
     if (isPostsLoading.value) showPostsSkeleton.value = true;
   }, 200);
 
-  // Fetch posts for this collection
-  try {
-    collectionPosts.value = await fetchPostsByCollectionId(collection._id);
-  } finally {
-    if (postsSkeletonTimer) clearTimeout(postsSkeletonTimer);
-    showPostsSkeleton.value = false;
-    isPostsLoading.value = false;
-  }
-
   nextTick(() => {
     void document.body.offsetHeight;
     modalStyle.value = {
@@ -313,6 +304,15 @@ const openCollection = async (collection: CollectionDisplay, event: MouseEvent) 
       zIndex: 2001
     };
   });
+
+  // Fetch posts for this collection
+  try {
+    collectionPosts.value = await fetchPostsByCollectionId(collection._id);
+  } finally {
+    if (postsSkeletonTimer) clearTimeout(postsSkeletonTimer);
+    showPostsSkeleton.value = false;
+    isPostsLoading.value = false;
+  }
 };
 
 const closeCollection = () => {
