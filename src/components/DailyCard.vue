@@ -59,6 +59,7 @@
                            <img :src="item.image" alt="viewer cover" class="viewer-image" draggable="false" />
                            <video v-show="index === viewerIndex && viewerIsPlaying"
                                   ref="viewerVideoRef"
+                                  :data-index="index"
                                   :src="item.video"
                                   :muted="isLiveMuted"
                                   class="viewer-video"
@@ -146,6 +147,7 @@
                      <!-- Video (Only play if current) -->
                      <video v-show="index === currentImageIndex && isPlayingLive"
                             ref="liveVideoRef"
+                            :data-index="index"
                             :src="item.video"
                             :muted="isLiveMuted"
                             class="slider-image live-video"
@@ -358,10 +360,10 @@ const playLivePhoto = () => {
        // 因 v-for 生成的是数组，我们要找到当前那个视频元素
        let targetVideo: HTMLVideoElement | null = null;
        if (Array.isArray(liveVideoRef.value)) {
-          // 由于 v-if 懒加载，数组可能包含 null 或者是 DOM，提取真实的视频元素进行播放
-          const activeVideos = liveVideoRef.value.filter(v => v !== null);
-          if (activeVideos.length > 0) {
-             targetVideo = activeVideos[0]; // 由于只有 current index 才会赋予 v-show true, 这也可以，或者是我们不需要找特定的，让它们去播
+          // 由于 v-if 懒加载，数组可能包含 null 或者是 DOM，提取真实的并匹配当前 index 的视频元素进行播放
+          const target = liveVideoRef.value.find(v => v !== null && parseInt(v.dataset.index) === currentImageIndex.value);
+          if (target) {
+             targetVideo = target;
           }
        } else {
           targetVideo = liveVideoRef.value; // 对于单张图片情况可能还不是数组
@@ -437,8 +439,8 @@ const playViewerLive = () => {
     nextTick(() => {
       let targetVideo: HTMLVideoElement | null = null;
       if (Array.isArray(viewerVideoRef.value)) {
-         const activeVideos = viewerVideoRef.value.filter(v => v !== null);
-         if (activeVideos.length > 0) targetVideo = activeVideos[0];
+         const target = viewerVideoRef.value.find(v => v !== null && parseInt(v.dataset.index) === viewerIndex.value);
+         if (target) targetVideo = target;
       } else {
          targetVideo = viewerVideoRef.value;
       }
