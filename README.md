@@ -60,7 +60,7 @@ personal-website/
 │   │   ├── TheHeader.vue  #   顶部导航栏 (主题切换、语言切换)
 │   │   ├── TheFooter.vue  #   底部社交链接栏
 │   │   └── DailyCard.vue  #   日常页面卡片组件
-│   ├── data/              # 静态数据 (日常、作品集等数据文件)
+│   ├── data/              # 数据定义与云端获取逻辑 (模型及获取 API)
 │   ├── locales/           # 国际化语言文件
 │   │   ├── zh.json        #   中文
 │   │   ├── en.json        #   英文

@@ -60,7 +60,7 @@ personal-website/
 │   │   ├── TheHeader.vue  #   Top navigation bar (theme & language toggle)
 │   │   ├── TheFooter.vue  #   Footer social links bar
 │   │   └── DailyCard.vue  #   Daily page card component
-│   ├── data/              # Static data (data files for Daily, Portfolio, etc.)
+│   ├── data/              # Data models & cloud fetch logic
 │   ├── locales/           # i18n language files
 │   │   ├── zh.json        #   Chinese
 │   │   ├── en.json        #   English
