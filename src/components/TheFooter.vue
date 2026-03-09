@@ -48,7 +48,7 @@ const { t } = useI18n()
   width: 100%;
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  padding: 3rem 0 2rem;
+  padding: 2rem 0 2rem;
 }
 
 .footer-content {
