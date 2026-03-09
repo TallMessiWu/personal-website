@@ -61,6 +61,10 @@ const { t } = useI18n()
   gap: 2rem;
   margin-bottom: 1.5rem;
 
+  @media (max-width: 768px) {
+    gap: 1.6rem;
+  }
+
   .social-item {
     display: flex;
     align-items: center;
