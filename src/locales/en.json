@@ -78,29 +78,30 @@
                 {
                     "school": "Columbia University",
                     "degree": "M.S. in Data Science",
-                    "year": "2024 - Present"
+                    "year": "Aug 2023 - Dec 2024"
                 },
                 {
                     "school": "University of California San Diego",
                     "degree": "B.S. in Data Science",
                     "minor": "Minor in Economics",
-                    "year": "2020 - 2023"
+                    "year": "Sep 2019 - Mar 2023"
                 },
                 {
                     "school": "The Derryfield School",
                     "degree": "High School Diploma",
-                    "year": "2017 - 2019"
+                    "year": "Sep 2017 - Jun 2019"
                 },
                 {
                     "school": "Linfield Christian School",
                     "degree": "High School",
-                    "year": "2015 - 2017"
+                    "year": "Aug 2015 - Jun 2017"
                 }
             ],
             "work": [
                 {
                     "company": "Huawei Technologies Co., Ltd.",
                     "role": "AI Engineer",
+                    "year": "Aug 2025 - Present",
                     "desc": [
                         "Responsible for model optimization and adaptation within the ICT Computing Product Line, identifying performance bottlenecks through operator profiling data analysis and driving ecosystem adaptation.",
                         "Integrated new acceleration features, such as fused operators, to optimize overall model performance."
@@ -109,6 +110,7 @@
                 {
                     "company": "Columbia University Medical Center",
                     "role": "Data Analyst",
+                    "year": "Nov 2023 - Dec 2024",
                     "desc": [
                         "Participated in an in vivo neuronal recording project. Correlated key neuronal activity metrics with animal feeding behaviors and intake data.",
                         "Developed Python scripts for data processing and analysis, quantifying the relationship between neuronal activity and feeding behavior. Visualized experimental data using Matplotlib and Seaborn to assist the research team in understanding neural activity patterns.",
@@ -118,6 +120,7 @@
                 {
                     "company": "UCSD CSSA",
                     "role": "Head of Development",
+                    "year": "Sep 2020 - Mar 2023",
                     "desc": [
                         "Developed the organization's website utilizing Vue.js, Vite, and Flask. Conducted usability testing and gathered feedback to enhance application functionality. Organized academic seminars and events, including the Spring Festival Gala.",
                         "Created programming tutorials for 15 team members to improve their technical skills. Designed a departmental website for sharing tutorials and synchronizing daily information."

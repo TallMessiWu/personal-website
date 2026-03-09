@@ -59,10 +59,11 @@
                <h3>{{ t('about.sections.experience') }}</h3>
             </div>
             <div class="card-content">
-               <div v-for="(job, index) in workList" :key="index" class="list-item">
-                 <div class="item-main">{{ job.company }}</div>
-                 <div class="item-sub">{{ job.role }}</div>
-                 <div class="item-desc">
+                <div v-for="(job, index) in workList" :key="index" class="list-item">
+                  <div class="item-main">{{ job.company }}</div>
+                  <div class="item-sub">{{ job.role }}</div>
+                  <div class="item-meta">{{ job.year }}</div>
+                  <div class="item-desc">
                    <template v-if="Array.isArray(job.desc)">
                      <div v-for="(line, i) in job.desc" :key="i" class="desc-line">{{ line }}</div>
                    </template>
