@@ -427,7 +427,6 @@ const closeViewer = () => {
   viewerShow.value = false;
   viewerLiveIconExpanded.value = false;
   stopViewerLive();
-  isLiveMuted.value = true; // 关闭查看器也重置为静音
 };
 
 const playViewerLive = () => {
