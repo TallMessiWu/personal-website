@@ -118,10 +118,14 @@
                 allowfullscreen="true"
                 class="bilibili-iframe">
         </iframe>
-        <div v-else class="video-player-sim">
-          <el-icon class="playing-icon"><VideoPlay /></el-icon>
-          <span>Playing Video...</span>
-        </div>
+        <video v-else
+               :src="post.video"
+               controls
+               autoplay
+               playsinline
+               muted
+               class="native-video">
+        </video>
       </div>
 
       <!-- 2. Multi-Image Expanded Mode: Slider -->
@@ -257,7 +261,7 @@
 </template>
 
 <script setup lang="ts">
-import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close, ArrowDown, RefreshRight } from '@element-plus/icons-vue'
+import { Star, CaretRight, ArrowLeft, ArrowRight, Close, ArrowDown, RefreshRight } from '@element-plus/icons-vue'
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { useBackClose } from '@/composables/useBackClose';
 
@@ -783,20 +787,10 @@ const formattedDate = computed(() => {
       min-height: 400px; /* Give it some height */
     }
 
-    .video-player-sim {
+    .native-video {
       width: 100%;
-      height: 100%;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      .playing-icon {
-        font-size: 3rem;
-        margin-bottom: 10px;
-        animation: pulse 2s infinite;
-      }
+      max-height: 50vh;
+      background-color: #000;
     }
   }
 
