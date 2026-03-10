@@ -108,6 +108,7 @@
 | `thumbnail` | `string` | 否 | 封面图链接 (云存储 ID 或外链)。若留空，则系统会自动从 `posts` 中的第一个带图片的 Post 里截取。 |
 | `posts` | `string[]` | 是 | 该作品集包含的 `posts` 的 `_id` 集合。 |
 | `latestPostDate` | `string` | 是 | 最近更新的日期，格式需为 `YYYY-MM-DD HH:mm`。 |
+| `description` | `string` | 否 | 作品集详细描述，支持 `\n` 换行，会展示在详情页标题下方。 |
 | `pinned` | `boolean` | 否 | 是否置顶。 |
 
 ### `collections` 示例配置
@@ -115,6 +116,7 @@
 ```typescript
 {
   name: '川西旅拍 2024',
+  description: '在那片遥远的川西高原，记录下那些转瞬即逝的光影。',
   thumbnail: '', // 留空则自动 fallback 到它包含的帖子的图片
   posts: [
     'fcc24a0d66c1b35b0028e37e57c61cd6',

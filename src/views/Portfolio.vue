@@ -71,6 +71,7 @@
             <div class="collection-details">
               <div class="collection-header">
                 <h2 class="collection-name">{{ activeCollection.name }}</h2>
+                <p v-if="activeCollection.description" class="collection-desc">{{ activeCollection.description }}</p>
                 <p class="collection-info">{{ activeCollection.postCount }} {{ t('portfolio.posts') }}</p>
               </div>
 
@@ -817,6 +818,15 @@ onUnmounted(() => {
     font-size: 2rem;
     color: var(--color-text-primary);
     margin-bottom: 5px;
+  }
+
+  .collection-desc {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .collection-info {

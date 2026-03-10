@@ -108,6 +108,7 @@ Each document in the collection contains the following fields:
 | `thumbnail` | `string` | No | Cover image link (Cloud Storage ID or external URL). If left empty, the system will automatically fall back to the first image from its contained posts. |
 | `posts` | `string[]` | Yes | An array of `_id` references to documents in the `posts` collection. |
 | `latestPostDate` | `string` | Yes | Date of the latest update, format: `YYYY-MM-DD HH:mm`. |
+| `description` | `string` | No | Detailed description of the collection, supports `\n`, displayed below the title in details. |
 | `pinned` | `boolean` | No | If true, the collection will be shown at the top. |
 
 ### `collections` Example Configuration
@@ -115,6 +116,7 @@ Each document in the collection contains the following fields:
 ```typescript
 {
   name: 'Western Sichuan Trip 2024',
+  description: 'In that remote plateau of Western Sichuan, capturing the fleeting moments of light and shadow.',
   thumbnail: '', // Leave empty to automatically fallback to the referenced post images
   posts: [
     'fcc24a0d66c1b35b0028e37e57c61cd6',

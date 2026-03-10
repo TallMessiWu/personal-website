@@ -31,7 +31,7 @@
 | --- | --- | --- |
 | **Home** | `/home` | Hero section with a personal info code card + inspirational quotes |
 | **Daily** | `/daily` | Masonry card layout, click to expand details with image/video support |
-| **Portfolio** | `/portfolio` | Grid showcase with category filters (video/photo/code) and hover overlays |
+| **Portfolio** | `/portfolio` | Grid showcase with category filters, pinned collections, and detailed descriptions |
 | **About** | `/about` | Bio, education/work/projects/skills highlight cards, geometric timeline, hobbies |
 
 ## 🛠️ Tech Stack

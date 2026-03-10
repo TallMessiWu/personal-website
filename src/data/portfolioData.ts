@@ -10,6 +10,7 @@ export interface Collection {
   posts: string[];          // post _id 数组
   latestPostDate: string;   // "YYYY-MM-DD HH:mm"
   pinned: boolean;
+  description?: string;
 }
 
 /** 展示用的合集（thumbnail 已解析为可用 URL） */
@@ -20,6 +21,7 @@ export interface CollectionDisplay {
   postCount: number;
   latestPostDate: string;
   pinned: boolean;
+  description?: string;
 }
 
 /**
@@ -137,6 +139,7 @@ export const fetchCollectionsFromCloud = async (): Promise<CollectionDisplay[]> 
         postCount: c.posts.length,
         latestPostDate: c.latestPostDate,
         pinned: c.pinned,
+        description: c.description,
       };
     });
 
