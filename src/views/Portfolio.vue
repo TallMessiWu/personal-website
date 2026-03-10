@@ -639,6 +639,7 @@ onUnmounted(() => {
       justify-content: center;
       align-items: center;
       opacity: 0;
+      pointer-events: none;
       transition: opacity 0.3s ease;
       gap: 12px;
       backdrop-filter: blur(2px);
@@ -657,6 +658,7 @@ onUnmounted(() => {
 
         .overlay {
           opacity: 1;
+          pointer-events: auto;
 
           .item-title,
           .item-meta,
@@ -678,6 +680,7 @@ onUnmounted(() => {
 
       .overlay {
         opacity: 1;
+        pointer-events: auto;
 
         .item-title,
         .item-meta,
