@@ -125,6 +125,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch, type CSSPropert
 import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 import { Close } from '@element-plus/icons-vue';
+import { useBackClose } from '@/composables/useBackClose';
 import DailyCard from '@/components/DailyCard.vue';
 import DailyCardSkeleton from '@/components/DailyCardSkeleton.vue';
 import PortfolioCardSkeleton from '@/components/PortfolioCardSkeleton.vue';
@@ -158,6 +159,9 @@ let postsSkeletonTimer: ReturnType<typeof setTimeout> | null = null;
 const modalStyle = ref<CSSProperties>({});
 const originRect = ref<DOMRect | null>(null);
 const isClosing = ref(false);
+
+// 移动端返回按钮拦截
+const collectionBack = useBackClose(() => closeCollection());
 
 // Active card for mobile (simulates hover)
 const activeCardId = ref<string | null>(null);
@@ -284,6 +288,7 @@ const openCollection = async (collection: CollectionDisplay, event: MouseEvent) 
   };
 
   activeCollection.value = collection;
+  collectionBack.activate();
   isPostsLoading.value = true;
 
   // 防抖：200ms 后才显示详情骨架屏
@@ -317,6 +322,7 @@ const openCollection = async (collection: CollectionDisplay, event: MouseEvent) 
 
 const closeCollection = () => {
   if (isClosing.value) return;
+  collectionBack.deactivate();
   if (!originRect.value) {
     activeCollection.value = null;
     return;
@@ -349,6 +355,8 @@ const postModalStyle = ref<CSSProperties>({});
 const postOriginRect = ref<DOMRect | null>(null);
 const isPostClosing = ref(false);
 
+const postBack = useBackClose(() => closePost());
+
 const openPost = (post: Post, event: MouseEvent) => {
   if (isPostClosing.value) return;
   event.stopPropagation();
@@ -369,6 +377,7 @@ const openPost = (post: Post, event: MouseEvent) => {
   };
 
   activePost.value = post;
+  postBack.activate();
 
   nextTick(() => {
     void document.body.offsetHeight;
@@ -387,6 +396,7 @@ const openPost = (post: Post, event: MouseEvent) => {
 
 const closePost = () => {
   if (isPostClosing.value) return;
+  postBack.deactivate();
   if (!postOriginRect.value) {
     activePost.value = null;
     return;

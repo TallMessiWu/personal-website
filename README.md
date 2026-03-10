@@ -20,6 +20,7 @@
 - 🌗 **深色 / 浅色主题** — 一键切换，偏好自动持久化至 `localStorage`，首次访问跟随系统主题
 - 🌍 **国际化 (i18n)** — 中英文动态切换，所有页面内容同步更新
 - 📱 **响应式布局** — 适配手机、平板和桌面端
+- 🔙 **移动端返回拦截** — 优化移动端体验，返回手势优先关闭模态框而不触发路由跳转
 - 🚀 **GitHub Actions 自动部署** — 推送 `master` 分支即自动构建并部署至腾讯云 CloudBase 静态托管
 - 🔍 **SEO 优化** — 动态 `<title>`、`meta` 描述、`robots.txt` 和 `sitemap.xml`
 - ✨ **丰富的交互动效** — 页面过渡动画、卡片悬浮效果、模态框展开/收起动画
@@ -59,13 +60,20 @@ personal-website/
 │   ├── components/        # 通用组件
 │   │   ├── TheHeader.vue  #   顶部导航栏 (主题切换、语言切换)
 │   │   ├── TheFooter.vue  #   底部社交链接栏
-│   │   └── DailyCard.vue  #   日常页面卡片组件
-│   ├── data/              # 数据定义与云端获取逻辑 (模型及获取 API)
+│   │   ├── DailyCard.vue  #   日常页面卡片组件
+│   │   └── *Skeleton.vue  #   骨架屏组件 (Daily & Portfolio)
+│   ├── composables/       # 组合式函数 (逻辑复用)
+│   │   └── useBackClose.ts#   移动端返回手势拦截逻辑
+│   ├── data/              # 数据定义与云端获取逻辑
+│   │   ├── dailyData.ts   #   日常数据
+│   │   ├── portfolioData.ts#  作品集数据
+│   │   └── GUIDE.*.md     #   数据配置与云后台操作指南
 │   ├── locales/           # 国际化语言文件
 │   │   ├── zh.json        #   中文
 │   │   ├── en.json        #   英文
 │   │   └── i18n.ts        #   i18n 配置
 │   ├── router/            # 路由配置
+│   ├── utils/             # 工具函数 (TCB 初始化等)
 │   ├── views/             # 页面视图
 │   │   ├── Home.vue       #   首页
 │   │   ├── Daily.vue      #   日常

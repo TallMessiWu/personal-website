@@ -66,6 +66,7 @@ import DailyCardSkeleton from '@/components/DailyCardSkeleton.vue';
 import { Close } from '@element-plus/icons-vue';
 import { ref, onMounted, onUnmounted, nextTick, computed, watch, type CSSProperties } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useBackClose } from '@/composables/useBackClose';
 
 const { t } = useI18n();
 
@@ -295,6 +296,9 @@ const modalStyle = ref<CSSProperties>({});
 const originRect = ref<DOMRect | null>(null);
 const isClosing = ref(false);
 
+// 移动端返回按钮拦截：返回时关闭卡片而非导航
+const postBack = useBackClose(() => closePost());
+
 const openPost = (post: Post, event: MouseEvent) => {
   if (isClosing.value) return;
 
@@ -316,6 +320,7 @@ const openPost = (post: Post, event: MouseEvent) => {
   };
 
   activePost.value = post;
+  postBack.activate();
 
   // 3. Next tick, animate to center
   nextTick(() => {
@@ -337,6 +342,7 @@ const openPost = (post: Post, event: MouseEvent) => {
 
 const closePost = () => {
   if (isClosing.value) return;
+  postBack.deactivate();
 
   if (!originRect.value) {
     activePost.value = null;

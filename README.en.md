@@ -20,6 +20,7 @@
 - 🌗 **Dark / Light Theme** — One-click toggle, preference persisted in `localStorage`, defaults to system theme on first visit
 - 🌍 **Internationalization (i18n)** — Seamless Chinese/English switching with real-time content updates
 - 📱 **Responsive Layout** — Optimized for mobile, tablet, and desktop
+- 🔙 **Mobile Back Interception** — Optimized mobile UX, back gesture closes modals instead of triggering route navigation
 - 🚀 **GitHub Actions CI/CD** — Auto-build and deploy to Tencent CloudBase Static Hosting on push to `master`
 - 🔍 **SEO Optimized** — Dynamic `<title>`, `meta` descriptions, `robots.txt`, and `sitemap.xml`
 - ✨ **Rich Interactions** — Page transitions, card hover effects, and modal open/close animations
@@ -59,13 +60,20 @@ personal-website/
 │   ├── components/        # Shared components
 │   │   ├── TheHeader.vue  #   Top navigation bar (theme & language toggle)
 │   │   ├── TheFooter.vue  #   Footer social links bar
-│   │   └── DailyCard.vue  #   Daily page card component
+│   │   ├── DailyCard.vue  #   Daily page card component
+│   │   └── *Skeleton.vue  #   Skeleton screens (Daily & Portfolio)
+│   ├── composables/       # Composables (reusable logic)
+│   │   └── useBackClose.ts#   Mobile back gesture interception
 │   ├── data/              # Data models & cloud fetch logic
+│   │   ├── dailyData.ts   #   Daily data
+│   │   ├── portfolioData.ts#  Portfolio data
+│   │   └── GUIDE.*.md     #   Data config & CloudBase guide
 │   ├── locales/           # i18n language files
 │   │   ├── zh.json        #   Chinese
 │   │   ├── en.json        #   English
 │   │   └── i18n.ts        #   i18n configuration
 │   ├── router/            # Route configuration
+│   ├── utils/             # Utility functions (TCB initialization, etc.)
 │   ├── views/             # Page views
 │   │   ├── Home.vue       #   Home
 │   │   ├── Daily.vue      #   Daily

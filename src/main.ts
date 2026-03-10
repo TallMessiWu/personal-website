@@ -8,6 +8,8 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import App from './App.vue'
+// ⚠️ 必须在 router import 之前引入，确保 popstate 拦截器先于 vue-router 注册
+import '@/composables/useBackClose'
 import router from './router'
 import i18n from './locales/i18n'
 

@@ -259,6 +259,7 @@
 <script setup lang="ts">
 import { VideoPlay, Star, CaretRight, ArrowLeft, ArrowRight, Close, ArrowDown, RefreshRight } from '@element-plus/icons-vue'
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import { useBackClose } from '@/composables/useBackClose';
 
 import { dailyData, type Post } from '@/data/dailyData';
 import muteIcon from '@/assets/buttons/mute.svg';
@@ -277,6 +278,9 @@ const viewerVideoRef = ref<any[] | any>(null);
 let viewerLiveTimer: ReturnType<typeof setTimeout> | null = null;
 const viewerLiveIconExpanded = ref(false);
 const liveIconExpanded = ref(false);
+
+// 移动端返回按钮拦截：返回时关闭 viewer 而非导航
+const viewerBack = useBackClose(() => closeViewer());
 
 // Live Photo global audio control
 const isLiveMuted = ref(true);
@@ -415,6 +419,7 @@ const handleMediaClick = (e: MouseEvent) => {
     // 2. Open viewer at current index
     viewerIndex.value = currentImageIndex.value;
     viewerShow.value = true;
+    viewerBack.activate();
 
     // 3. Start viewer playback logic
     playViewerLive();
@@ -422,6 +427,7 @@ const handleMediaClick = (e: MouseEvent) => {
 };
 
 const closeViewer = () => {
+  viewerBack.deactivate();
   // Sync back the index so the card shows the last seen image in viewer
   currentImageIndex.value = viewerIndex.value;
   viewerShow.value = false;
