@@ -62,6 +62,7 @@
                                   :data-index="index"
                                   :src="item.video"
                                   :muted="isLiveMuted"
+                                  preload="auto"
                                   class="viewer-video"
                                   playsinline
                                   @ended="viewerIsPlaying = false"
@@ -154,6 +155,7 @@
                             :data-index="index"
                             :src="item.video"
                             :muted="isLiveMuted"
+                            preload="auto"
                             class="slider-image live-video"
                             playsinline
                             @ended="onLiveVideoEnded"
@@ -202,6 +204,7 @@
                      ref="liveVideoRef"
                      :src="singleLivePhotoData.video"
                      :muted="isLiveMuted"
+                     preload="auto"
                      playsinline
                      class="live-video"
                      @ended="onLiveVideoEnded"
