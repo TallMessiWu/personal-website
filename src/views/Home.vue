@@ -297,7 +297,7 @@ useHead({
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .hero-section {
     min-height: auto;
     padding-top: 40px;

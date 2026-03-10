@@ -133,7 +133,7 @@ const updateColumnCount = () => {
   const width = window.innerWidth;
   if (width > 1000) {
     columnCount.value = 3;
-  } else if (width > 600) {
+  } else if (width > 767) {
     columnCount.value = 2;
   } else {
     columnCount.value = 1;
@@ -409,7 +409,7 @@ const closePost = () => {
   gap: 20px;
   align-items: flex-start;
 
-  @media (max-width: 600px) {
+  @media (max-width: 767px) {
     gap: 10px;
   }
 }
@@ -421,7 +421,7 @@ const closePost = () => {
   gap: 20px;
   min-width: 0; /* Prevent flex overflow issues */
 
-  @media (max-width: 600px) {
+  @media (max-width: 767px) {
     gap: 10px;
   }
 }
@@ -500,7 +500,7 @@ const closePost = () => {
   opacity: 0;
 }
 
-@media (max-width: 800px) { /* Adjust breakpoint for mobile/tablet */
+@media (max-width: 767px) { /* Adjust breakpoint for mobile/tablet */
   .daily-page {
     padding: 20px 16px;
   }

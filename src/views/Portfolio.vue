@@ -88,7 +88,7 @@
               </div>
 
               <!-- Posts End Message -->
-              <div v-if="!isPostsLoading && collectionPosts.length > 0" class="end-message">
+              <div v-if="!isPostsLoading && collectionPosts.length > 0" class="end-message in-details">
                 <span>·</span>
               </div>
 
@@ -177,7 +177,7 @@ const updateColumnCount = () => {
   const width = window.innerWidth;
   if (width > 1000) {
     columnCount.value = 3;
-  } else if (width > 600) {
+  } else if (width > 767) {
     columnCount.value = 2;
   } else {
     columnCount.value = 1;
@@ -254,7 +254,7 @@ const onImageLoad = () => {
 };
 
 const handleCardClick = (collection: CollectionDisplay, event: MouseEvent) => {
-  const isMobile = window.innerWidth <= 800;
+  const isMobile = window.innerWidth <= 767;
   if (isMobile) {
     if (activeCardId.value === collection._id) {
       activeCardId.value = null;
@@ -510,6 +510,11 @@ onUnmounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
+
+  @media (max-width: 767px) {
+    padding-bottom: 20px;
+  }
+
 }
 
 .page-header {
@@ -536,10 +541,23 @@ onUnmounted(() => {
   align-items: center;
   width: 100%;
   max-width: 200px;
-  margin: 40px auto 10px;
+  margin: 40px auto 0;
   gap: 15px;
   color: var(--color-text-secondary);
   font-weight: bold;
+
+  @media (max-width: 767px) {
+    margin-top: 20px;
+  }
+
+  &.in-details {
+    flex-shrink: 0;
+    margin: 10px auto 0;
+
+    @media (max-width: 767px) {
+      margin-top: 0;
+    }
+  }
 
   &::before,
   &::after {
@@ -774,17 +792,17 @@ onUnmounted(() => {
   z-index: 105; /* 确保在内部元素之上 */
 }
 
-.collection-details {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 40px;
-  overflow-y: auto;
+  .collection-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    overflow-y: auto;
 
-  @media (max-width: 600px) {
-    padding: 20px;
+    @media (max-width: 767px) {
+      padding: 0px 20px 20px; /* 增加底部间距确保 end-message 不被遮挡 */
+    }
   }
-}
 
 .collection-header {
   margin-bottom: 30px;
@@ -803,7 +821,7 @@ onUnmounted(() => {
     font-size: 1rem;
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: 767px) {
     padding-left: 56px; /* 进一步避开下移后的关闭按钮 */
   }
 }
@@ -812,8 +830,9 @@ onUnmounted(() => {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-  min-height: 200px; /* 确保有最小高度展示加载或内容 */
+  min-height: 200px;
   width: 100%;
+  flex-shrink: 0; /* 防止在 flex 容器中高度塌陷 */
 
   :deep(.daily-card) {
     width: 100%;
@@ -856,7 +875,7 @@ onUnmounted(() => {
     color: #fff;
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: 767px) {
     left: 15px;
     top: 25px;
     background: rgba(0,0,0,0.5);
@@ -866,7 +885,7 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 767px) {
   .masonry-container {
     flex-direction: column;
     align-items: stretch;

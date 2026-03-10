@@ -1417,7 +1417,7 @@ const formattedDate = computed(() => {
     height: 20px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     bottom: 50px;
     right: 30px;
     width: 32px;

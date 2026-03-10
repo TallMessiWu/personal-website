@@ -61,7 +61,7 @@ const { t } = useI18n()
   gap: 2rem;
   margin-bottom: 1.5rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     gap: 1.6rem;
   }
 

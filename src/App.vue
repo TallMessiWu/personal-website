@@ -80,7 +80,7 @@ onUnmounted(() => {
   transform: translateY(12px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .back-to-top-btn {
     bottom: 20px;
     right: 20px;

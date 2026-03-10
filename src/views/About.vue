@@ -494,7 +494,7 @@ const originRect = vueRef<DOMRect | null>(null);
 
 const openEvent = (event: GeoEvent, e: MouseEvent) => {
     // Only activate on mobile (check width or strictly user agent, but width is safer)
-    if (window.innerWidth > 768) return;
+    if (window.innerWidth > 767) return;
 
     if (isClosing.value) return;
 
@@ -675,7 +675,7 @@ const closeEvent = () => {
     border: 4px solid var(--color-surface);
     transition: transform 0.3s ease;
 
-    @media (hover: hover) and (min-width: 769px) {
+    @media (hover: hover) and (min-width: 768px) {
       &:hover {
           transform: scale(1.05);
       }
@@ -749,7 +749,7 @@ const closeEvent = () => {
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
-      @media (hover: hover) and (min-width: 769px) {
+      @media (hover: hover) and (min-width: 768px) {
         &:hover {
           transform: translateY(-3px);
           box-shadow: 0 8px 20px rgba(0,0,0,0.15);
@@ -785,7 +785,7 @@ const closeEvent = () => {
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     grid-template-columns: 1fr;
   }
 }
@@ -797,14 +797,14 @@ const closeEvent = () => {
   border: 1px solid var(--color-border);
   transition: transform 0.3s ease;
 
-  @media (hover: hover) and (min-width: 769px) {
+  @media (hover: hover) and (min-width: 768px) {
     &:hover {
       transform: translateY(-5px);
       box-shadow: var(--shadow-md);
     }
   }
 
-  @media (min-width: 769px) {
+  @media (min-width: 768px) {
     &:active {
       transform: scale(0.98);
     }
@@ -886,7 +886,7 @@ const closeEvent = () => {
      border-radius: 8px;
      transition: background 0.2s;
 
-     @media (hover: hover) and (min-width: 769px) {
+     @media (hover: hover) and (min-width: 768px) {
        &:hover {
          background: var(--color-background);
          .link-icon { opacity: 1; transform: translate(2px, -2px); }
@@ -922,7 +922,7 @@ const closeEvent = () => {
     cursor: default;
     transition: all 0.3s ease;
 
-    @media (hover: hover) and (min-width: 769px) {
+    @media (hover: hover) and (min-width: 768px) {
       &:hover {
         color: var(--color-accent-tertiary);
         border-color: var(--color-accent-tertiary);
@@ -1174,7 +1174,7 @@ const closeEvent = () => {
       transition: filter 0.3s ease;
     }
 
-    @media (hover: hover) and (min-width: 769px) {
+    @media (hover: hover) and (min-width: 768px) {
       &:hover {
         transform: scale(1.1) rotate(5deg);
         border-color: rgba(255, 255, 255, 0.8);

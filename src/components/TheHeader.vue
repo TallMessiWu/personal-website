@@ -580,7 +580,7 @@ onMounted(() => {
   transform: translateX(100%);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .nav-links {
     display: none;
   }
