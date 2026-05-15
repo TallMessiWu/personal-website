@@ -45,7 +45,7 @@ jobs:
         timeout_minutes: 1
         max_attempts: 3
         retry_wait_seconds: 10
-        command: yes | tcb hosting delete / -e ${{ secrets.TCB_ENV_ID }} -d || true
+        command: echo y | tcb hosting delete / -e ${{ secrets.TCB_ENV_ID }} -d || true
 
     - name: 部署至云开发静态托管
       uses: nick-fields/retry@v3
