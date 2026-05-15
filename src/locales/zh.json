@@ -11,20 +11,90 @@
     },
     "home": {
         "hero": {
-            "title_prefix": "创意",
-            "developer": "开发者",
-            "content_creator_prefix": "内容",
-            "content_creator_highlight": "创作者",
-            "subtitle": "探索代码与艺术的边界。",
+            "title_prefix": "AI",
+            "developer": "工程师",
+            "content_creator_prefix": "全栈",
+            "content_creator_highlight": "开发者",
+            "subtitle": "聚焦大模型推理优化、Agent 系统与多模态扩散模型。",
             "view_work": "查看作品",
-            "contact_me": "联系我"
+            "contact_me": "了解更多"
         },
         "console": {
-            "hello": "你好，世界！"
+            "hello": "你好，世界！我是吴俊霖。"
         },
         "code": {
-            "role": "开发者",
-            "status": "编码中..."
+            "role": "AI 工程师 @ 华为",
+            "status": "构建中..."
+        },
+        "focus": {
+            "title": "// 专注方向",
+            "subtitle": "代码 × AI × 工程",
+            "items": [
+                {
+                    "tag": "01",
+                    "title": "大模型推理 & Agent",
+                    "desc": "vLLM / SGLang 框架适配，ReAct & Function Calling，RAG 与 LangChain 全链路。"
+                },
+                {
+                    "tag": "02",
+                    "title": "多模态量化 & 性能优化",
+                    "desc": "MXFP / INT8 量化、算子 profiling、融合算子接入，让模型在新硬件上跑得更快。"
+                },
+                {
+                    "tag": "03",
+                    "title": "全栈 Web 开发",
+                    "desc": "Vue 3 + TypeScript + Less，从 UI 到云端部署的完整闭环。"
+                }
+            ]
+        },
+        "stats": {
+            "title": "// 数据亮点",
+            "items": [
+                {
+                    "value": "2×",
+                    "label": "Flux 推理性能提升",
+                    "hint": "新一代昇腾 vs 上一代"
+                },
+                {
+                    "value": "75%",
+                    "label": "SGLang 适配效率提升",
+                    "hint": "AI 辅助开发实践"
+                },
+                {
+                    "value": "5+",
+                    "label": "多模态模型受益项目",
+                    "hint": "自研 profiling 工具"
+                },
+                {
+                    "value": "30K+",
+                    "label": "DOTA2 比赛样本",
+                    "hint": "本科毕设数据规模"
+                }
+            ]
+        },
+        "projects": {
+            "title": "// 精选项目",
+            "more": "查看全部",
+            "items": [
+                {
+                    "name": "TD 银行 AI Agent",
+                    "stack": "RAG · LangChain · Pinecone",
+                    "desc": "面向银行高管的证据驱动顾问，自研语义分块 + 多阶段检索 + 幻觉守卫。",
+                    "link": "https://github.com/TallMessiWu/td-llm-streamlit"
+                },
+                {
+                    "name": "手写 ReAct Agent",
+                    "stack": "DeepSeek · Function Calling",
+                    "desc": "零框架依赖，自动调用 GitHub API 完成仓库探索与结构化分析报告生成。",
+                    "link": "https://github.com/TallMessiWu/react-agent"
+                },
+                {
+                    "name": "个人网站",
+                    "stack": "Vue 3 · TypeScript · CloudBase",
+                    "desc": "现代响应式作品集，VSCode 设计语言，部署于腾讯云开发。",
+                    "link": "https://github.com/TallMessiWu"
+                }
+            ]
         },
         "quotes": [
             {
@@ -32,7 +102,7 @@
                 "author": "@CS_Lewis"
             },
             {
-                "text": "无敌了呀！",
+                "text": "把复杂的系统拆成可验证的小步骤，是工程师最朴素的浪漫。",
                 "author": "@Me"
             }
         ]
@@ -68,97 +138,116 @@
     "about": {
         "profile": {
             "name": "吴俊霖",
-            "title": "数据科学家 & 软件工程师",
-            "location": "纽约, 美国",
-            "bio": "热衷于用代码构建有趣的事物。对 AI、Web 开发和数据科学充满热情。目前专注于大语言模型及其在软件工程中的应用。",
+            "title": "AI 工程师 · 大模型推理 & Agent 开发",
+            "location": "上海, 中国",
+            "bio": "目前在华为负责昇腾芯片上的多模态扩散模型与 LLM 量化适配。热衷于在 RAG、ReAct Agent 与底层推理优化之间，用代码搭建可验证、可复用的工程链路。",
             "resume": "查看简历"
         },
         "highlights": {
             "education": [
                 {
                     "school": "哥伦比亚大学",
-                    "degree": "数据科学硕士",
-                    "year": "2023年8月 - 2024年12月"
+                    "degree": "数据科学硕士 · 研究方向：生成式 AI 与大模型应用",
+                    "year": "2023年9月 - 2024年12月"
                 },
                 {
                     "school": "加州大学圣地亚哥分校 (UCSD)",
-                    "degree": "数据科学学士",
-                    "minor": "辅修经济学",
+                    "degree": "数据科学学士 · 辅修经济学 · GPA 3.9/4.0 · Cum Laude 毕业荣誉",
                     "year": "2019年9月 - 2023年3月"
-                },
-                {
-                    "school": "德里菲尔德学校",
-                    "degree": "高中毕业",
-                    "year": "2017年9月 - 2019年6月"
-                },
-                {
-                    "school": "林菲尔德学校",
-                    "degree": "高中",
-                    "year": "2015年8月 - 2017年6月"
                 }
             ],
             "work": [
                 {
-                    "company": "华为技术有限公司",
-                    "role": "AI工程师",
+                    "company": "华为技术有限公司 · 计算产品线灵衢集群开发部",
+                    "role": "AI 工程师",
                     "year": "2025年8月 - 至今",
                     "desc": [
-                        "在ICT计算产品线负责模型优化与适配工作，通过分析算子profiling等数据找出模型瓶颈，并推进生态适配。",
-                        "同时为模型接入新加速项如融合算子等，优化模型性能。"
+                        "主导 Flux、Wan 2.2、混元等多模态扩散模型在新一代昇腾芯片的量化适配与精度调优，Wan 2.2 / 混元推理性能提升至上代 1.5×，Flux 实际达成 2× 以上。",
+                        "作为模型 Owner 全权负责 Qwen3.5 在新芯片的 vLLM 适配，覆盖功能打通、量化、融合算子、PD 分离与端到端调优全链路。",
+                        "为 SGLang 框架贡献 MXFP4/MXFP8 量化能力，覆盖 Diffusion / Dense LLM / MoE 三大场景；借助 Claude Code AI 辅助开发，原计划 2 个月的工作量在约 1 周完成。",
+                        "基于 pandas 自研多模态 DiT 块自动化 profiling 工具，为团队节省约 50% 分析时间，沉淀为组内标准化规范，5+ 项目持续受益。"
                     ]
                 },
                 {
-                    "company": "哥伦比亚大学医学院",
+                    "company": "哥伦比亚大学医学院 · Nectow 神经科学实验室",
                     "role": "数据分析员",
                     "year": "2023年11月 - 2024年12月",
                     "desc": [
-                        "参与活体神经元记录项目，通过分析神经元活动数据，将关键指标与动物的进食行为和进食量进行关联。",
-                        "编写Python脚本进行数据处理与分析，量化神经元活动与动物进食行为之间的关联，使用Matplotlib和Seaborn可视化实验数据，帮助科研团队深入理解神经活动模式。",
-                        "开发自动化数据处理流程脚本，帮助研究员实现了后续相似数据的自动化分析。"
+                        "为活体神经元记录项目设计端到端分析 pipeline，对原始电生理数据完成去噪、峰电位检测与时间对齐。",
+                        "通过统计建模量化神经活动与动物进食行为的时序关联，结果支持团队识别关键神经肽能神经元对饱腹感的调控机制。",
+                        "研究成果支撑论文《Brainstem neuropeptidergic neurons link a neurohumoral axis to satiation》（Cell，审稿中），作为合作作者参与数据分析与可视化。"
                     ]
                 },
                 {
-                    "company": "UCSD CSSA",
+                    "company": "UCSD CSSA 中国学生学者联合会",
                     "role": "开发部部长",
-                    "year": "2020年9月 - 2023年3月",
+                    "year": "2020年3月 - 2023年3月",
                     "desc": [
-                        "使用Vue.js、Vite和Flask开发组织网站，进行可用性测试并收集反馈以改善程序功能。组织学术研讨会和包括春节晚会在内的活动。",
-                        "为15名团队成员创建编程教程以提升技能。设计部门网站用于教程分享与日常信息同步。"
+                        "用 Vue.js、Vite、Flask 开发组织官方网站，并设计部门内部知识共享网站。",
+                        "为 15 名团队成员创建编程教程提升技能，组织学术研讨会与春节晚会等大型活动。"
                     ]
                 }
             ],
             "projects": [
                 {
-                    "name": "气候变化分析",
-                    "desc": "使用 Python 和 D3.js 分析 100 年的气候数据，可视化全球变暖趋势。",
-                    "link": "https://github.com/TallMessiWu/climate_change_data_analysis"
+                    "name": "TD 银行 · 生成式 AI Agent 执行顾问",
+                    "desc": "RAG 系统，LangChain + Pinecone Serverless，自研语义滚动窗口分块 + 多阶段检索 + 幻觉守卫，truLens 三维度量化评估。",
+                    "link": "https://github.com/TallMessiWu/td-llm-streamlit"
                 },
                 {
-                    "name": "DOTA 2 阵容助手",
-                    "desc": "基于机器学习的工具，根据敌方阵容建议 DOTA 2 比赛的最佳英雄选择。",
+                    "name": "手写 ReAct Agent · GitHub 仓库分析工具",
+                    "desc": "零框架依赖，DeepSeek 驱动，五层分层架构含独立熔断器 + 指数退避抖动 + 优雅降级，实现思维链可视化。",
+                    "link": "https://github.com/TallMessiWu/react-agent"
+                },
+                {
+                    "name": "DOTA2 职业比赛预测",
+                    "desc": "本科毕设：覆盖 3 万余场样本，821 维英雄对阵特征工程，随机森林整体准确率 51.8%，已知克制关系子集 58.3%。",
                     "link": "https://github.com/TallMessiWu/dota2-drafting-frontend"
-                },
-                {
-                    "name": "个人网站",
-                    "desc": "一个使用 Vue 3、TypeScript 和 Element Plus 构建的现代响应式作品集网站。",
-                    "link": "https://github.com/TallMessiWu"
                 }
             ],
-            "skills": [
-                "Python",
-                "Vue.js",
-                "TypeScript",
-                "JavaScript",
-                "Java",
-                "SQL",
-                "PyTorch",
-                "Flask",
-                "Docker",
-                "Redis",
-                "MongoDB",
-                "Git",
-                "Linux"
-            ]
+            "skills": {
+                "expert": {
+                    "label": "精通",
+                    "items": [
+                        "Python",
+                        "PyTorch",
+                        "vLLM",
+                        "SGLang",
+                        "LangChain",
+                        "Pinecone",
+                        "ReAct",
+                        "Function Calling",
+                        "MCP",
+                        "RAG"
+                    ]
+                },
+                "proficient": {
+                    "label": "熟练",
+                    "items": [
+                        "模型量化 (MXFP / INT8)",
+                        "Prompt 工程",
+                        "OpenAI / DeepSeek API",
+                        "Streamlit",
+                        "OpenCV",
+                        "Scikit-learn",
+                        "SQL",
+                        "Flask",
+                        "asyncio / httpx"
+                    ]
+                },
+                "familiar": {
+                    "label": "了解",
+                    "items": [
+                        "TensorFlow",
+                        "Vue.js",
+                        "TypeScript",
+                        "D3.js",
+                        "Java / SpringBoot",
+                        "Redis",
+                        "MongoDB"
+                    ]
+                }
+            }
         },
         "sections": {
             "education": "教育经历",
@@ -174,28 +263,42 @@
                 "end": "至今",
                 "duration": "",
                 "title": "华为技术有限公司",
-                "description": "AI工程师"
+                "description": "AI 工程师，负责多模态扩散模型与 LLM 在昇腾芯片上的量化适配与性能优化。"
+            },
+            {
+                "start": "2026年4月",
+                "end": "2026年5月",
+                "duration": "",
+                "title": "手写 ReAct Agent",
+                "description": "零框架依赖的生产级 ReAct Agent，DeepSeek 驱动 GitHub 仓库智能分析。"
+            },
+            {
+                "start": "2024年9月",
+                "end": "至今",
+                "duration": "",
+                "title": "TD 银行 AI Agent 项目",
+                "description": "哥大 × TD 银行合作毕设，RAG + LangChain + Pinecone 的高管决策顾问系统。"
             },
             {
                 "start": "2023年11月",
                 "end": "2024年12月",
                 "duration": "1年",
                 "title": "哥伦比亚大学医学院",
-                "description": "数据分析员"
+                "description": "数据分析员，神经元活动 pipeline，成果支撑 Cell 论文（审稿中）。"
             },
             {
-                "start": "2023年8月",
+                "start": "2023年9月",
                 "end": "2024年12月",
                 "duration": "1.5年",
                 "title": "哥伦比亚大学 (Columbia University)",
-                "description": "硕士，数据科学专业。"
+                "description": "数据科学硕士，研究方向：生成式 AI 与大模型应用。"
             },
             {
                 "start": "2019年9月",
                 "end": "2023年3月",
-                "duration": "4年",
+                "duration": "3.5年",
                 "title": "加州大学圣地亚哥分校 (UCSD)",
-                "description": "本科，数据科学专业，辅修经济学。以优异成绩提前一个学期毕业获得学士学位，被评为优秀毕业生。"
+                "description": "数据科学本科，辅修经济学；GPA 3.9/4.0，Cum Laude 毕业荣誉，连年获 Provost Honors。"
             },
             {
                 "start": "2017年9月",
