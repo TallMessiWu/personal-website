@@ -1,5 +1,5 @@
 ---
-name: gitmoji_commit
+name: gitmoji-commit
 description: 根据当前暂存区的代码变更和会话上下文，生成符合 Gitmoji 规范的中文提交信息并执行提交（不推送）。
 ---
 
@@ -10,8 +10,8 @@ description: 根据当前暂存区的代码变更和会话上下文，生成符�
 ## 核心原则
 1.  **始终使用中文**撰写 Subject。
 2.  **严禁推送 (git push)**，仅执行本地提交 (git commit)。
-3.  **格式规范**: `<emoji> <type>(<scope>): <subject>`
-    *   **Emoji**: 使用 Gitmoji 代码（如 `:sparkles:`）或 Unicode 字符（如 ✨），推荐使用代码格式以便兼容性。
+3.  **格式规范**: `<emoji-code> <type>(<scope>): <subject>`
+    *   **Emoji**: **必须**使用 Gitmoji 代码（如 `:sparkles:`）以便兼容性。
     *   **Subject**: 简练的中文描述，动词开头，不超过 50 个字符。作为第一个 `-m` 的标题。
     *   **Body (可选)**: **强烈建议不要使用两个 `-m` 参数**，除非 commit 包含大量不同层面的复杂修改，且仅看标题无法清晰传达详细信息时才使用。一般情况下，只要 `Subject` 能够概括核心意图，就应尽量保持语言简洁，仅使用一个 `-m` 参数即可。
     *   Example (默认推荐 - 简洁): `git commit -m ":sparkles: feat(auth): 添加登录功能"`
@@ -115,6 +115,7 @@ git diff --cached --name-only
 | 🦺 | `:safety_vest:` | Add or update code related to validation. | 验证相关代码 |
 | ✈️ | `:airplane:` | Improve offline support. | 离线支持 |
 | 🦖 | `:t-rex:` | Code that adds backwards compatibility. | 向后兼容性 |
+| 🤖 | `:robot:` | Changes related to AI agents, Codex config, or automation scripts. | Agent/AI 配置变更 |
 
 *(Agent 请注意：选择时请优先匹配最具体的情境。例如：如果是更新 `package.json` 的版本号，用 `:arrow_up:` 或 `:arrow_down:` 或 `:heavy_plus_sign:` 比通用的 `:package:` 或 `:wrench:` 更好。如果是单纯的样式修改，必须用 `:lipstick:`)*
 
