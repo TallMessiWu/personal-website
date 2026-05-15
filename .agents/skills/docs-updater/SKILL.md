@@ -1,9 +1,9 @@
 ---
-name: docs_updater
+name: docs-updater
 description: 自动更新项目文档，保持 .agent/docs/ 目录与项目实际状态同步。
 ---
 
-# 文档自动维护助手 (docs_updater)
+# 文档自动维护助手 (docs-updater)
 
 此 Skill 用于确保项目文档（如 `tech_stack.md`）不会因为项目的演进而陈旧。
 

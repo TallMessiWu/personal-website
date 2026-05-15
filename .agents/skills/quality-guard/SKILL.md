@@ -1,9 +1,9 @@
 ---
-name: quality_guard
+name: quality-guard
 description: 检查代码变更是否符合 .agent/rules.md 定义的规范（KISS, 中文注释, 事实导向）。
 ---
 
-# 代码质量守卫 (quality_guard)
+# 代码质量守卫 (quality-guard)
 
 此 Skill 用于在提交前审计代码，确保方案和代码实现不偏离项目核心原则。
 

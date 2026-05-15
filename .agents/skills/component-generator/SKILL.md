@@ -1,9 +1,9 @@
 ---
-name: component_generator
+name: component-generator
 description: 按照项目规范自动生成 Vue 3 组件模板（script setup + TS + Less）。
 ---
 
-# Vue 组件脚手架 (component_generator)
+# Vue 组件脚手架 (component-generator)
 
 此 Skill 用于快速创建符合项目规范的新组件。
 
