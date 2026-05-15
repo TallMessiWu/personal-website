@@ -1,9 +1,9 @@
 ---
-name: i18n_helper
+name: i18n-helper
 description: 管理 Vue 国际化 (i18n) 文案，确保 zh.json 和 en.json 同步，并辅助翻译。
 ---
 
-# i18n 管理助手 (i18n_helper)
+# i18n 管理助手 (i18n-helper)
 
 此 Skill 用于确保项目中的国际化文案保持准确同步。
 
