@@ -99,14 +99,28 @@
             </div>
           </div>
 
-          <!-- Skills Card -->
+          <!-- Skills Card (内含 3 个独立 panel) -->
           <div class="highlight-card skills-card">
             <div class="card-header">
               <el-icon><Cpu /></el-icon>
                <h3>{{ t('about.sections.skills') }}</h3>
             </div>
-            <div class="card-content tags-content">
-               <span v-for="skill in skillsList" :key="skill" class="skill-pill">{{ skill }}</span>
+            <div class="skills-panels">
+              <div
+                v-for="(group, key) in skillsGroups"
+                :key="key"
+                class="skill-panel"
+                :class="`tier-${key}`"
+              >
+                <div class="panel-header">
+                  <span class="panel-dot"></span>
+                  <span class="panel-label">{{ group.label }}</span>
+                  <span class="panel-count">{{ group.items.length }}</span>
+                </div>
+                <div class="panel-items">
+                  <span v-for="skill in group.items" :key="skill" class="skill-pill">{{ skill }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -223,7 +237,18 @@ useHead({
 const educationList = computed(() => tm('about.highlights.education') || []);
 const workList = computed(() => tm('about.highlights.work') || []);
 const projectList = computed(() => tm('about.highlights.projects') || []);
-const skillsList = computed(() => tm('about.highlights.skills') || []);
+// 分档技能（精通 / 熟练 / 了解）
+const SKILL_TIERS = ['expert', 'proficient', 'familiar'] as const;
+type SkillTier = typeof SKILL_TIERS[number];
+type SkillGroup = { label: string; items: string[] };
+const skillsGroups = computed(() => {
+  const raw = tm('about.highlights.skills') as Record<string, SkillGroup> | undefined;
+  if (!raw) return {} as Record<SkillTier, SkillGroup>;
+  return SKILL_TIERS.reduce((acc, tier) => {
+    if (raw[tier]) acc[tier] = raw[tier];
+    return acc;
+  }, {} as Record<SkillTier, SkillGroup>);
+});
 const timelineList = computed(() => (tm('about.timeline') as any[]) || []);
 const hobbiesList = computed(() => tm('about.hobbies') || []);
 
@@ -906,38 +931,117 @@ const closeEvent = () => {
   }
 }
 
-.tags-content {
+/* 技能区：与项目展示同行（保持 2x2 网格），内部纵向 3 panel */
+.skills-panels {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skill-panel {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px 14px 18px;
+  position: relative;
+  transition: var(--transition-normal);
+  --panel-accent: var(--color-text-secondary);
+
+  /* 左侧彩色条作为档位识别 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    bottom: 14px;
+    left: 0;
+    width: 3px;
+    background: var(--panel-accent);
+    border-radius: 0 3px 3px 0;
+    opacity: 0.9;
+  }
+
+  @media (hover: hover) and (min-width: 768px) {
+    &:hover {
+      transform: translateX(2px);
+      border-color: var(--panel-accent);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  /* 三档配色：呼应 VSCode 关键字 / Type / 注释色 */
+  &.tier-expert {
+    --panel-accent: var(--color-accent-primary);
+  }
+  &.tier-proficient {
+    --panel-accent: var(--color-accent-tertiary);
+  }
+  &.tier-familiar {
+    --panel-accent: var(--color-text-secondary);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .panel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--panel-accent);
+    flex-shrink: 0;
+  }
+
+  .panel-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--panel-accent);
+    font-family: var(--font-family-code);
+  }
+
+  .panel-count {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-code);
+    background: var(--color-surface);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .panel-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 
   .skill-pill {
-    font-size: 0.85rem;
-    padding: 6px 14px;
-    background: var(--color-background);
-    border-radius: 20px;
+    font-size: 0.82rem;
+    padding: 5px 12px;
+    background: var(--color-surface);
+    border-radius: 16px;
     color: var(--color-text-primary);
     font-weight: 500;
-    border: 1px solid transparent; /* Prevent layout shift */
+    border: 1px solid transparent;
     cursor: default;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 
     @media (hover: hover) and (min-width: 768px) {
       &:hover {
-        color: var(--color-accent-tertiary);
-        border-color: var(--color-accent-tertiary);
-        background: var(--color-surface);
-        transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(78, 201, 176, 0.2); /* Soft teal shadow */
+        color: var(--panel-accent);
+        border-color: var(--panel-accent);
+        transform: translateY(-2px);
       }
     }
 
     &:active {
-      color: var(--color-accent-tertiary);
-      border-color: var(--color-accent-tertiary);
-      background: var(--color-surface);
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(78, 201, 176, 0.2);
+      color: var(--panel-accent);
+      border-color: var(--panel-accent);
     }
   }
 }

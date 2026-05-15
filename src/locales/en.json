@@ -11,20 +11,90 @@
     },
     "home": {
         "hero": {
-            "title_prefix": "Creative",
-            "developer": "Developer",
-            "content_creator_prefix": "Content",
-            "content_creator_highlight": "Creator",
-            "subtitle": "Exploring the boundary between code and art.",
+            "title_prefix": "AI",
+            "developer": "Engineer",
+            "content_creator_prefix": "Full-stack",
+            "content_creator_highlight": "Builder",
+            "subtitle": "Focused on LLM inference optimization, Agent systems, and multimodal diffusion models.",
             "view_work": "View Work",
-            "contact_me": "Contact Me"
+            "contact_me": "Learn More"
         },
         "console": {
-            "hello": "Hello, World!"
+            "hello": "Hello, World! I'm Junlin Wu."
         },
         "code": {
-            "role": "Developer",
-            "status": "Coding..."
+            "role": "AI Engineer @ Huawei",
+            "status": "Building..."
+        },
+        "focus": {
+            "title": "// Focus Areas",
+            "subtitle": "Code × AI × Engineering",
+            "items": [
+                {
+                    "tag": "01",
+                    "title": "LLM Inference & Agents",
+                    "desc": "vLLM / SGLang adaptation, ReAct & Function Calling, end-to-end RAG with LangChain."
+                },
+                {
+                    "tag": "02",
+                    "title": "Quantization & Performance",
+                    "desc": "MXFP / INT8 quantization, operator profiling, fused-op integration — making models fly on new silicon."
+                },
+                {
+                    "tag": "03",
+                    "title": "Full-stack Web",
+                    "desc": "Vue 3 + TypeScript + Less, from UI to cloud — the full loop, end to end."
+                }
+            ]
+        },
+        "stats": {
+            "title": "// Highlights",
+            "items": [
+                {
+                    "value": "2×",
+                    "label": "Flux inference speedup",
+                    "hint": "Next-gen vs prev-gen Ascend"
+                },
+                {
+                    "value": "75%",
+                    "label": "SGLang dev-time saved",
+                    "hint": "AI-assisted coding in action"
+                },
+                {
+                    "value": "5+",
+                    "label": "Multimodal projects boosted",
+                    "hint": "Self-built profiling tool"
+                },
+                {
+                    "value": "30K+",
+                    "label": "DOTA2 match samples",
+                    "hint": "Undergrad capstone scale"
+                }
+            ]
+        },
+        "projects": {
+            "title": "// Featured Projects",
+            "more": "View All",
+            "items": [
+                {
+                    "name": "TD Bank AI Agent",
+                    "stack": "RAG · LangChain · Pinecone",
+                    "desc": "Evidence-driven advisor for bank executives, with semantic chunking + multi-stage retrieval + hallucination guard.",
+                    "link": "https://github.com/TallMessiWu/td-llm-streamlit"
+                },
+                {
+                    "name": "Handcrafted ReAct Agent",
+                    "stack": "DeepSeek · Function Calling",
+                    "desc": "Zero framework deps, auto-explores GitHub repos and generates structured analysis reports.",
+                    "link": "https://github.com/TallMessiWu/react-agent"
+                },
+                {
+                    "name": "Personal Website",
+                    "stack": "Vue 3 · TypeScript · CloudBase",
+                    "desc": "Modern responsive portfolio in a VSCode design language, deployed on Tencent CloudBase.",
+                    "link": "https://github.com/TallMessiWu"
+                }
+            ]
         },
         "quotes": [
             {
@@ -32,7 +102,7 @@
                 "author": "@CS_Lewis"
             },
             {
-                "text": "This is absolute fire!",
+                "text": "Breaking complex systems into verifiable small steps — the engineer's quiet romance.",
                 "author": "@Me"
             }
         ]
@@ -68,97 +138,116 @@
     "about": {
         "profile": {
             "name": "Junlin Wu",
-            "title": "Data Scientist & Software Engineer",
-            "location": "New York, NY",
-            "bio": "I love building cool things with code. Passionate about AI, Web Development, and Data Science. Currently focusing on Large Language Models and their applications in software engineering.",
+            "title": "AI Engineer · LLM Inference & Agent Development",
+            "location": "Shanghai, China",
+            "bio": "Currently at Huawei, owning the quantization and adaptation of multimodal diffusion models and LLMs on Ascend chips. I enjoy bridging RAG, ReAct agents, and low-level inference optimization into verifiable, reusable engineering pipelines.",
             "resume": "View Resume"
         },
         "highlights": {
             "education": [
                 {
                     "school": "Columbia University",
-                    "degree": "M.S. in Data Science",
-                    "year": "Aug 2023 - Dec 2024"
+                    "degree": "M.S. in Data Science · Focus: Generative AI & LLM Applications",
+                    "year": "Sep 2023 - Dec 2024"
                 },
                 {
                     "school": "University of California San Diego",
-                    "degree": "B.S. in Data Science",
-                    "minor": "Minor in Economics",
+                    "degree": "B.S. in Data Science · Minor in Economics · GPA 3.9/4.0 · Cum Laude",
                     "year": "Sep 2019 - Mar 2023"
-                },
-                {
-                    "school": "The Derryfield School",
-                    "degree": "High School Diploma",
-                    "year": "Sep 2017 - Jun 2019"
-                },
-                {
-                    "school": "Linfield Christian School",
-                    "degree": "High School",
-                    "year": "Aug 2015 - Jun 2017"
                 }
             ],
             "work": [
                 {
-                    "company": "Huawei Technologies Co., Ltd.",
+                    "company": "Huawei Technologies · Computing Product Line",
                     "role": "AI Engineer",
                     "year": "Aug 2025 - Present",
                     "desc": [
-                        "Responsible for model optimization and adaptation within the ICT Computing Product Line, identifying performance bottlenecks through operator profiling data analysis and driving ecosystem adaptation.",
-                        "Integrated new acceleration features, such as fused operators, to optimize overall model performance."
+                        "Led quantization and precision tuning of Flux, Wan 2.2, and HunYuan multimodal diffusion models on next-gen Ascend chips — Wan 2.2 / HunYuan reached 1.5×, Flux exceeded the 2× target.",
+                        "As model owner, drove end-to-end adaptation of Qwen3.5 on the new chip in vLLM: functional bring-up, quantization, fused operators, PD-disaggregation, and performance tuning.",
+                        "Contributed MXFP4/MXFP8 quantization support to SGLang across Diffusion / Dense LLM / MoE scenarios — delivered in ~1 week with AI-assisted coding, vs the originally-scoped 2 months.",
+                        "Built a pandas-based automated DiT-block profiling tool, saving ~50% analysis time and adopted as a team-wide standard benefiting 5+ projects."
                     ]
                 },
                 {
-                    "company": "Columbia University Medical Center",
+                    "company": "Columbia University Medical Center · Nectow Lab",
                     "role": "Data Analyst",
                     "year": "Nov 2023 - Dec 2024",
                     "desc": [
-                        "Participated in an in vivo neuronal recording project. Correlated key neuronal activity metrics with animal feeding behaviors and intake data.",
-                        "Developed Python scripts for data processing and analysis, quantifying the relationship between neuronal activity and feeding behavior. Visualized experimental data using Matplotlib and Seaborn to assist the research team in understanding neural activity patterns.",
-                        "Built an automated data processing pipeline, enabling researchers to automatically analyze subsequent similar datasets."
+                        "Designed an end-to-end analysis pipeline for in-vivo neuronal recordings: denoising, spike detection, and time alignment.",
+                        "Used statistical modeling to quantify temporal links between neural activity and feeding behavior, helping identify key neuropeptidergic neurons that regulate satiation.",
+                        "Co-authored work supporting the paper 'Brainstem neuropeptidergic neurons link a neurohumoral axis to satiation' (Cell, under review)."
                     ]
                 },
                 {
                     "company": "UCSD CSSA",
                     "role": "Head of Development",
-                    "year": "Sep 2020 - Mar 2023",
+                    "year": "Mar 2020 - Mar 2023",
                     "desc": [
-                        "Developed the organization's website utilizing Vue.js, Vite, and Flask. Conducted usability testing and gathered feedback to enhance application functionality. Organized academic seminars and events, including the Spring Festival Gala.",
-                        "Created programming tutorials for 15 team members to improve their technical skills. Designed a departmental website for sharing tutorials and synchronizing daily information."
+                        "Built the organization's website with Vue.js, Vite, and Flask, plus an internal knowledge-sharing portal for the dev team.",
+                        "Created programming tutorials for 15 team members and organized academic seminars and major events including the Spring Festival Gala."
                     ]
                 }
             ],
             "projects": [
                 {
-                    "name": "Climate Analysis",
-                    "desc": "Analyzed 100 years of climate data to visualize global warming trends using Python and D3.js.",
-                    "link": "https://github.com/TallMessiWu/climate_change_data_analysis"
+                    "name": "TD Bank · Generative AI Executive Advisor",
+                    "desc": "RAG system on LangChain + Pinecone Serverless, with semantic sliding-window chunking, multi-stage retrieval, hallucination guard, and truLens 3-axis evaluation.",
+                    "link": "https://github.com/TallMessiWu/td-llm-streamlit"
                 },
                 {
-                    "name": "DOTA 2 Drafter",
-                    "desc": "A machine learning powered tool to suggest optimal heroes for DOTA 2 matches based on enemy composition.",
+                    "name": "Handcrafted ReAct Agent · GitHub Repo Analyzer",
+                    "desc": "Zero framework deps, DeepSeek-driven; 5-layer architecture with per-tool circuit breakers, exponential backoff + jitter, and chain-of-thought visualization.",
+                    "link": "https://github.com/TallMessiWu/react-agent"
+                },
+                {
+                    "name": "DOTA2 Pro Match Predictor",
+                    "desc": "Undergrad capstone: 30k+ match samples, 821-dim hero-matchup features; Random Forest reached 51.8% overall and 58.3% on known-counter subset.",
                     "link": "https://github.com/TallMessiWu/dota2-drafting-frontend"
-                },
-                {
-                    "name": "Personal Website",
-                    "desc": "A modern, responsive portfolio website built with Vue 3, TypeScript, and Element Plus.",
-                    "link": "https://github.com/TallMessiWu"
                 }
             ],
-            "skills": [
-                "Python",
-                "Vue.js",
-                "TypeScript",
-                "JavaScript",
-                "Java",
-                "SQL",
-                "PyTorch",
-                "Flask",
-                "Docker",
-                "Redis",
-                "MongoDB",
-                "Git",
-                "Linux"
-            ]
+            "skills": {
+                "expert": {
+                    "label": "Expert",
+                    "items": [
+                        "Python",
+                        "PyTorch",
+                        "vLLM",
+                        "SGLang",
+                        "LangChain",
+                        "Pinecone",
+                        "ReAct",
+                        "Function Calling",
+                        "MCP",
+                        "RAG"
+                    ]
+                },
+                "proficient": {
+                    "label": "Proficient",
+                    "items": [
+                        "Quantization (MXFP / INT8)",
+                        "Prompt Engineering",
+                        "OpenAI / DeepSeek API",
+                        "Streamlit",
+                        "OpenCV",
+                        "Scikit-learn",
+                        "SQL",
+                        "Flask",
+                        "asyncio / httpx"
+                    ]
+                },
+                "familiar": {
+                    "label": "Familiar",
+                    "items": [
+                        "TensorFlow",
+                        "Vue.js",
+                        "TypeScript",
+                        "D3.js",
+                        "Java / SpringBoot",
+                        "Redis",
+                        "MongoDB"
+                    ]
+                }
+            }
         },
         "sections": {
             "education": "Education",
@@ -174,28 +263,42 @@
                 "end": "Present",
                 "duration": "",
                 "title": "Huawei Technologies Co., Ltd.",
-                "description": "AI Engineer"
+                "description": "AI Engineer working on quantization and performance optimization of multimodal diffusion models and LLMs on Ascend chips."
+            },
+            {
+                "start": "Apr 2026",
+                "end": "May 2026",
+                "duration": "",
+                "title": "Handcrafted ReAct Agent",
+                "description": "Production-grade ReAct agent with zero framework deps, DeepSeek-driven GitHub repo analyzer."
+            },
+            {
+                "start": "Sep 2024",
+                "end": "Present",
+                "duration": "",
+                "title": "TD Bank AI Agent Project",
+                "description": "Columbia × TD Bank capstone: RAG + LangChain + Pinecone advisor for executive decision-making."
             },
             {
                 "start": "Nov 2023",
                 "end": "Dec 2024",
                 "duration": "1 Year",
                 "title": "Columbia University Medical Center",
-                "description": "Data Analyst"
+                "description": "Data Analyst — neural-activity pipeline supporting a Cell paper (under review)."
             },
             {
-                "start": "Aug 2023",
+                "start": "Sep 2023",
                 "end": "Dec 2024",
                 "duration": "1.5 Years",
                 "title": "Columbia University",
-                "description": "Master's, Data Science."
+                "description": "M.S. in Data Science, focusing on generative AI and LLM applications."
             },
             {
                 "start": "Sep 2019",
                 "end": "Mar 2023",
-                "duration": "4 Years",
+                "duration": "3.5 Years",
                 "title": "University of California San Diego",
-                "description": "Bachelor's in Data Science, Minor in Economics. Graduated a quarter early with honors, awarded Outstanding Graduate."
+                "description": "B.S. in Data Science, Minor in Economics. GPA 3.9/4.0, Cum Laude, multi-year Provost Honors."
             },
             {
                 "start": "Sep 2017",
