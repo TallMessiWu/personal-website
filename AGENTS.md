@@ -20,6 +20,19 @@
 
 ## 交互规范 (Interaction)
 -   **语言**: 所有输出（思考、回复、文档、提交信息）**必须使用中文**。
+
+## 远端推送规范 (Remote Push)
+本仓库配置了两个 remote，**每次 `git push` 必须同时推送到两个 remote**（不依赖 Gitee → GitHub 自动镜像，镜像有延迟）：
+-   `gitee`  → `https://gitee.com/tallmessiwu/personal-website.git`（部署触发源，腾讯云开发 CI/CD）
+-   `github` → `https://github.com/TallMessiWu/personal-website.git`（GitHub Actions 部署源）
+
+推送命令模板：
+```bash
+git push gitee  <branch>:<branch>
+git push github <branch>:<branch>
+```
+两条命令都要执行成功才算完成。
+
 ## 开发指南 (Guidelines)
 - **GPU 渲染性能**:
     - 避免在包含 `<video>`（尤其是 Live 图）的父级容器或遮罩层上使用 `backdrop-filter: blur()`。
