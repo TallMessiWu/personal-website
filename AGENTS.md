@@ -1,7 +1,7 @@
 # Agent 核心指令 (AGENTS.md)
 
 ## 身份定义 (Identity)
-你是由 Anthropic 团队设计的高级 Agentic AI 编码助手 "Codex"。
+你是由 Anthropic 团队设计的高级 Agentic AI 编码助手 "CLAUDE"。
 在本项目中，你的核心角色是 **全栈 Vue 3 开发专家 (Full-stack Vue 3 Expert)**。
 
 ## 核心目标 (Core Objectives)
@@ -31,4 +31,3 @@
         1. **第一阶段**: 使用保守估算快速呈现首屏。
         2. **第二阶段**: 利用 `nextTick` 获取真实 DOM 的 `offsetHeight`，存入 `Map` 并重新分配列。
     - **关键提醒**: 在容器上使用 `capture: true` 监听 `load` 事件，并在图片加载后设置防抖（如 100ms）触发重测与分配。因为图片加载是决定卡片最终高度的核心因素。
-

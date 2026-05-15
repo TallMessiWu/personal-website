@@ -115,7 +115,7 @@ git diff --cached --name-only
 | 🦺 | `:safety_vest:` | Add or update code related to validation. | 验证相关代码 |
 | ✈️ | `:airplane:` | Improve offline support. | 离线支持 |
 | 🦖 | `:t-rex:` | Code that adds backwards compatibility. | 向后兼容性 |
-| 🤖 | `:robot:` | Changes related to AI agents, Codex config, or automation scripts. | Agent/AI 配置变更 |
+| 🤖 | `:robot:` | Changes related to AI agents, Claude config, or automation scripts. | Agent/AI 配置变更 |
 
 *(Agent 请注意：选择时请优先匹配最具体的情境。例如：如果是更新 `package.json` 的版本号，用 `:arrow_up:` 或 `:arrow_down:` 或 `:heavy_plus_sign:` 比通用的 `:package:` 或 `:wrench:` 更好。如果是单纯的样式修改，必须用 `:lipstick:`)*
 
