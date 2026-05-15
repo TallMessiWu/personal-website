@@ -61,7 +61,7 @@
             <div class="card-content">
                 <div v-for="(job, index) in workList" :key="index" class="list-item">
                   <div class="item-main">{{ job.company }}</div>
-                  <div class="item-sub">{{ job.role }}</div>
+                  <div class="item-sub">{{ t(`about.highlights.work[${index}].role`) }}</div>
                   <div class="item-meta">{{ job.year }}</div>
                   <div class="item-desc">
                    <template v-if="Array.isArray(job.desc)">

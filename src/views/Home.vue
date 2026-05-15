@@ -116,7 +116,7 @@
           <span class="quote-text">"{{ quote.text }}"</span>
         </div>
         <div class="quote-author">
-           <span class="author-tag">{{ quote.author }}</span>
+           <span class="author-tag">{{ t(`home.quotes[${index}].author`) }}</span>
         </div>
       </div>
     </section>
