@@ -23,7 +23,7 @@
             "hello": "Hello, World! I'm Junlin Wu."
         },
         "code": {
-            "role": "AI Engineer @ Huawei",
+            "role": "AI Engineer {'@'} Huawei",
             "status": "Building..."
         },
         "focus": {
@@ -99,11 +99,11 @@
         "quotes": [
             {
                 "text": "Hardships often prepare ordinary people for an extraordinary destiny.",
-                "author": "@CS_Lewis"
+                "author": "{'@'}CS_Lewis"
             },
             {
                 "text": "Breaking complex systems into verifiable small steps — the engineer's quiet romance.",
-                "author": "@Me"
+                "author": "{'@'}Me"
             }
         ]
     },
