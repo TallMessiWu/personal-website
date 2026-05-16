@@ -593,7 +593,7 @@ useHead({
   background-color: var(--color-quote-bg); /* Surface color */
   padding: 30px;
   border-radius: 6px;
-  border-left: 3px solid var(--color-accent-tertiary);
+  border-left: 3px solid var(--color-accent-primary);
   width: 100%;
   max-width: 500px;
   transition: transform 0.2s;
