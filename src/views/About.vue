@@ -354,30 +354,32 @@ const eventMarkers = computed(() => {
     const markers: { top: number, label: string }[] = [];
     const { max } = timeRange.value;
 
-    // 使用 getTopFromDate 计算每个月份在时间轴上的真实比例位置
+    // 按"年-月"去重，避免同月份不同日期（如"至今"=今日 vs 某事件月初）生成两个相同 label
+    const seenMonths = new Set<string>();
+    const pushMonth = (date: Date) => {
+        const key = `${date.getFullYear()}-${date.getMonth()}`;
+        if (seenMonths.has(key)) return;
+        seenMonths.add(key);
+        markers.push({
+            top: getTopFromDate(date, max),
+            label: (date.getMonth() + 1).toString().padStart(2, '0')
+        });
+    };
     processedEvents.value.forEach(e => {
-        markers.push({
-            top: getTopFromDate(e.endDate, max),
-            label: (e.endDate.getMonth() + 1).toString().padStart(2, '0')
-        });
-        markers.push({
-            top: getTopFromDate(e.startDate, max),
-            label: (e.startDate.getMonth() + 1).toString().padStart(2, '0')
-        });
+        pushMonth(e.endDate);
+        pushMonth(e.startDate);
     });
 
-    // 先获取所有年份标记的位置，用于碰撞检测
+    // 再按像素距离过滤：与年份标签或相邻月份标签太近时丢弃
     const yearPositions = yearTicks.value.map(t => t.top);
     const MIN_DISTANCE_FROM_YEAR = 25; // 月份标记与年份标记的最小距离（px）
     const MIN_DISTANCE_BETWEEN = 15; // 月份标记之间的最小距离（px）
 
     const unique: { top: number, label: string }[] = [];
     markers.sort((a,b) => a.top - b.top).forEach(m => {
-        // 检查是否与年份标记过近
         const tooCloseToYear = yearPositions.some(yp => Math.abs(yp - m.top) < MIN_DISTANCE_FROM_YEAR);
         if (tooCloseToYear) return;
 
-        // 检查是否与已有月份标记过近
         if (unique.length === 0 || Math.abs(unique[unique.length-1].top - m.top) > MIN_DISTANCE_BETWEEN) {
             unique.push(m);
         }
