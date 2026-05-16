@@ -66,9 +66,9 @@
                     "hint": "Self-built profiling tool"
                 },
                 {
-                    "value": "30K+",
-                    "label": "DOTA2 match samples",
-                    "hint": "Undergrad capstone scale"
+                    "value": "100→10",
+                    "label": "TD Bank RAG retrieval",
+                    "hint": "Grad capstone · 2024.09-12"
                 }
             ]
         },
@@ -107,7 +107,7 @@
             },
             {
                 "text": "Unbeatable.",
-                "author": "Junlin"
+                "author": "TallMessiWu"
             }
         ]
     },

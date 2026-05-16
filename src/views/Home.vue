@@ -582,27 +582,36 @@ useHead({
 }
 
 .quotes-section {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
   padding: 60px 0;
-  flex-wrap: wrap;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .quote-card {
   background-color: var(--color-quote-bg); /* Surface color */
   padding: 30px;
   border-radius: 6px;
+  border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-accent-primary);
-  width: 100%;
-  max-width: 500px;
-  transition: transform 0.2s;
+  transition: var(--transition-normal);
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     background-color: var(--color-surface-hover);
+    border-color: var(--color-keyword);
+    border-left-color: var(--color-keyword);
+    box-shadow: var(--shadow-md);
+
+    .quote-text {
+      color: var(--color-text-secondary);
+    }
   }
 
   .quote-content {
@@ -620,6 +629,7 @@ useHead({
       font-family: var(--font-family-code);
       font-style: italic;
       font-size: 1.05rem;
+      transition: color 0.3s ease;
     }
   }
 

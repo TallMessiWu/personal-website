@@ -66,9 +66,9 @@
                     "hint": "自研 profiling 工具"
                 },
                 {
-                    "value": "30K+",
-                    "label": "DOTA2 比赛样本",
-                    "hint": "本科毕设数据规模"
+                    "value": "100→10",
+                    "label": "TD 银行 RAG 多阶段检索",
+                    "hint": "研究生毕设 · 2024.09-12"
                 }
             ]
         },
