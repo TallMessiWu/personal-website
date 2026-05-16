@@ -278,7 +278,7 @@
             },
             {
                 "start": "2024年9月",
-                "end": "至今",
+                "end": "2024年12月",
                 "duration": "",
                 "title": "TD 银行 AI Agent 项目",
                 "description": "哥大 × TD 银行合作毕设，RAG + LangChain + Pinecone 的高管决策顾问系统。"
