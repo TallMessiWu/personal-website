@@ -28,14 +28,14 @@
              </div>
              <div class="window-body">
                <pre><code><span class="keyword">const</span> <span class="variable">profile</span> <span class="operator">=</span> {
-  <span class="property">name</span>: <span class="string">'Junlin Wu'</span>,
-  <span class="property">role</span>: <span class="string">'{{ t("home.code.role") }}'</span>,
-  <span class="property">focus</span>: [
-    <span class="string">'LLM Inference'</span>,
-    <span class="string">'Agent'</span>,
-    <span class="string">'Quantization'</span>
+  <span class="property">{{ t('home.code.keys.name') }}</span>: <span class="string">'Junlin Wu'</span>,
+  <span class="property">{{ t('home.code.keys.role') }}</span>: <span class="string">'{{ t("home.code.role") }}'</span>,
+  <span class="property">{{ t('home.code.keys.focus') }}</span>: [
+    <span class="string">'{{ codeFocus[0] }}'</span>,
+    <span class="string">'{{ codeFocus[1] }}'</span>,
+    <span class="string">'{{ codeFocus[2] }}'</span>
   ],
-  <span class="property">status</span>: <span class="string">'{{ t("home.code.status") }}'</span>
+  <span class="property">{{ t('home.code.keys.status') }}</span>: <span class="string">'{{ t("home.code.status") }}'</span>
 };</code></pre>
              </div>
           </div>
@@ -129,6 +129,8 @@ import { useHead } from '@vueuse/head';
 import { useI18n } from 'vue-i18n';
 
 const { t, tm } = useI18n();
+
+const codeFocus = computed(() => tm('home.code.focus') as string[]);
 
 useHead({
   title: computed(() => `${t('nav.home')} | ${t('app.title')}`)

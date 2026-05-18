@@ -24,7 +24,18 @@
         },
         "code": {
             "role": "AI Engineer {'@'} Huawei",
-            "status": "Building..."
+            "status": "Building...",
+            "keys": {
+                "name": "name",
+                "role": "role",
+                "focus": "focus",
+                "status": "status"
+            },
+            "focus": [
+                "LLM Inference",
+                "Agent",
+                "Quantization"
+            ]
         },
         "focus": {
             "title": "// Focus Areas",

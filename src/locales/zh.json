@@ -24,7 +24,18 @@
         },
         "code": {
             "role": "AI 工程师 {'@'} 华为",
-            "status": "构建中..."
+            "status": "构建中...",
+            "keys": {
+                "name": "姓名",
+                "role": "职位",
+                "focus": "专注方向",
+                "status": "状态"
+            },
+            "focus": [
+                "大模型推理",
+                "Agent",
+                "量化"
+            ]
         },
         "focus": {
             "title": "// 专注方向",
