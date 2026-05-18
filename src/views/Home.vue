@@ -28,14 +28,14 @@
              </div>
              <div class="window-body">
                <pre><code><span class="keyword">const</span> <span class="variable">profile</span> <span class="operator">=</span> {
-  <span class="property">"{{ t('home.code.keys.name') }}"</span>: <span class="string">'Junlin Wu'</span>,
-  <span class="property">"{{ t('home.code.keys.role') }}"</span>: <span class="string">'{{ t("home.code.role") }}'</span>,
-  <span class="property">"{{ t('home.code.keys.focus') }}"</span>: [
-    <span class="string">'{{ codeFocus[0] }}'</span>,
-    <span class="string">'{{ codeFocus[1] }}'</span>,
-    <span class="string">'{{ codeFocus[2] }}'</span>
+  <span class="string">"{{ t('home.code.keys.name') }}"</span>: <span class="string">"Junlin Wu"</span>,
+  <span class="string">"{{ t('home.code.keys.role') }}"</span>: <span class="string">"{{ t('home.code.role') }}"</span>,
+  <span class="string">"{{ t('home.code.keys.focus') }}"</span>: [
+    <span class="string">"{{ codeFocus[0] }}"</span>,
+    <span class="string">"{{ codeFocus[1] }}"</span>,
+    <span class="string">"{{ codeFocus[2] }}"</span>
   ],
-  <span class="property">"{{ t('home.code.keys.status') }}"</span>: <span class="string">'{{ t("home.code.status") }}'</span>
+  <span class="string">"{{ t('home.code.keys.status') }}"</span>: <span class="string">"{{ t('home.code.status') }}"</span>
 };</code></pre>
              </div>
           </div>
