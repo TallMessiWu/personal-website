@@ -23,6 +23,7 @@
             "hello": "Hello, World! I'm Junlin Wu."
         },
         "code": {
+            "name": "Junlin Wu",
             "role": "AI Engineer {'@'} Huawei",
             "status": "Building...",
             "keys": {
