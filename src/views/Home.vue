@@ -577,7 +577,7 @@ useHead({
       .keyword { color: var(--color-keyword); }
       .variable { color: var(--color-text-primary); } /* Variable name usually plain text color or light blue in dark */
       .operator { color: var(--color-text-primary); }
-      .property { color: #9cdcfe; }
+      .property { color: var(--color-json-key); }
       .string { color: var(--color-accent-secondary); }
     }
   }
