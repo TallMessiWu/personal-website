@@ -330,6 +330,32 @@ const handleCardClick = (collection: CollectionDisplay, event: MouseEvent) => {
   }
 };
 
+// 对没有封面的合集，异步补加载第一张卡片的图片作为封面
+// fetchCollectionsFromCloud 的批量查询在 SDK 冷启动时可能拿不到数据，
+// 这里用已知可靠的 fetchPostsByCollectionId 做兜底，不阻塞初始渲染
+const loadFallbackCovers = async () => {
+  const targets = collections.value.filter(c => !c.thumbnail);
+  if (!targets.length) return;
+
+  await Promise.all(targets.map(async (col) => {
+    try {
+      const posts = await fetchPostsByCollectionId(col._id);
+      for (const post of posts) {
+        if (!post.images?.length) continue;
+        for (const img of post.images) {
+          const url = img.thumbnail || img.image;
+          if (!url) continue;
+          const idx = collections.value.findIndex(c => c._id === col._id);
+          if (idx !== -1 && !collections.value[idx].thumbnail) {
+            collections.value[idx] = { ...collections.value[idx], thumbnail: url };
+          }
+          return;
+        }
+      }
+    } catch { /* 单个合集失败不影响其他 */ }
+  }));
+};
+
 const openCollection = async (collection: CollectionDisplay, event: MouseEvent) => {
   if (isClosing.value) return;
 
@@ -509,6 +535,7 @@ const handleRefresh = async () => {
 
   try {
     collections.value = await fetchCollectionsFromCloud();
+    void loadFallbackCovers();
 
     const elapsed = Date.now() - startTime;
     if (elapsed < 600) {
@@ -547,6 +574,7 @@ onMounted(async () => {
 
   try {
     collections.value = await fetchCollectionsFromCloud();
+    void loadFallbackCovers();
   } catch (error) {
     console.error('Failed to load portfolio collections:', error);
   } finally {
