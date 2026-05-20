@@ -30,9 +30,16 @@
         @click.stop="handleCardClick(item, $event)"
       >
         <div class="image-wrapper" :class="{ 'is-active': activeCardId === item._id }">
-          <div class="placeholder-cover" :style="getPlaceholderCoverStyle(item)">
-            <span>{{ item.name }}</span>
-          </div>
+          <el-skeleton animated class="cover-skeleton">
+            <template #template>
+              <el-skeleton-item variant="image" style="width:100%;height:100%;" />
+              <div class="cover-skeleton-overlay">
+                <el-skeleton-item variant="h1" style="width:50%;height:28px;" />
+                <el-skeleton-item variant="text" style="width:30%;height:14px;" />
+                <el-skeleton-item variant="button" style="width:90px;height:34px;border-radius:10px;" />
+              </div>
+            </template>
+          </el-skeleton>
           <img
             v-if="item.thumbnail && !hasCollectionCoverFailed(item)"
             :src="item.thumbnail"
@@ -172,35 +179,7 @@ const activeCardId = ref<string | null>(null);
 const loadedCoverKeys = ref<Set<string>>(new Set());
 const failedCoverKeys = ref<Set<string>>(new Set());
 
-const coverPalettes = [
-  ['#ff7a59', '#ff4f9a', '#6d5dfc'],
-  ['#00c2ff', '#7c3aed', '#ff4ecd'],
-  ['#12d8a0', '#0f8bff', '#1c2d5a'],
-  ['#ffd166', '#ef476f', '#5f0f40'],
-  ['#80ffdb', '#48bfe3', '#6930c3'],
-  ['#f72585', '#7209b7', '#3a0ca3'],
-  ['#f4d35e', '#ee964b', '#0d3b66'],
-  ['#06d6a0', '#118ab2', '#073b4c'],
-];
-
 const getCoverKey = (collection: CollectionDisplay) => `${collection._id}:${collection.thumbnail || ''}`;
-
-const getPaletteIndex = (text: string) => {
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = (hash * 31 + text.charCodeAt(i)) % coverPalettes.length;
-  }
-  return hash;
-};
-
-const getPlaceholderCoverStyle = (collection: CollectionDisplay): CSSProperties => {
-  const [start, middle, end] = coverPalettes[getPaletteIndex(collection._id + collection.name)];
-  return {
-    '--cover-start': start,
-    '--cover-middle': middle,
-    '--cover-end': end,
-  } as CSSProperties;
-};
 
 const isCollectionCoverLoaded = (collection: CollectionDisplay) => {
   return loadedCoverKeys.value.has(getCoverKey(collection));
@@ -719,52 +698,26 @@ onUnmounted(() => {
       }
     }
 
-    .placeholder-cover {
+    .cover-skeleton {
       position: absolute;
       inset: 0;
       z-index: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.36), transparent 26%),
-        radial-gradient(circle at 82% 24%, rgba(255, 255, 255, 0.2), transparent 30%),
-        linear-gradient(135deg, var(--cover-start), var(--cover-middle) 48%, var(--cover-end));
-      color: rgba(255, 255, 255, 0.92);
-      text-align: center;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
-      transition:
-        opacity 0.35s ease,
-        transform 0.5s ease;
 
-      &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(120deg, transparent 0 38%, rgba(255, 255, 255, 0.16) 46%, transparent 56%),
-          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 18px);
-        mix-blend-mode: overlay;
-        opacity: 0.7;
+      :deep(.el-skeleton) {
+        --el-skeleton-color: var(--color-border);
+        --el-skeleton-to-color: var(--color-surface);
+        height: 100%;
       }
 
-      span {
-        position: relative;
-        z-index: 1;
-        max-width: 92%;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        overflow: hidden;
-        font-size: clamp(1.55rem, 6vw, 3.8rem);
-        line-height: 1.05;
-        font-weight: 800;
-        letter-spacing: 0;
-        overflow-wrap: anywhere;
+      .cover-skeleton-overlay {
+        position: absolute;
+        inset: 0;
+        background-color: var(--color-surface);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
       }
     }
 
@@ -789,8 +742,7 @@ onUnmounted(() => {
       &:hover {
         border-color: var(--color-accent-primary);
 
-        img.is-loaded,
-        .placeholder-cover {
+        img.is-loaded {
           transform: scale(1.1);
           opacity: 0.6;
         }
@@ -811,8 +763,7 @@ onUnmounted(() => {
     &.is-active {
       border-color: var(--color-accent-primary);
 
-      img.is-loaded,
-      .placeholder-cover {
+      img.is-loaded {
         transform: scale(1.1);
         opacity: 0.6;
       }
