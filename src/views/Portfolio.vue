@@ -309,29 +309,42 @@ const handleCardClick = (collection: CollectionDisplay, event: MouseEvent) => {
   }
 };
 
-// 对没有封面的合集，异步补加载第一张卡片的图片作为封面
-// fetchCollectionsFromCloud 的批量查询在 SDK 冷启动时可能拿不到数据，
-// 这里用已知可靠的 fetchPostsByCollectionId 做兜底，不阻塞初始渲染
+// 对没有封面的合集，异步补加载第一张卡片的图片作为封面。
+// SDK 冷启动时 getTempFileURL 可能返回空（cloud:// 未解析），需重试等待 SDK 就绪。
 const loadFallbackCovers = async () => {
   const targets = collections.value.filter(c => !c.thumbnail);
   if (!targets.length) return;
 
+  const findValidUrl = (posts: import('@/data/dailyData').Post[]): string => {
+    for (const post of posts) {
+      for (const img of post.images ?? []) {
+        const url = img.thumbnail || img.image;
+        // cloud:// 表示 getTempFileURL 未能解析，跳过
+        if (url && !url.startsWith('cloud://')) return url;
+      }
+    }
+    return '';
+  };
+
   await Promise.all(targets.map(async (col) => {
-    try {
-      const posts = await fetchPostsByCollectionId(col._id);
-      for (const post of posts) {
-        if (!post.images?.length) continue;
-        for (const img of post.images) {
-          const url = img.thumbnail || img.image;
-          if (!url) continue;
+    // 最多重试 3 次，每次间隔 1.5s，等待 SDK 冷启动完成
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 1500));
+      try {
+        const posts = await fetchPostsByCollectionId(col._id);
+        const url = findValidUrl(posts);
+        if (url) {
           const idx = collections.value.findIndex(c => c._id === col._id);
           if (idx !== -1 && !collections.value[idx].thumbnail) {
             collections.value[idx] = { ...collections.value[idx], thumbnail: url };
           }
           return;
         }
-      }
-    } catch { /* 单个合集失败不影响其他 */ }
+        // 合集本身就没有帖子，不再重试
+        if (posts.length === 0 && col.postCount === 0) return;
+        // 有帖子但 URL 都是 cloud://（未解析），继续重试
+      } catch { /* 继续重试 */ }
+    }
   }));
 };
 
