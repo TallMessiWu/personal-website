@@ -3,29 +3,22 @@ import app, { db, ensureAuth } from '@/utils/tcb';
 export type ImageItem = { image: string; thumbnail?: string; video?: string };
 
 export interface Post {
-  _id: string; // 云数据库自动生成的唯一标识符
+  _id: string;
   title: string;
   content?: string;
-  images?: ImageItem[]; // Optional for text-only posts
-  video?: string; // Still used for Bilibili links for now
+  images?: ImageItem[];
+  video?: string;
   date: string;
   pinned?: boolean;
 }
 
-/**
- * 判断是否为腾讯云存储 fileid
- */
 const isFileId = (path: string | undefined): boolean => {
   if (!path) return false;
   return path.startsWith('cloud://');
 };
 
-/**
- * 从云开发数据库拉取所有日常动态数据
- */
 export const fetchPostsFromCloud = async (): Promise<Post[]> => {
   try {
-    // 确保在查询前已进行匿名登录
     await ensureAuth();
 
     const res = await db.collection('posts')
@@ -36,7 +29,6 @@ export const fetchPostsFromCloud = async (): Promise<Post[]> => {
     if (res.data && res.data.length > 0) {
       const posts = res.data as Post[];
 
-      // 提取所有需要解析的 fileId
       const fileIdSet = new Set<string>();
       posts.forEach((post: Post) => {
         if (post.images) {
@@ -51,20 +43,24 @@ export const fetchPostsFromCloud = async (): Promise<Post[]> => {
 
       const fileIds = Array.from(fileIdSet);
       if (fileIds.length > 0) {
-        // 批量获取临时链接
-        const res = await app.getTempFileURL({
-          fileList: fileIds
-        });
-
-        const fileList = res.fileList || [];
         const fileMap = new Map<string, string>();
-        fileList.forEach((item: any) => {
-          if (item.tempFileURL) {
-            fileMap.set(item.fileID, item.tempFileURL);
+        for (let attempt = 0; attempt < 4; attempt++) {
+          if (attempt > 0) await new Promise(r => setTimeout(r, 2000));
+          try {
+            const res = await app.getTempFileURL({ fileList: fileIds });
+            const fileList = res.fileList || [];
+            fileMap.clear();
+            fileList.forEach((item: any) => {
+              if (item.tempFileURL) {
+                fileMap.set(item.fileID, item.tempFileURL);
+              }
+            });
+            if (fileMap.size > 0 && attempt >= 1) break;
+          } catch {
+            // SDK 冷启动，重试
           }
-        });
+        }
 
-        // 替换 fileId 为真实链接
         posts.forEach((post: Post) => {
           if (post.images) {
             post.images.forEach(img => {
@@ -86,5 +82,4 @@ export const fetchPostsFromCloud = async (): Promise<Post[]> => {
   }
 };
 
-// 保留此导出用于类型兼容，但内容为空，实际数据通过 fetchPostsFromCloud 获取
 export const dailyData: Post[] = [];
