@@ -187,8 +187,10 @@ export const fetchPostsByCollectionId = async (collectionId: string): Promise<Po
         p.images.forEach(img => {
           if (img.image && isFileId(img.image)) fileIdSet.add(img.image);
           if (img.thumbnail && isFileId(img.thumbnail)) fileIdSet.add(img.thumbnail);
+          if (img.video && isFileId(img.video)) fileIdSet.add(img.video);
         });
       }
+      if (isFileId(p.video)) fileIdSet.add(p.video!);
     });
 
     const fileMap = await resolveFileIds(Array.from(fileIdSet));
@@ -198,9 +200,11 @@ export const fetchPostsByCollectionId = async (collectionId: string): Promise<Po
          p.images = p.images.map(img => ({
            ...img,
            image: isFileId(img.image) ? fileMap.get(img.image!) || img.image : img.image,
-           thumbnail: isFileId(img.thumbnail) ? fileMap.get(img.thumbnail!) || img.thumbnail : img.thumbnail
+           thumbnail: isFileId(img.thumbnail) ? fileMap.get(img.thumbnail!) || img.thumbnail : img.thumbnail,
+           video: isFileId(img.video) ? fileMap.get(img.video!) || img.video : img.video
          }));
        }
+       if (isFileId(p.video)) p.video = fileMap.get(p.video!) || p.video;
        return p;
     });
   } catch (error) {
