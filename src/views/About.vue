@@ -219,7 +219,7 @@ const { t, tm, locale } = useI18n();
 
 // Resume Download Logic
 const openResume = () => {
-  const resumeFile = locale.value === 'zh' ? '吴俊霖_数据科学.pdf' : 'Junlin Wu_Data Scientist.pdf';
+  const resumeFile = locale.value === 'zh' ? '吴俊霖_AI工程师.pdf' : 'Junlin_Wu_AI_Engineer.pdf';
   window.open(`/${resumeFile}`, '_blank');
 };
 
